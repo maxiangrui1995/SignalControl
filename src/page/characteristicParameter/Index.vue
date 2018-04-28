@@ -170,7 +170,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .breadWarpper {
   padding: 20px;
   background: #fff;
