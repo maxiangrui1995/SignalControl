@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="container">
     <div class="breadWarpper">
-      <p style="font-size:16px;">特征参数</p>
+      <p style="font-size:16px;font-weight:500">特征参数</p>
     </div>
     <div class="contentWrapper">
       <div style="margin-bottom:10px;">
@@ -11,7 +11,7 @@
         <Table :columns="columns" :data="data" :loading="loading" border></Table>
       </div>
       <div style="text-align:right; margin-top:10px;">
-        <Page :total="100" show-elevator></Page>
+        <Page :total="total" :current="page" :page-size="rows" show-elevator @on-change="pageChange"></Page>
       </div>
     </div>
   </div>
@@ -26,7 +26,7 @@ export default {
   },
   data() {
     return {
-      loading: false,
+      loading: true,
       columns: [
         {
           type: "index",
@@ -39,36 +39,73 @@ export default {
         },
         {
           title: "类型",
-          key: "age"
+          key: "type",
+          width: 120,
+          render: (h, params) => {
+            return h(
+              "div",
+              `${params.row.phase_count}阶段${params.row.light_count}相位`
+            );
+          }
         },
         {
           title: "相位差",
-          key: "b"
+          key: "phase_difference",
+          width: 80,
+          align: "center"
         },
         {
           title: "最小绿范围",
-          key: "b"
+          key: "min_green_range",
+          width: 120,
+          align: "center",
+          render: (h, params) => {
+            return h(
+              "div",
+              `${params.row.min_green_down} ~ ${params.row.min_green_up}`
+            );
+          }
         },
         {
           title: "最大绿范围",
-          key: "b"
+          key: "max_green_range",
+          width: 120,
+          align: "center",
+          render: (h, params) => {
+            return h(
+              "div",
+              `${params.row.max_green_down} ~ ${params.row.max_green_up}`
+            );
+          }
         },
         {
           title: "绿延伸范围",
-          key: "b"
+          key: "extends",
+          width: 120,
+          align: "center",
+          render: (h, params) => {
+            return h(
+              "div",
+              `${params.row.extends_down} ~ ${params.row.extends_up}`
+            );
+          }
         },
         {
           title: "脉冲倒计时",
-          key: "b"
+          key: "mc_countdown",
+          width: 120,
+          align: "center"
         },
         {
           title: "脉宽",
-          key: "b"
+          key: "mc_width",
+          width: 80,
+          align: "center"
         },
         {
           title: "操作",
           key: "action",
-          width: 150,
+          width: 140,
           align: "center",
           render: (h, params) => {
             return h("div", [
@@ -127,36 +164,10 @@ export default {
           }
         }
       ],
-      data: [
-        {
-          id: 1,
-          name: "John Brown",
-          age: 18,
-          address: "New York No. 1 Lake Park",
-          date: "2016-10-03"
-        },
-        {
-          id: 2,
-          name: "Jim Green",
-          age: 24,
-          address: "London No. 1 Lake Park",
-          date: "2016-10-01"
-        },
-        {
-          id: 3,
-          name: "Joe Black",
-          age: 30,
-          address: "Sydney No. 1 Lake Park",
-          date: "2016-10-02"
-        },
-        {
-          id: 4,
-          name: "Jon Snow",
-          age: 26,
-          address: "Ottawa No. 2 Lake Park",
-          date: "2016-10-04"
-        }
-      ]
+      data: [],
+      page: 1,
+      rows: 10,
+      total: 0
     };
   },
   methods: {
@@ -165,7 +176,28 @@ export default {
         name: "characteristicParameterDetails",
         params: { id: params.id }
       });
+    },
+    pageChange(page) {
+      this.page = page;
+      this.getDatagrid();
+    },
+    getDatagrid() {
+      this.loading = true;
+      this.$ajax
+        .post("d_plan/dataList", {
+          page: this.page,
+          rows: this.rows
+        })
+        .then(res => {
+          this.loading = false;
+          let data = res.data.data;
+          this.data = data.list;
+          this.total = ~~data.total;
+        });
     }
+  },
+  created() {
+    this.getDatagrid();
   }
 };
 </script>
