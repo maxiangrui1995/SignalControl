@@ -4,18 +4,13 @@ import Vue from "vue";
 import App from "./App";
 import router from "./router";
 import iView from "iview";
-import axios from "axios";
+import store from "./store";
 import "iview/dist/styles/iview.css";
 import "./assets/styles/theme.less";
-import "./assets/styles/index.css";
 
-axios.defaults.baseURL = "/api/";
-axios.defaults.headers.post["Content-Type"] =
-  "application/x-www-form-urlencoded";
 
 Vue.config.productionTip = false;
 Vue.use(iView);
-Vue.prototype.$ajax = axios;
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start();
@@ -30,6 +25,7 @@ router.afterEach(route => {
 new Vue({
   el: "#app",
   router,
+  store,
   components: { App },
   template: "<App/>"
 });

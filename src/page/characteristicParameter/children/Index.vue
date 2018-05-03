@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="breadWarpper">
-      <p style="font-size:16px; padding:20px 20px 30px; font-weight:500">特征参数 / 方案一</p>
+      <Breadcrumb :style="{'font-size':'16px', padding:'20px'}">
+        <BreadcrumbItem to="/characteristicParameter">特征参数</BreadcrumbItem>
+        <BreadcrumbItem>{{title}}</BreadcrumbItem>
+      </Breadcrumb>
       <Tabs v-model="TabSelected" @on-click="tabsChange">
         <TabPane label="基本" name="base"></TabPane>
         <TabPane label="通行权" name="wayleave"></TabPane>
@@ -32,7 +35,16 @@ export default {
     return {
       TabSelected: this.$route.path.split("/")[3]
     };
-  }
+  },
+  computed: {
+    title() {
+      return this.$store.state.CharacteristicModule.BASE.name;
+    }
+  },
+  created() {
+    this.$store.dispatch("SET_CHARACTERISTIC", this.$route.params.id);
+  },
+  mounted() {}
 };
 </script>
 
@@ -42,7 +54,6 @@ export default {
 }
 .contentWrapper {
   margin: 20px;
-  min-height: 400px;
   background: #fff;
   padding: 10px;
 }

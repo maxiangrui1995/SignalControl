@@ -1,22 +1,22 @@
 <template>
-    <div>
-        <div class="breadWarpper">
-            <p style="font-size:16px;font-weight:500">区域管理</p>
-            <Row type="flex" justify="center" align="middle" class="code-row-bg">
-                <i-col span="6">
-                    <Cascader v-model="value3" :data="data" filterable change-on-select size="large"></Cascader>
-                </i-col>
-            </Row>
-        </div>
-        <div class="contentWrapper">
-            <Steps :current="0">
-                <Step title="区域"></Step>
-                <Step title="道路"></Step>
-                <Step title="路口"></Step>
-                <Step title="设备"></Step>
-            </Steps>
-        </div>
+  <div>
+    <div class="breadWarpper dh-header">
+      <p style="font-size:16px;font-weight:500">区域管理</p>
+      <Row type="flex" justify="center" align="middle" class="code-row-bg">
+        <i-col span="6">
+          <Cascader v-model="value3" :data="data" filterable change-on-select size="large"></Cascader>
+        </i-col>
+      </Row>
     </div>
+    <div class="contentWrapper">
+      <Steps :current="0">
+        <Step title="区域"></Step>
+        <Step title="道路"></Step>
+        <Step title="路口"></Step>
+        <Step title="设备"></Step>
+      </Steps>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -84,7 +84,6 @@ export default {
 <style scoped>
 .breadWarpper {
   padding: 20px;
-  background: #fff;
 }
 .contentWrapper {
   margin: 20px;

@@ -1,2 +1,13 @@
-@import "~iview/src/styles/index.less";
-// Prefix
+@import url('./common.less');
+.theme-dark {
+    .theme();
+}
+
+.theme-default {
+    @backgrounda: #115198;
+    @background: #193c7e;
+    @color: #fff;
+    .theme( @background,
+    @backgrounda,
+    @color);
+}

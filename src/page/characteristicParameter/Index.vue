@@ -1,15 +1,13 @@
 <template>
   <div class="container">
     <div class="breadWarpper">
-      <p style="font-size:16px;font-weight:500">特征参数</p>
+      <Breadcrumb :style="{'font-size':'16px', padding:'20px'}">
+        <BreadcrumbItem>特征参数</BreadcrumbItem>
+      </Breadcrumb>
     </div>
     <div class="contentWrapper">
-      <div style="margin-bottom:10px;">
-        <Button type="primary" icon="plus">新增</Button>
-      </div>
-      <div>
-        <Table :columns="columns" :data="data" :loading="loading" border></Table>
-      </div>
+      <Button type="primary" icon="plus" @click="createData" :style="{'margin-bottom':'10px'}">新增</Button>
+      <Table :columns="columns" :data="data" :loading="loading" border></Table>
       <div style="text-align:right; margin-top:10px;">
         <Page :total="total" :current="page" :page-size="rows" show-elevator @on-change="pageChange"></Page>
       </div>
@@ -19,6 +17,7 @@
 
 <script>
 import { Content, Table } from "iview";
+import { getCharacteristic } from "@/api";
 export default {
   components: {
     Content,
@@ -149,11 +148,6 @@ export default {
                       props: {
                         type: "text",
                         size: "small"
-                      },
-                      on: {
-                        click: () => {
-                          console.log(1);
-                        }
                       }
                     },
                     "删除"
@@ -167,7 +161,8 @@ export default {
       data: [],
       page: 1,
       rows: 10,
-      total: 0
+      total: 0,
+      newPlanName: ""
     };
   },
   methods: {
@@ -183,17 +178,39 @@ export default {
     },
     getDatagrid() {
       this.loading = true;
-      this.$ajax
-        .post("d_plan/dataList", {
-          page: this.page,
-          rows: this.rows
-        })
-        .then(res => {
-          this.loading = false;
-          let data = res.data.data;
-          this.data = data.list;
-          this.total = ~~data.total;
-        });
+
+      getCharacteristic({
+        page: this.page,
+        rows: this.rows
+      }).then(res => {
+        this.loading = false;
+        let data = res.data;
+        this.data = data.list;
+        this.total = ~~data.total;
+      });
+    },
+    createData() {
+      this.newPlanName = "";
+      this.$Modal.confirm({
+        render: h => {
+          return h("Input", {
+            props: {
+              value: this.newPlanName,
+              autofocus: true,
+              placeholder: "请输入方案名称..."
+            },
+            on: {
+              input: val => {
+                this.newPlanName = val;
+              }
+            }
+          });
+        },
+        onOk: () => {
+          console.log(this.newPlanName);
+          this.$Message.info("Clicked ok");
+        }
+      });
     }
   },
   created() {
@@ -204,12 +221,11 @@ export default {
 
 <style scoped>
 .breadWarpper {
-  padding: 20px;
   background: #fff;
 }
 .contentWrapper {
   margin: 20px;
-  min-height: 400px;
+  min-height: 100%;
   background: #fff;
   padding: 10px;
 }

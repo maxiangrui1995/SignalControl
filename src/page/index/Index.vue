@@ -1,7 +1,10 @@
 <template>
   <Layout :style="{overflow:'hidden'}">
     <Header :style="{padding:'0 10px', position:'fixed', width:'100%','box-shadow':'0 1px 4px rgba(0, 21, 41, 0.08)', 'z-index':1}">
-      <span class="logo">道路交通信号机控制平台</span>
+      <span class="logo dh-layout-logo">道路交通信号机控制平台</span>
+      <div class="layout-nav">
+        <Button type="text" @click="changeSkin" :style="{color:'#fff'}">换肤</Button>
+      </div>
     </Header>
     <Layout :style="{position:'fixed', width:'100%', top:'64px', bottom:'0', overflow:'auto'}">
       <Sider collapsible :collapsed-width="78" v-model="isCollapsed">
@@ -21,7 +24,7 @@
         </Menu>
       </Sider>
       <Layout :style="{padding: '0'}">
-        <Content>
+        <Content :style="{position:'relative'}">
           <router-view/>
         </Content>
       </Layout>
@@ -32,27 +35,40 @@
 export default {
   data() {
     return {
-      menuitemActive: this.$route.path,
-      isCollapsed: false
+      menuitemActive: "/" + this.$route.path.split("/")[1]
     };
   },
   computed: {
     menuitemClasses: function() {
       return ["menu-item", this.isCollapsed ? "collapsed-menu" : ""];
+    },
+    isCollapsed: {
+      get: function() {
+        return this.$store.state.isCollapsed;
+      },
+      set: function() {
+        this.$store.commit("SET_COLLAPSED");
+      }
     }
   },
   methods: {
     menuitemSelect(name) {
       this.$router.push({ path: name });
+    },
+    changeSkin() {
+      document.getElementsByTagName("body")[0].className = "theme-dark";
     }
-  }
+  },
+  created() {}
 };
 </script>
 <style scoped>
 .logo {
-  color: #fff;
   font-size: 20px;
   font-weight: 600;
+}
+.layout-nav {
+  float: right;
 }
 .menu-item span {
   display: inline-block;
