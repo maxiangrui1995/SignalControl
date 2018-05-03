@@ -9,7 +9,7 @@ export default new Router({
     {
       path: '/',
       name: '首页',
-      component: () => import('@/views/Main')
+      component: () => import('@/views/index/Main')
     }
   ]
 })
