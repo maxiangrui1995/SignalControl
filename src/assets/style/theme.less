@@ -1,0 +1,84 @@
+// @background: #eff4f8;
+@background: #141414;
+.ivu-layout {
+    background: transparent;
+}
+
+/* menu S */
+
+.ivu-menu-vertical .ivu-menu-item:hover,
+.ivu-menu-vertical .ivu-menu-submenu-title:hover {
+    background: #373737;
+}
+
+.ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu) {
+    background: #373737;
+    color: #fff;
+}
+
+.ivu-menu {
+    color: #fff;
+}
+
+/* menu E */
+
+/* page S */
+
+.ivu-page {
+    margin-top: 20px;
+    padding: 0 20px;
+    text-align: right;
+}
+
+/* page E */
+
+.dh-layout {
+    width: 100%;
+    height: 100%;
+    background: @background;
+    .dh-layout-header {
+        background: transparent;
+        .dh-logo-con {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            height: 64px;
+            line-height: 64px;
+            float: left;
+            margin-left: 20px;
+            a {
+                color: #fff;
+            }
+        }
+    }
+    .dh-layout-sider {
+        background: transparent;
+        z-index: 0;
+    }
+    .dh-layout-main {
+        border-radius: 8px 8px 0 0;
+        position: absolute;
+        left: 197px;
+        right: 12px;
+        bottom: 0;
+        top: 60px;
+        z-index: 1;
+        background: #fff;
+    }
+}
+
+.dh-toolbar {
+    padding: 20px;
+}
+
+.dh-btn {
+    span {
+        color: #4c93e3;
+    }
+    &:hover {
+        span {
+            color: #57a3f3;
+        }
+    }
+}

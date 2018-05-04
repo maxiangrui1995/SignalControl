@@ -1,78 +1,51 @@
 <template>
     <Layout class="dh-layout">
-        <Sider ref="side" collapsible hide-trigger :collapsed-width="78" v-model="isCollapsed" :class="siderClasses">
-            <div class="logo-con">
-                <a href="/">信号机控制平台</a>
+        <Header :style="{padding: 0,position: 'relative'}" class="dh-layout-header">
+            <div class="dh-logo-con">
+                <router-link to="/a">道路交通信号机控制平台</router-link>
             </div>
-            <Menu active-name="1-2" theme="dark" width="auto">
-                <i-menu-item name="1-1">
-                    <Icon type="ios-navigate"></Icon>
-                    <span>区域管理</span>
-                </i-menu-item>
-                <i-menu-item name="1-2">
-                    <Icon type="search"></Icon>
-                    <span>综合查询</span>
-                </i-menu-item>
-                <i-menu-item name="1-3">
-                    <Icon type="settings"></Icon>
-                    <span>特征参数</span>
-                </i-menu-item>
-            </Menu>
-        </Sider>
+        </Header>
         <Layout>
-            <Header :style="{padding: 0,position: 'relative'}" class="dh-layout-header-bar">
-                <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '20px 20px 0', cursor: 'pointer'}" type="navicon-round" size="24"></Icon>
-                <div class="dh-layout-header-avator">
-                    <y-fullScreen v-model="isFullScreen" />
-                    <y-messageTip/>
-                    <y-users/>
-                </div>
-            </Header>
-            <Content class="dh-layout-content-bar">
-                Content
-            </Content>
+            <Sider hide-trigger class="dh-layout-sider">
+                <Menu :active-name="menuActiveName" width="auto" @on-select="menuSelect" :style="{background:'transparent'}">
+                    <i-menu-item name="/regionalManagement">
+                        <Icon type="ios-navigate"></Icon>
+                        <span>区域管理</span>
+                    </i-menu-item>
+                    <i-menu-item name="/comprehensiveQuery">
+                        <Icon type="search"></Icon>
+                        <span>综合查询</span>
+                    </i-menu-item>
+                    <i-menu-item name="/characteristicParameter">
+                        <Icon type="settings"></Icon>
+                        <span>特征参数</span>
+                    </i-menu-item>
+                </Menu>
+            </Sider>
+            <Layout class="dh-layout-main">
+                <Content>
+                    <router-view/>
+                </Content>
+            </Layout>
         </Layout>
     </Layout>
 </template>
 
 <script>
-import YFullScreen from "./compontents/Fullscreen";
-import YMessageTip from "./compontents/MessageTip";
-import YUsers from "./compontents/Users";
-
 export default {
-  components: {
-    YFullScreen,
-    YMessageTip,
-    YUsers
-  },
+  components: {},
   data() {
-    return { isFullScreen: false };
+    return {
+      isFullScreen: false,
+      menuActiveName: "/" + this.$route.path.split("/")[1]
+    };
   },
-  computed: {
-    isCollapsed: {
-      get: function() {
-        return this.$store.state.isCollapsed;
-      },
-      set: function() {
-        this.$store.commit("SET_COLLAPSED");
-      }
-    },
-    rotateIcon() {
-      return ["default-icon", this.isCollapsed ? "rotate-icon" : ""];
-    },
-    siderClasses() {
-      return ["expanded-menu", this.isCollapsed ? "collapsed-menu" : ""];
-    }
-  },
+  computed: {},
   methods: {
-    collapsedSider() {
-      this.$refs.side.toggleCollapse();
+    menuSelect(name) {
+      this.$router.push({ path: name });
     }
   }
 };
 </script>
 
-<style lang="less">
-@import "./main.less";
-</style>

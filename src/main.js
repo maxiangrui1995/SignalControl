@@ -11,6 +11,28 @@ Vue.config.productionTip = false;
 
 Vue.use(iView);
 
+import { isLogin } from "@/api";
+router.beforeEach((to, from, next) => {
+  iView.LoadingBar.start();
+  if (to.meta.required) {
+    isLogin().then(res => {
+      if (!res.status) {
+        next({
+          path: "/login"
+        });
+      } else {
+        next();
+      }
+    })
+  } else {
+    next();
+  }
+});
+
+router.afterEach(to => {
+  iView.LoadingBar.finish();
+});
+
 /* eslint-disable no-new */
 new Vue({
   el: "#app",
@@ -20,10 +42,3 @@ new Vue({
   template: "<App/>"
 });
 
-router.beforeEach((to, from, next) => {
-  iView.LoadingBar.start();
-});
-
-router.afterEach(to => {
-  iView.LoadingBar.finish();
-});
