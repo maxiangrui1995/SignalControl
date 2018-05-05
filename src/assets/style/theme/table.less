@@ -1,0 +1,20 @@
+@import './color.less';
+.ivu-table-wrapper {
+    border: none;
+    .ivu-table {
+        background: @body-background;
+        color: @text-color;
+        &:before,
+        &:after {
+            background: transparent;
+        }
+        th {
+            background: @table-thead-bg;
+            border-bottom: 1px solid transparent;
+        }
+        td {
+            background: transparent;
+            border-bottom: 1px solid @border-color-base;
+        }
+    }
+}

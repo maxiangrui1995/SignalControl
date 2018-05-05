@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-Vue.use(Router);
+Vue.use(Router)
 
 export default new Router({
   mode: 'history',
@@ -9,28 +9,21 @@ export default new Router({
     {
       path: '/',
       name: '首页',
-      component: () => import('@/views/index/Main'),
-      meta: { required: true },
+      component: () => import('@/views/index/Index'),
       children: [
         {
           path: '/regionalManagement',
           name: '区域管理',
-          component: () => import('@/views/regionalManagement/Main')
-        },
-        {
-          path: '/comprehensiveQuery',
-          name: '综合查询',
-          component: () => import('@/views/comprehensiveQuery/Main')
+          component: () => import('@/views/regionalManagement/Index')
         },
         {
           path: '/characteristicParameter',
           name: '特征参数',
-          component: () => import('@/views/characteristicParameter/Main')
-        },
-        {
+          component: () => import('@/views/characteristicParameter/Index')
+        }, {
           path: '/characteristicParameter/:id',
           name: '特征参数详情',
-          component: () => import('@/views/characteristicParameter/children/Main'),
+          component: () => import('@/views/characteristicParameter/children/Index'),
           redirect: {
             name: '特征参数详情-基本'
           },
@@ -75,11 +68,6 @@ export default new Router({
               component: () => import('@/views/characteristicParameter/children/Adaptive')
             }
           ]
-        },
-        {
-          path: '/login',
-          name: '登录',
-          component: () => import('@/views/login/Main')
         }
       ]
     }

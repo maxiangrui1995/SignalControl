@@ -1,84 +1,134 @@
-// @background: #eff4f8;
-@background: #141414;
-.ivu-layout {
-    background: transparent;
-}
-
-/* menu S */
-
-.ivu-menu-vertical .ivu-menu-item:hover,
-.ivu-menu-vertical .ivu-menu-submenu-title:hover {
-    background: #373737;
-}
-
-.ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu) {
-    background: #373737;
-    color: #fff;
-}
-
-.ivu-menu {
-    color: #fff;
-}
-
-/* menu E */
-
-/* page S */
-
-.ivu-page {
-    margin-top: 20px;
-    padding: 0 20px;
-    text-align: right;
-}
-
-/* page E */
-
-.dh-layout {
-    width: 100%;
-    height: 100%;
-    background: @background;
-    .dh-layout-header {
-        background: transparent;
-        .dh-logo-con {
-            color: #fff;
-            font-size: 18px;
-            font-weight: 700;
-            text-align: center;
-            height: 64px;
-            line-height: 64px;
-            float: left;
-            margin-left: 20px;
-            a {
-                color: #fff;
-            }
-        }
-    }
-    .dh-layout-sider {
-        background: transparent;
-        z-index: 0;
-    }
-    .dh-layout-main {
-        border-radius: 8px 8px 0 0;
-        position: absolute;
-        left: 197px;
-        right: 12px;
-        bottom: 0;
-        top: 60px;
-        z-index: 1;
-        background: #fff;
-    }
-}
-
-.dh-toolbar {
-    padding: 20px;
-}
-
-.dh-btn {
-    span {
-        color: #4c93e3;
-    }
-    &:hover {
-        span {
-            color: #57a3f3;
-        }
-    }
-}
+// @import '~iview/src/styles/index.less';
+@import './theme/table.less';
+@import './theme/button.less';
+@import './theme/page.less';
+// @primary-color: #297cd8;
+// @text-color: #f3f3f3;
+// @warning-color: #fff43d;
+// @background-color: #193c7e;
+// @wrapper-color: #115198;
+// body,
+// html {
+//     width: 100%;
+//     height: 100%;
+// }
+// .dh-wrapper {
+//     margin: 20px;
+//     padding: 20px;
+//     background: @wrapper-color;
+//     border-top: 2px solid #3494ff;
+//     min-height: 500px;
+//     color: @text-color
+// }
+// .dh-header {
+//     border-bottom: 1px solid #4174ad;
+//     padding-bottom: 10px;
+//     .dh-breadcrumb {
+//         display: inline-block;
+//     }
+//     .dh-total {
+//         float: right;
+//         i {
+//             margin-right: 2px;
+//             color: @warning-color
+//         }
+//     }
+// }
+// .dh-toolbar {
+//     padding: 10px 0;
+// }
+// /* -----下面是iview样式改变------ */
+// .ivu-page {
+//     margin: 20px 0px;
+//     text-align: center;
+//     .ivu-page-next,
+//     .ivu-page-prev,
+//     .ivu-page-item {
+//         background: transparent;
+//         border: 1px solid #2963a3;
+//         a {
+//             color: @text-color
+//         }
+//     }
+//     .ivu-page-item-active {
+//         background: @primary-color;
+//         border: 1px solid @primary-color;
+//     }
+//     .ivu-select {
+//         color: @text-color;
+//         .ivu-select-selection {
+//             border: 1px solid #2963a3;
+//             background: transparent;
+//         }
+//         .ivu-select-arrow {
+//             color: @text-color
+//         }
+//     }
+//     .ivu-page-options-elevator input {
+//         background: transparent;
+//         border: 1px solid #2963a3;
+//         color: @text-color
+//     }
+// }
+// .ivu-modal {
+//     .ivu-modal-content {
+//         background: @wrapper-color
+//     }
+//     .ivu-modal-confirm-body {
+//         color: @text-color;
+//     }
+//     .ivu-modal-confirm-footer {
+//         .ivu-btn-text {
+//             color: @text-color;
+//         }
+//     }
+// }
+// .ivu-tabs {
+//     color: @text-color;
+//     .ivu-tabs-bar {
+//         border-bottom: 1px solid #4174ad;
+//     }
+//     .ivu-tabs-tab-active {
+//         color: @warning-color
+//     }
+//     .ivu-tabs-ink-bar {
+//         background: @warning-color
+//     }
+// }
+// .ivu-breadcrumb {
+//     display: inline-block;
+//     a {
+//         color: @text-color
+//     }
+// }
+// .ivu-breadcrumb>span {
+//     &:last-child {
+//         color: @warning-color
+//     }
+// }
+// .ivu-input,
+// .ivu-input-number {
+//     background: transparent;
+//     border: 1px solid @primary-color;
+//     color: @text-color;
+// }
+// .ivu-input-number-handler-wrap {
+//     background: transparent;
+//     border-left: 1px solid @primary-color;
+// }
+// .ivu-input-number-handler-down-inner,
+// .ivu-input-number-handler-up-inner {
+//     color: @text-color
+// }
+// .ivu-input-number-handler-down {
+//     border-top: 1px solid @primary-color;
+// }
+// .ivu-input-number-input {
+//     background: transparent;
+//     color: @text-color;
+// }
+// .ivu-form-item {
+//     .ivu-form-item-label {
+//         color: @text-color;
+//     }
+// }
