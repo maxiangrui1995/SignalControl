@@ -1,0 +1,15 @@
+@import "../color.less";
+
+.ivu-table-wrapper {
+  border: none;
+  .ivu-table {
+    background-color: @background-color-base;
+    &:before,
+    &:after {
+      background: transparent;
+    }
+    td {
+      background-color: transparent;
+    }
+  }
+}

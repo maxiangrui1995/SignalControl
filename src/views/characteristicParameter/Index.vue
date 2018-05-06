@@ -19,6 +19,7 @@
   <div>
     <div style="margin:20px;padding:20px;background:#115198">
       <Page :total="40" show-elevator show-sizer></Page>
+      <Content>asdadas</Content>
     </div>
     <div style="margin:20px;padding:20px;background:#115198">
       <Button>Default</Button>
@@ -164,7 +165,8 @@ export default {
         }
       });
     }
-  }
+  },
+  created() {}
 };
 </script>
 
