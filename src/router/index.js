@@ -17,10 +17,33 @@ export default new Router({
           component: () => import('@/views/regionalManagement/Index')
         },
         {
+          path: '/regionalManagement/:id',
+          name: '区域管理-道路',
+          component: () => import('@/views/regionalManagement/Lane')
+        },
+        {
+          path: '/regionalManagement/:id/:pid',
+          name: '区域管理-路口',
+          component: () => import('@/views/regionalManagement/Crossing')
+        },
+        {
+          path: '/regionalManagement/:id/:pid/:crossing_id',
+          name: '区域管理-详情',
+          component: () => import('@/views/regionalManagement/Details')
+        },
+        // 
+        {
+          path: '/comprehensiveQuery',
+          name: '综合查询',
+          component: () => import('@/views/comprehensiveQuery/Index')
+        },
+        // 
+        {
           path: '/characteristicParameter',
           name: '特征参数',
           component: () => import('@/views/characteristicParameter/Index')
-        }, {
+        },
+        {
           path: '/characteristicParameter/:id',
           name: '特征参数详情',
           component: () => import('@/views/characteristicParameter/children/Index'),

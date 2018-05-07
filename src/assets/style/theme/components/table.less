@@ -1,15 +1,24 @@
 @import "../color.less";
-
 .ivu-table-wrapper {
-  border: none;
-  .ivu-table {
-    background-color: @background-color-base;
-    &:before,
-    &:after {
-      background: transparent;
+    border: none;
+    .ivu-table {
+        background-color: @background-color-base;
+        &:before,
+        &:after {
+            background: transparent;
+        }
+        td {
+            background-color: transparent;
+        }
+        &-row {
+            &:hover {
+                background-color: @table-td-hover-bg;
+                cursor: pointer;
+            }
+        }
+        &-border {
+            border-left: 1px solid @border-color-base;
+            border-top: 1px solid @border-color-base;
+        }
     }
-    td {
-      background-color: transparent;
-    }
-  }
 }

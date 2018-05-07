@@ -2,11 +2,12 @@
     <div class="dh-table-wrapper">
         <div class="dh-table-wrapper-header">
             <Breadcrumb>
-                <BreadcrumbItem>区域管理</BreadcrumbItem>
+                <BreadcrumbItem to="/regionalManagement">区域管理</BreadcrumbItem>
+                <BreadcrumbItem>栖霞区</BreadcrumbItem>
             </Breadcrumb>
         </div>
         <div class="dh-table-wrapper-toolbar">
-            <Button type="primary" icon="plus" @click="createData">区域</Button>
+            <Button type="primary" icon="plus" @click="createData">道路</Button>
         </div>
         <Table :columns="columns1" :data="data1" @on-row-click="tableRowClick"></Table>
     </div>
@@ -14,24 +15,12 @@
 
 <script>
 export default {
-  name: "regionalManagement",
   data() {
     return {
       columns1: [
         {
-          title: "区域名称",
+          title: "道路名称",
           key: "name"
-          /*  render: (h, params) => {
-            return h(
-              "router-link",
-              {
-                props: {
-                  to: "/regionalManagement/" + params.row.id
-                }
-              },
-              params.row.name
-            );
-          } */
         },
         {
           title: "操作",
@@ -77,20 +66,20 @@ export default {
       ],
       data1: [
         {
-          name: "鼓楼区",
-          id: 1
+          name: "恒源路",
+          id: 11
         },
         {
-          name: "栖霞区",
-          id: 1
+          name: "恒广路",
+          id: 12
         },
         {
-          name: "建邺区",
-          id: 1
+          name: "恒通路",
+          id: 13
         },
         {
-          name: "浦口区",
-          id: 1
+          name: "恒天路",
+          id: 14
         }
       ]
     };
@@ -146,7 +135,7 @@ export default {
     },
     tableRowClick(row, index) {
       this.$router.push({
-        path: "/regionalManagement/" + row.id
+        path: "/regionalManagement/" + this.$route.params.id + "/" + row.id
       });
     }
   },

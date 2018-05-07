@@ -78,7 +78,7 @@ export default {
           }
         }
       ],
-      data: [{ a: "阶段1", b: "1", c: "1", d: "1", e: "1" }],
+      data: [/* { a: "阶段1", b: "1", c: "1", d: "1", e: "1" } */],
       page: 1,
       rows: 10,
       total: 1

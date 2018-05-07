@@ -1,9 +1,9 @@
 <template>
-    <div>
-        <Button type="primary" icon="plus" :style="{'margin-bottom':'20px'}">新增</Button>
-        <Table :columns="columns" :data="data"></Table>
-        <Page :total="total" show-elevator @on-change="loadData"></Page>
-    </div>
+  <div>
+    <Button type="primary" icon="plus" :style="{'margin-bottom':'20px'}">新增</Button>
+    <Table :columns="columns" :data="data"></Table>
+    <Page :total="total" show-elevator @on-change="loadData" :style="{'margin-top':'20px','text-align':'right'}"></Page>
+  </div>
 </template>
 
 <script>

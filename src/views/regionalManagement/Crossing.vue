@@ -2,11 +2,13 @@
     <div class="dh-table-wrapper">
         <div class="dh-table-wrapper-header">
             <Breadcrumb>
-                <BreadcrumbItem>区域管理</BreadcrumbItem>
+                <BreadcrumbItem to="/regionalManagement">区域管理</BreadcrumbItem>
+                <BreadcrumbItem :to="breadcrumUrl">栖霞区</BreadcrumbItem>
+                <BreadcrumbItem>恒园路</BreadcrumbItem>
             </Breadcrumb>
         </div>
         <div class="dh-table-wrapper-toolbar">
-            <Button type="primary" icon="plus" @click="createData">区域</Button>
+            <Button type="primary" icon="plus" @click="createData">路口</Button>
         </div>
         <Table :columns="columns1" :data="data1" @on-row-click="tableRowClick"></Table>
     </div>
@@ -14,24 +16,22 @@
 
 <script>
 export default {
-  name: "regionalManagement",
   data() {
     return {
       columns1: [
         {
-          title: "区域名称",
+          title: "路口名称",
           key: "name"
-          /*  render: (h, params) => {
-            return h(
-              "router-link",
-              {
-                props: {
-                  to: "/regionalManagement/" + params.row.id
-                }
-              },
-              params.row.name
-            );
-          } */
+        },
+        {
+          title: "纬度",
+          key: "lat",
+          align: "right"
+        },
+        {
+          title: "经度",
+          key: "lng",
+          align: "right"
         },
         {
           title: "操作",
@@ -77,22 +77,25 @@ export default {
       ],
       data1: [
         {
-          name: "鼓楼区",
-          id: 1
+          name: "路口11",
+          id: 111,
+          lat: "119",
+          lng: "36"
         },
         {
-          name: "栖霞区",
-          id: 1
+          name: "路口12",
+          id: 112
         },
         {
-          name: "建邺区",
-          id: 1
+          name: "路口13",
+          id: 1113
         },
         {
-          name: "浦口区",
-          id: 1
+          name: "路口14",
+          id: 1114
         }
-      ]
+      ],
+      breadcrumUrl: "/regionalManagement/" + this.$route.params.pid
     };
   },
   methods: {
@@ -146,11 +149,19 @@ export default {
     },
     tableRowClick(row, index) {
       this.$router.push({
-        path: "/regionalManagement/" + row.id
+        path:
+          "/regionalManagement/" +
+          this.$route.params.id +
+          "/" +
+          this.$route.params.pid +
+          "/" +
+          row.id
       });
     }
   },
-  created() {}
+  created() {
+    console.log(this.$route);
+  }
 };
 </script>
 

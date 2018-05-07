@@ -1,34 +1,17 @@
 <template>
-  <!-- <div class="dh-wrapper">
-        <div class="dh-header">
-            <Breadcrumb>
-                <BreadcrumbItem to="/characteristicParameter">特征参数</BreadcrumbItem>
-                <BreadcrumbItem class="wraning">方案一</BreadcrumbItem>
-            </Breadcrumb>
-            <div class="dh-total">
-                共
-                <i class="wraning">20</i>条
-            </div>
-        </div>
-        <div class="dh-toolbar">
-            <Button type="primary" icon="plus" @click="createData">新增</Button>
-        </div>
-        <Table :columns="columns1" :data="data1"></Table>
-        <Page :total="40" show-elevator show-sizer></Page>
-    </div> -->
-  <div>
-    <div style="margin:20px;padding:20px;background:#115198">
+  <div class="dh-table-wrapper">
+    <div class="dh-table-wrapper-header">
+      <Breadcrumb>
+        <BreadcrumbItem>特征参数</BreadcrumbItem>
+      </Breadcrumb>
+    </div>
+    <div class="dh-table-wrapper-toolbar">
+      <Button type="primary" icon="plus" @click="createData">新增</Button>
+    </div>
+    <Table :columns="columns1" :data="data1"></Table>
+    <div class="dh-table-wrapper-page">
       <Page :total="40" show-elevator show-sizer></Page>
-      <Content>asdadas</Content>
     </div>
-    <div style="margin:20px;padding:20px;background:#115198">
-      <Button>Default</Button>
-      <Button type="primary">Primary</Button>
-      <Button type="ghost">Ghost</Button>
-      <Button type="dashed">Dashed</Button>
-      <Button type="text">Text</Button>
-    </div>
-    <Table :columns="columns1" :data="data1" :style="{margin:'40px'}"></Table>
   </div>
 </template>
 
@@ -64,9 +47,6 @@ export default {
                     type: "text",
                     size: "small"
                   },
-                  class: {
-                    "dh-btn": true
-                  },
                   on: {
                     click: () => {
                       this.pathToDetails(params.row.id);
@@ -81,9 +61,6 @@ export default {
                   props: {
                     type: "text",
                     size: "small"
-                  },
-                  class: {
-                    "dh-btn": true
                   },
                   on: {
                     click: () => {
