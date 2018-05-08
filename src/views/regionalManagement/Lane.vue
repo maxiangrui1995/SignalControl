@@ -1,23 +1,23 @@
 <template>
-    <div class="dh-table-wrapper">
-        <div class="dh-table-wrapper-header">
-            <Breadcrumb>
-                <BreadcrumbItem to="/regionalManagement">区域管理</BreadcrumbItem>
-                <BreadcrumbItem>栖霞区</BreadcrumbItem>
-            </Breadcrumb>
-        </div>
-        <div class="dh-table-wrapper-toolbar">
-            <Button type="primary" icon="plus" @click="createData">道路</Button>
-        </div>
-        <Table :columns="columns1" :data="data1" @on-row-click="tableRowClick"></Table>
+  <div class="dh-table-wrapper">
+    <div class="dh-table-wrapper-header">
+      <Breadcrumb>
+        <BreadcrumbItem to="/regionalManagement">区域管理</BreadcrumbItem>
+        <BreadcrumbItem>{{name}}</BreadcrumbItem>
+      </Breadcrumb>
     </div>
+    <div class="dh-table-wrapper-toolbar">
+      <Button type="primary" icon="plus" @click="createData">道路</Button>
+    </div>
+    <Table :columns="columns" :data="regionData" @on-row-click="tableRowClick" :loading="loading"></Table>
+  </div>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      columns1: [
+      columns: [
         {
           title: "道路名称",
           key: "name"
@@ -39,7 +39,7 @@ export default {
                   on: {
                     click: event => {
                       event.stopPropagation();
-                      this.modifyData(params.row.id);
+                      this.modifyData(params.row.id, params.row.name);
                     }
                   }
                 },
@@ -53,7 +53,8 @@ export default {
                     size: "small"
                   },
                   on: {
-                    click: () => {
+                    click: event => {
+                      event.stopPropagation();
                       this.removeData(params.row.id);
                     }
                   }
@@ -64,60 +65,61 @@ export default {
           }
         }
       ],
-      data1: [
-        {
-          name: "恒源路",
-          id: 11
-        },
-        {
-          name: "恒广路",
-          id: 12
-        },
-        {
-          name: "恒通路",
-          id: 13
-        },
-        {
-          name: "恒天路",
-          id: 14
-        }
-      ]
+      id: this.$route.params.id,
+      name: "",
+      newValue: ""
     };
   },
   methods: {
     createData() {
+      this.newValue = "";
       this.$Modal.confirm({
         render: h => {
           return h("Input", {
             props: {
-              value: this.value,
+              value: this.newValue,
               autofocus: true,
-              placeholder: "请输入新增特征参数名称..."
+              placeholder: "请输入新增区域名称..."
             },
             on: {
               input: val => {
-                this.value = val;
+                this.newValue = val;
               }
             }
           });
+        },
+        loading: true,
+        onOk() {
+          setTimeout(() => {
+            this.$Modal.remove();
+            this.$Message.success("新增成功");
+          }, 500);
         }
       });
     },
-    modifyData(id) {
+    modifyData(id, name) {
+      this.newValue = name;
       this.$Modal.confirm({
         render: h => {
           return h("Input", {
             props: {
-              value: this.value,
+              value: this.newValue,
               autofocus: true,
               placeholder: "请输入新的区域名称..."
             },
             on: {
               input: val => {
-                this.value = val;
+                this.newValue = val;
               }
             }
           });
+        },
+        loading: true,
+        onOk() {
+          setTimeout(() => {
+            this.$Modal.remove();
+            this.$Message.success("修改成功");
+          }, 500);
         }
       });
     },
@@ -128,18 +130,40 @@ export default {
         onOk: () => {
           setTimeout(() => {
             this.$Modal.remove();
-            this.$Message.info("Asynchronously close the dialog box");
-          }, 2000);
+            this.$Message.success("删除成功！");
+          }, 500);
         }
       });
     },
     tableRowClick(row, index) {
       this.$router.push({
-        path: "/regionalManagement/" + this.$route.params.id + "/" + row.id
+        path: "/regionalManagement/" + this.id + "/" + row.id
       });
     }
   },
-  created() {}
+  computed: {
+    regionData() {
+      let data = this.$store.state.RegionModule.REGION;
+      let region = [];
+      if (data) {
+        data.forEach(element => {
+          if (element.id === this.id) {
+            region = element.children;
+            this.name = element.name;
+          }
+        });
+      }
+      return region;
+    },
+    loading() {
+      return this.$store.state.RegionModule.LOADING;
+    }
+  },
+  created() {
+    if (!this.$store.state.RegionModule.REGION) {
+      this.$store.dispatch("SET_REGION");
+    }
+  }
 };
 </script>
 

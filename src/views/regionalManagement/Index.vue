@@ -1,37 +1,27 @@
 <template>
-    <div class="dh-table-wrapper">
-        <div class="dh-table-wrapper-header">
-            <Breadcrumb>
-                <BreadcrumbItem>区域管理</BreadcrumbItem>
-            </Breadcrumb>
-        </div>
-        <div class="dh-table-wrapper-toolbar">
-            <Button type="primary" icon="plus" @click="createData">区域</Button>
-        </div>
-        <Table :columns="columns1" :data="data1" @on-row-click="tableRowClick"></Table>
+  <div class="dh-table-wrapper">
+    <div class="dh-table-wrapper-header">
+      <Breadcrumb>
+        <BreadcrumbItem>区域管理</BreadcrumbItem>
+      </Breadcrumb>
     </div>
+    <div class="dh-table-wrapper-toolbar">
+      <Button type="primary" icon="plus" @click="createData">区域</Button>
+    </div>
+    <Table :columns="columns" :data="regionData" @on-row-click="tableRowClick" :loading="loading"></Table>
+  </div>
 </template>
 
 <script>
+import { login } from "@/api";
 export default {
   name: "regionalManagement",
   data() {
     return {
-      columns1: [
+      columns: [
         {
           title: "区域名称",
           key: "name"
-          /*  render: (h, params) => {
-            return h(
-              "router-link",
-              {
-                props: {
-                  to: "/regionalManagement/" + params.row.id
-                }
-              },
-              params.row.name
-            );
-          } */
         },
         {
           title: "操作",
@@ -50,7 +40,7 @@ export default {
                   on: {
                     click: event => {
                       event.stopPropagation();
-                      this.modifyData(params.row.id);
+                      this.modifyData(params.row.id, params.row.name);
                     }
                   }
                 },
@@ -64,7 +54,8 @@ export default {
                     size: "small"
                   },
                   on: {
-                    click: () => {
+                    click: event => {
+                      event.stopPropagation();
                       this.removeData(params.row.id);
                     }
                   }
@@ -75,60 +66,59 @@ export default {
           }
         }
       ],
-      data1: [
-        {
-          name: "鼓楼区",
-          id: 1
-        },
-        {
-          name: "栖霞区",
-          id: 1
-        },
-        {
-          name: "建邺区",
-          id: 1
-        },
-        {
-          name: "浦口区",
-          id: 1
-        }
-      ]
+      newValue: ""
     };
   },
   methods: {
     createData() {
+      this.newValue = "";
       this.$Modal.confirm({
         render: h => {
           return h("Input", {
             props: {
-              value: this.value,
+              value: this.newValue,
               autofocus: true,
-              placeholder: "请输入新增特征参数名称..."
+              placeholder: "请输入新增区域名称..."
             },
             on: {
               input: val => {
-                this.value = val;
+                this.newValue = val;
               }
             }
           });
+        },
+        loading: true,
+        onOk() {
+          setTimeout(() => {
+            this.$Modal.remove();
+            this.$Message.success("新增成功");
+          }, 500);
         }
       });
     },
-    modifyData(id) {
+    modifyData(id, name) {
+      this.newValue = name;
       this.$Modal.confirm({
         render: h => {
           return h("Input", {
             props: {
-              value: this.value,
+              value: this.newValue,
               autofocus: true,
               placeholder: "请输入新的区域名称..."
             },
             on: {
               input: val => {
-                this.value = val;
+                this.newValue = val;
               }
             }
           });
+        },
+        loading: true,
+        onOk() {
+          setTimeout(() => {
+            this.$Modal.remove();
+            this.$Message.success("修改成功");
+          }, 500);
         }
       });
     },
@@ -139,8 +129,8 @@ export default {
         onOk: () => {
           setTimeout(() => {
             this.$Modal.remove();
-            this.$Message.info("Asynchronously close the dialog box");
-          }, 2000);
+            this.$Message.success("删除成功！");
+          }, 500);
         }
       });
     },
@@ -150,7 +140,20 @@ export default {
       });
     }
   },
-  created() {}
+  computed: {
+    regionData() {
+      return this.$store.state.RegionModule.REGION || [];
+    },
+    loading() {
+      return this.$store.state.RegionModule.LOADING;
+    }
+  },
+  created() {
+    if (!this.$store.state.RegionModule.REGION) {
+      this.$store.dispatch("SET_REGION");
+    }
+  },
+  mounted() {}
 };
 </script>
 

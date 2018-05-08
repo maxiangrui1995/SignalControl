@@ -1,17 +1,17 @@
 <template>
-    <div>
-        <div class="dh-table-wrapper">
-            <div class="dh-table-wrapper-toolbar">
-                <y-filterWrapper label="区域" :data="region1" />
-            </div>
-            <div class="dh-table-wrapper-toolbar">
-                <y-filterWrapper label="道路" :data="region1" />
-            </div>
-            <div class="dh-table-wrapper-toolbar">
-                <y-filterWrapper label="路口" :data="region1" />
-            </div>
-        </div>
+  <div>
+    <div class="dh-table-wrapper">
+      <div class="dh-table-wrapper-toolbar">
+        <y-filterWrapper label="区域" :data="region1" />
+      </div>
+      <div class="dh-table-wrapper-toolbar">
+        <y-filterWrapper label="道路" :data="region1" />
+      </div>
+      <div class="dh-table-wrapper-toolbar">
+        <y-filterWrapper label="路口" :data="region1" />
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -33,22 +33,7 @@ export default {
     };
   },
   methods: {},
-  created() {
-    let a = {
-      "360": 5500.01,
-      suning: 13000 - 10302.16,
-      shengbei: 3491.18,
-      fenqile: 14800 - 16.59,
-      zhao: 9524.52,
-      hua: 2846,
-      jie: 10000 - 959
-    };
-    let all = 0;
-    for (let item in a) {
-      all += a[item];
-    }
-    console.log(all);
-  }
+  created() {}
 };
 </script>
 
