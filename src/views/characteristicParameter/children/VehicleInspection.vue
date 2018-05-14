@@ -1,55 +1,96 @@
 <template>
-    <Table :columns="columns" :data="data"></Table>
+  <div>
+    <Table :columns="columns" :data="data" :loading="loading"></Table>
+
+    <Modal v-model="modal" :loading="true" :title="formTitle" @on-ok="formOk">
+      <Form :model="formItem" :label-width="80">
+        <FormItem label="车道1">
+          <InputNumber v-model="formItem.channel_1" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
+        </FormItem>
+        <FormItem label="车道2">
+          <InputNumber v-model="formItem.channel_2" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
+        </FormItem>
+        <FormItem label="车道3">
+          <InputNumber v-model="formItem.channel_3" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
+        </FormItem>
+        <FormItem label="车道4">
+          <InputNumber v-model="formItem.channel_4" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
+        </FormItem>
+        <FormItem label="车道5">
+          <InputNumber v-model="formItem.channel_5" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
+        </FormItem>
+        <FormItem label="车道6">
+          <InputNumber v-model="formItem.channel_6" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
+        </FormItem>
+        <FormItem label="车道7">
+          <InputNumber v-model="formItem.channel_7" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
+        </FormItem>
+        <FormItem label="车道8">
+          <InputNumber v-model="formItem.channel_8" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
+        </FormItem>
+        <FormItem label="最小绿">
+          <InputNumber v-model="formItem.min_green" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
+        </FormItem>
+        <FormItem label="最大绿">
+          <InputNumber v-model="formItem.max_green" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
+        </FormItem>
+      </Form>
+    </Modal>
+  </div>
 </template>
 
 <script>
+import { getVehicleInspection } from "@/api";
 export default {
   data() {
     return {
       columns: [
         {
           title: "阶段号",
-          key: "a"
+          key: "serial_number",
+          render: (h, params) => {
+            return h("div", `阶段${~~params.row.serial_number + 1}`);
+          }
         },
         {
           title: "车道1",
-          key: "b"
+          key: "channel_1"
         },
         {
           title: "车道2",
-          key: "c"
+          key: "channel_2"
         },
         {
           title: "车道3",
-          key: "d"
+          key: "channel_3"
         },
         {
           title: "车道4",
-          key: "e"
+          key: "channel_4"
         },
         {
           title: "车道5",
-          key: "e"
+          key: "channel_5"
         },
         {
           title: "车道6",
-          key: "e"
+          key: "channel_6"
         },
         {
           title: "车道7",
-          key: "e"
+          key: "channel_7"
         },
         {
           title: "车道8",
-          key: "e"
+          key: "channel_8"
         },
         {
           title: "最小绿",
-          key: "e"
+          key: "min_green"
         },
         {
           title: "最大绿",
-          key: "e"
+          key: "max_green"
         },
         {
           title: "操作",
@@ -69,7 +110,9 @@ export default {
                     "dh-btn": true
                   },
                   on: {
-                    click: () => {}
+                    click: () => {
+                      this.modifyData(params.row);
+                    }
                   }
                 },
                 "编辑"
@@ -78,14 +121,28 @@ export default {
           }
         }
       ],
-      data: [/* { a: "阶段1", b: "1", c: "1", d: "1", e: "1" } */],
+      data: [],
+      id: this.$route.params.id,
       page: 1,
       rows: 10,
-      total: 1
+      loading: false,
+      modal: false,
+      formTitle: "",
+      formItem: {}
     };
   },
   methods: {
-    loadData() {},
+    loadData() {
+      this.loading = true;
+      getVehicleInspection({
+        plan_id: this.id,
+        page: 1,
+        rows: 10
+      }).then(res => {
+        this.data = res.data.list;
+        this.loading = false;
+      });
+    },
     removeData() {
       this.$Modal.confirm({
         content: "<p>The dialog box will be closed after 2 seconds</p>",
@@ -97,7 +154,19 @@ export default {
           }, 2000);
         }
       });
-    }
+    },
+    modifyData(row) {
+      this.modal = true;
+      this.formTitle = "车检器信息编辑";
+      for (let i in row) {
+        row[i] = ~~row[i];
+      }
+      this.formItem = row;
+    },
+    formOk() {}
+  },
+  created() {
+    this.loadData();
   }
 };
 </script>

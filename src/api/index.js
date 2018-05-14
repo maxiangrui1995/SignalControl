@@ -66,3 +66,11 @@ export const getDateType = params => {
 export const geSchedule = params => {
   return http.$post("d_timemanage/dataList", params);
 };
+// 特征参数-相位
+export const getPhase = params => {
+  return http.$post("d_phasestatus/dataList", params);
+};
+// 特征参数-车检器
+export const getVehicleInspection = params => {
+  return http.$post("d_car_sensor/dataList", params);
+};

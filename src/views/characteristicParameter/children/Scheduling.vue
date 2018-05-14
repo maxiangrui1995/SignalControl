@@ -17,10 +17,15 @@
           </Select>
         </FormItem>
         <FormItem label="日期范围">
-          <DatePicker format="yyyy/MM/dd" type="daterange" placement="bottom-end" confirm placeholder="请选择新的日期范围..." :style="{width:'100%'}"></DatePicker>
+          <DatePicker format="MM/dd" type="daterange" v-model="formItem.custom_date" placement="bottom-end" confirm placeholder="请选择新的日期范围..." :style="{width:'100%'}"></DatePicker>
         </FormItem>
         <FormItem label="开始时间">
-          <TimePicker format="HH:mm" placeholder="Select time" :style="{width:'100%'}"></TimePicker>
+          <TimePicker format="HH:mm" v-model="formItem.custom_time" placeholder="请选择新的开始时间... " :style="{width: '100%'} "></TimePicker>
+        </FormItem>
+        <FormItem label="方案">
+          <Select v-model="formItem.patternid" placeholder="请选择新的方案... ">
+            <Option v-for="item in planData" :key="item.value " :value="item">方案{{item}}</Option>
+          </Select>
         </FormItem>
       </Form>
     </Modal>
@@ -178,16 +183,6 @@ export default {
               msg = _msg.join(",");
             }
             return h("div", msg);
-            /* return h(
-              "div",
-              `${
-                data.start_mon < 10 ? "0" + data.start_mon : data.start_mon
-              } / ${
-                data.start_day < 10 ? "0" + data.start_day : data.start_day
-              } - ${
-                data.stop_mon < 10 ? "0" + data.stop_mon : data.stop_mon
-              } / ${data.stop_day < 10 ? "0" + data.stop_day : data.stop_day}`
-            ); */
           }
         },
         {
@@ -230,7 +225,9 @@ export default {
                     "dh-btn": true
                   },
                   on: {
-                    click: () => {}
+                    click: () => {
+                      this.modifyData(params.row);
+                    }
                   }
                 },
                 "编辑"
@@ -271,13 +268,13 @@ export default {
   methods: {
     removeData() {
       this.$Modal.confirm({
-        content: "<p>The dialog box will be closed after 2 seconds</p>",
+        content: "<p>确定删除？删除后无法恢复！</p>",
         loading: true,
         onOk: () => {
           setTimeout(() => {
             this.$Modal.remove();
-            this.$Message.info("Asynchronously close the dialog box");
-          }, 2000);
+            this.$Message.success("删除成功！");
+          }, 500);
         }
       });
     },
@@ -301,21 +298,43 @@ export default {
     createData() {
       this.modal = true;
       this.formTitle = "时间调度新增";
+    },
+    modifyData(row) {
+      this.modal = true;
+      this.formTitle = "时间调度编辑";
+      this.formItem = {
+        datetype: row.datetype,
+        func_num: row.func_num,
+        custom_date: [
+          `${row.start_mon}/${row.start_day}`,
+          `${row.stop_mon}/${row.stop_day}`
+        ],
+        custom_time: `${row.start_hour}/${row.start_min}`,
+        patternid: ~~row.patternid
+      };
     }
   },
   computed: {
     weekData() {
       return this.$store.state.characterModule.weekData;
+    },
+    planData() {
+      return ~~this.$store.state.characterModule.planData.total;
     }
   },
   watch: {
-    weekData() {
-      console.log(this.weekData);
-    }
+    weekData() {}
   },
   created() {
     if (!this.$store.state.characterModule.weekData.length) {
       this.$store.dispatch("characterModule/SET_WEEK", this.id);
+    }
+    if (!this.$store.state.characterModule.planData.list) {
+      this.$store.dispatch("characterModule/SET_PLAN", {
+        id: this.id,
+        page: 1,
+        rows: 10
+      });
     }
     this.loadData();
   }

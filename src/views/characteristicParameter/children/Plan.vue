@@ -1,17 +1,29 @@
 <template>
-    <div>
-        <Button type="primary" icon="plus" :style="{'margin-bottom':'20px'}">新增</Button>
-        <Table :columns="columns" :data="data" :loading="loading"></Table>
-        <Page :total="total" @on-change="pageChange" :style="{'margin-top':'20px','text-align':'right'}"></Page>
-    </div>
+  <div>
+    <Button type="primary" icon="plus" :style="{'margin-bottom':'20px'}" @click="createData">新增</Button>
+    <Table :columns="columns" :data="data" :loading="loading"></Table>
+    <Page :total="total" @on-change="pageChange" :style="{'margin-top':'20px','text-align':'right'}"></Page>
+  </div>
 </template>
 
 <script>
-import { getPattern } from "@/api";
+import expandRow from "./components/Plan";
 export default {
+  components: { expandRow },
   data() {
     return {
       columns: [
+        {
+          type: "expand",
+          width: 50,
+          render: (h, params) => {
+            return h(expandRow, {
+              props: {
+                row: params.row
+              }
+            });
+          }
+        },
         {
           title: "方案名称",
           key: "patternid",
@@ -20,28 +32,24 @@ export default {
           }
         },
         {
+          title: "总步数",
+          key: "step"
+        },
+        {
+          title: "间隔",
+          key: "time_interval"
+        },
+        {
+          title: "周期",
+          key: "period"
+        },
+        {
           title: "操作",
           key: "action",
           align: "center",
           width: 120,
           render: (h, params) => {
             return h("div", [
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "text",
-                    size: "small"
-                  },
-                  on: {
-                    click: event => {
-                      event.stopPropagation();
-                      this.modifyData(params.row.id, params.row.name);
-                    }
-                  }
-                },
-                "修改"
-              ),
               h(
                 "Button",
                 {
@@ -62,39 +70,69 @@ export default {
           }
         }
       ],
-      data: [],
+      // data: [],
       id: this.$route.params.id,
-      loading: false,
-      total: 0,
+      // loading: false,
+      // total: 0,
       page: 1,
       rows: 10
     };
   },
   methods: {
-    loadData(page) {
-      this.loading = true;
-      getPattern({
-        plan_id: this.id,
-        page: this.page,
-        rows: this.rows
-      }).then(res => {
-        console.log(res);
-        this.data = res.data.list;
-        this.total = ~~res.data.total;
-        this.loading = false;
-      });
-    },
     pageChange(page) {
       this.page = page;
       this.loadData();
+    },
+    createData() {
+      this.$Modal.confirm({
+        content: "<p>即将自动生成一条方案记录！</p>",
+        onOk: () => {
+          this.$Message.info("Clicked ok");
+        },
+        onCancel: () => {
+          this.$Message.info("Clicked cancel");
+        }
+      });
+    },
+    removeData(id) {
+      this.$Modal.confirm({
+        content: "<p>确定删除？删除后无法恢复！</p>",
+        loading: true,
+        onOk: () => {
+          setTimeout(() => {
+            this.$Modal.remove();
+            this.$Message.success("删除成功！");
+          }, 500);
+        }
+      });
+    }
+  },
+  computed: {
+    data() {
+      return this.$store.state.characterModule.planData.list;
+    },
+    total() {
+      return ~~this.$store.state.characterModule.planData.total;
+    },
+    loading() {
+      return this.$store.state.characterModule.loading;
     }
   },
   created() {
-    this.loadData();
+    if (!this.$store.state.characterModule.planData.list) {
+      this.$store.dispatch("characterModule/SET_PLAN", {
+        id: this.id,
+        page: this.page,
+        rows: this.rows
+      });
+    }
+    if (!this.$store.state.characterModule.phaseData.length) {
+      this.$store.dispatch("characterModule/SET_PHASE", this.id);
+    }
   }
 };
 </script>
 
-<style>
+<style scoped>
 
 </style>
