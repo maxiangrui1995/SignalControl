@@ -74,3 +74,9 @@ export const getPhase = params => {
 export const getVehicleInspection = params => {
   return http.$post("d_car_sensor/dataList", params);
 };
+
+/* ----------------------绿波带--------------------------- */
+// 获取绿波带信息
+export const getGreenBelt = params => {
+  return http.$post("d_green_wave/dataList", params);
+};

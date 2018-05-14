@@ -18,6 +18,10 @@
             <Icon type="settings"></Icon>
             <span>特征参数</span>
           </i-menu-item>
+          <i-menu-item name="/greenBelt">
+            <Icon type="flag"></Icon>
+            <span>绿波带</span>
+          </i-menu-item>
         </Menu>
       </Sider>
       <Content class="dh-layout-content">
@@ -28,7 +32,6 @@
 </template>
 
 <script>
-import { login } from "@/api";
 export default {
   name: "IndexPage",
   data() {
@@ -41,13 +44,7 @@ export default {
       this.$router.push({ path: name });
     }
   },
-  created() {
-    /* login({
-      username: "admin",
-      password: "123456",
-      is_remember: "1"
-    }); */
-  }
+  created() {}
 };
 </script>
 
@@ -77,5 +74,6 @@ export default {
 }
 .dh-layout-content {
   background: #193c7e;
+  position: relative;
 }
 </style>

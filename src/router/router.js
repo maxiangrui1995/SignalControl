@@ -82,6 +82,11 @@ export default [
                 ]
             },
 
+            {
+                path: '/greenBelt',
+                name: '绿波带',
+                component: resolve => require(['@/views/greenBelt/Index'], resolve)
+            },
 
             {
                 path: '/comprehensiveQuery',

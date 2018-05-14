@@ -1,0 +1,12 @@
+@import "../color.less";
+.ivu-poptip {
+    &-inner {
+        background-color: @background-color-base;
+    }
+    &-arrow:after {
+        background-color: transparent;
+    }
+    &-popper[x-placement^="right"] &-arrow:after {
+        border-bottom-color: @background-color-base;
+    }
+}
