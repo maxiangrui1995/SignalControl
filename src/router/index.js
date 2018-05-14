@@ -8,22 +8,22 @@ const regionalManagement = [
 	{
 		path: '/regionalManagement',
 		name: '区域管理',
-		component: () => import('@/views/regionalManagement/Index')
+		component: resolve => require(['@/views/regionalManagement/Index'], resolve)
 	},
 	{
 		path: '/regionalManagement/:id',
 		name: '区域管理-道路',
-		component: () => import('@/views/regionalManagement/Lane')
+		component: resolve => require(['@/views/regionalManagement/Lane'], resolve)
 	},
 	{
 		path: '/regionalManagement/:id/:pid',
 		name: '区域管理-路口',
-		component: () => import('@/views/regionalManagement/Crossing')
+		component: resolve => require(['@/views/regionalManagement/Crossing'], resolve)
 	},
 	{
 		path: '/regionalManagement/:id/:pid/:crossing_id',
 		name: '区域管理-详情',
-		component: () => import('@/views/regionalManagement/Details')
+		component: resolve => require(['@/views/regionalManagement/Details'], resolve)
 	},
 ];
 
@@ -32,13 +32,12 @@ const characteristicParameter = [
 	{
 		path: '/characteristicParameter',
 		name: '特征参数',
-		component: () =>
-			import('@/views/characteristicParameter/Index')
+		component: resolve => require(['@/views/characteristicParameter/Index'], resolve)
 	},
 	{
 		path: '/characteristicParameter/:id',
 		name: '特征参数详情',
-		component: () => import('@/views/characteristicParameter/children/Index'),
+		component: resolve => require(['@/views/characteristicParameter/children/Index'], resolve),
 		redirect: {
 			name: '特征参数详情-基本'
 		},
@@ -46,39 +45,39 @@ const characteristicParameter = [
 			{
 				path: 'base',
 				name: '特征参数详情-基本',
-				component: () => import('@/views/characteristicParameter/children/Base')
+				component: resolve => require(['@/views/characteristicParameter/children/Base'], resolve)
 			}, {
 				path: 'wayleave',
 				name: '特征参数详情-通行权',
-				component: () => import('@/views/characteristicParameter/children/Wayleave')
+				component: resolve => require(['@/views/characteristicParameter/children/Wayleave'], resolve)
 			}, {
 				path: 'lightgroup',
 				name: '特征参数详情-灯组',
-				component: () => import('@/views/characteristicParameter/children/Lightgroup')
+				component: resolve => require(['@/views/characteristicParameter/children/Lightgroup'], resolve)
 			}, {
 				path: 'phase',
 				name: '特征参数详情-相位',
-				component: () => import('@/views/characteristicParameter/children/Phase')
+				component: resolve => require(['@/views/characteristicParameter/children/Phase'], resolve)
 			}, {
 				path: 'plan',
 				name: '特征参数详情-方案',
-				component: () => import('@/views/characteristicParameter/children/Plan')
+				component: resolve => require(['@/views/characteristicParameter/children/Plan'], resolve)
 			}, {
 				path: 'datetype',
 				name: '特征参数详情-日期类型',
-				component: () => import('@/views/characteristicParameter/children/Datetype')
+				component: resolve => require(['@/views/characteristicParameter/children/Datetype'], resolve)
 			}, {
 				path: 'scheduling',
 				name: '特征参数详情-时间调度',
-				component: () => import('@/views/characteristicParameter/children/Scheduling')
+				component: resolve => require(['@/views/characteristicParameter/children/Scheduling'], resolve)
 			}, {
 				path: 'vehicleInspection',
 				name: '特征参数详情-车检器',
-				component: () => import('@/views/characteristicParameter/children/VehicleInspection')
+				component: resolve => require(['@/views/characteristicParameter/children/VehicleInspection'], resolve)
 			}, {
 				path: 'adaptive',
 				name: '特征参数详情-自适应方案',
-				component: () => import('@/views/characteristicParameter/children/Adaptive')
+				component: resolve => require(['@/views/characteristicParameter/children/Adaptive'], resolve)
 			}
 		]
 	}

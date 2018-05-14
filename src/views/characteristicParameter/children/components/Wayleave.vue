@@ -8,34 +8,34 @@
         <Row :style="{'margin-bottom':'10px'}" :gutter="16">
             <i-col span="8">第一步</i-col>
             <i-col span="8">
-                <Select>
+                <Select v-model="data.first_step">
                     <Option v-for="item in colorList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                 </Select>
             </i-col>
             <i-col span="8">
-                <InputNumber :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
+                <InputNumber v-model="data.first_step_time" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
             </i-col>
         </Row>
         <Row :style="{'margin-bottom':'10px'}" :gutter="16">
             <i-col span="8">第二步</i-col>
             <i-col span="8">
-                <Select>
+                <Select v-model="data.sec_step">
                     <Option v-for="item in colorList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                 </Select>
             </i-col>
             <i-col span="8">
-                <InputNumber :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
+                <InputNumber v-model="data.sec_step_time" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
             </i-col>
         </Row>
         <Row :gutter="16">
             <i-col span="8">第三步</i-col>
             <i-col span="8">
-                <Select>
+                <Select v-model="data.third_step">
                     <Option v-for="item in colorList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                 </Select>
             </i-col>
             <i-col span="8">
-                <InputNumber :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
+                <InputNumber v-model="data.third_step_time" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
             </i-col>
         </Row>
     </div>
@@ -47,31 +47,34 @@ export default {
     return {
       colorList: [
         {
-          value: "New York",
-          label: "New York"
+          value: 1,
+          label: "红"
         },
         {
-          value: "London",
-          label: "London"
+          value: 2,
+          label: "黄"
         },
         {
-          value: "Sydney",
-          label: "Sydney"
+          value: 3,
+          label: "绿"
         },
         {
-          value: "Ottawa",
-          label: "Ottawa"
+          value: 6,
+          label: "红闪"
         },
         {
-          value: "Paris",
-          label: "Paris"
+          value: 7,
+          label: "黄闪"
         },
         {
-          value: "Canberra",
-          label: "Canberra"
+          value: 8,
+          label: "绿闪"
         }
       ]
     };
+  },
+  props: {
+    data: Object
   }
 };
 </script>

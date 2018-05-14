@@ -46,3 +46,23 @@ export const getSignal = params => {
 export const getPlanList = params => {
   return http.$post("d_plan/dataList", params);
 };
+// 特征参数-详情
+export const getPlanView = params => {
+  return http.$post("d_plan/dataView", params);
+};
+// 特征参数-通行权
+export const getWayleave = params => {
+  return http.$post("d_passage/dataList", params);
+};
+// 特征参数-方案
+export const getPattern = params => {
+  return http.$post("d_pattern/dataList", params);
+};
+// 特征参数-日期类型
+export const getDateType = params => {
+  return http.$post("d_week/dataList", params);
+};
+// 特征参数-时间调度
+export const geSchedule = params => {
+  return http.$post("d_timemanage/dataList", params);
+};

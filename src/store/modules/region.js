@@ -2,24 +2,25 @@ import { getRegion } from "@/api";
 
 
 export default {
+  namespaced: true,
   state: {
-    REGION: null,
-    LOADING: false
+    data: [],
+    loading: false
   },
   mutations: {
-    SET_REGION(state, data) {
-      state.REGION = data;
+    SET_DATA(state, data) {
+      state.data = data;
     },
     SET_LOADING(state, data) {
-      state.LOADING = data;
+      state.loading = data;
     }
   },
   actions: {
-    SET_REGION(context) {
+    SET_DATA(context) {
       context.commit("SET_LOADING", true);
       getRegion().then(res => {
         let region = res.data || [];
-        context.commit("SET_REGION", region);
+        context.commit("SET_DATA", region);
         context.commit("SET_LOADING", false);
       }).catch(res => {
         console.error(res);

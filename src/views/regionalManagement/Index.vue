@@ -142,15 +142,15 @@ export default {
   },
   computed: {
     regionData() {
-      return this.$store.state.RegionModule.REGION || [];
+      return this.$store.state.regionModule.data;
     },
     loading() {
-      return this.$store.state.RegionModule.LOADING;
+      return this.$store.state.regionModule.loading;
     }
   },
   created() {
-    if (!this.$store.state.RegionModule.REGION) {
-      this.$store.dispatch("SET_REGION");
+    if (!this.$store.state.regionModule.data.length) {
+      this.$store.dispatch("regionModule/SET_DATA");
     }
   },
   mounted() {}

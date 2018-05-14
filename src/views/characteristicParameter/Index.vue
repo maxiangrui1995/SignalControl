@@ -8,30 +8,80 @@
     <div class="dh-table-wrapper-toolbar">
       <Button type="primary" icon="plus" @click="createData">新增</Button>
     </div>
-    <Table :columns="columns1" :data="data1"></Table>
+    <Table :columns="columns" :data="data" :loading="loading"></Table>
     <div class="dh-table-wrapper-page">
-      <Page :total="40" show-elevator show-sizer></Page>
+      <Page :total="total" show-elevator show-sizer show-total @on-change="pageChange" @on-page-size-change="sizeChange"></Page>
     </div>
   </div>
 </template>
 
 <script>
+import { getPlanList } from "@/api";
 export default {
   name: "characteristicParameter",
   data() {
     return {
-      columns1: [
+      columns: [
         {
-          title: "Name",
+          type: "index",
+          width: 60,
+          align: "center"
+        },
+        {
+          title: "方案名称",
           key: "name"
         },
         {
-          title: "Age",
-          key: "age"
+          title: "类型",
+          key: "type",
+          render: (h, params) => {
+            return h(
+              "div",
+              `${params.row.phase_count}阶段${params.row.light_count}相位`
+            );
+          }
         },
         {
-          title: "Address",
-          key: "address"
+          title: "相位差",
+          key: "phase_difference"
+        },
+        {
+          title: "最小绿范围",
+          key: "min_green_range",
+          render: (h, params) => {
+            return h(
+              "div",
+              `${params.row.min_green_down}阶段${params.row.min_green_up}相位`
+            );
+          }
+        },
+        {
+          title: "最大绿范围",
+          key: "max_green_range",
+          render: (h, params) => {
+            return h(
+              "div",
+              `${params.row.max_green_down}阶段${params.row.max_green_up}相位`
+            );
+          }
+        },
+        {
+          title: "绿延伸范围",
+          key: "extends",
+          render: (h, params) => {
+            return h(
+              "div",
+              `${params.row.extends_down}阶段${params.row.extends_up}相位`
+            );
+          }
+        },
+        {
+          title: "脉冲倒计时",
+          key: "mc_countdown"
+        },
+        {
+          title: "脉宽",
+          key: "mc_width"
         },
         {
           title: "Action",
@@ -74,36 +124,11 @@ export default {
           }
         }
       ],
-      data1: [
-        {
-          name: "John Brown",
-          age: 18,
-          address: "New York No. 1 Lake Park",
-          date: "2016-10-03",
-          id: 1
-        },
-        {
-          name: "Jim Green",
-          age: 24,
-          address: "London No. 1 Lake Park",
-          date: "2016-10-01",
-          id: 1
-        },
-        {
-          name: "Joe Black",
-          age: 30,
-          address: "Sydney No. 1 Lake Park",
-          date: "2016-10-02",
-          id: 1
-        },
-        {
-          name: "Jon Snow",
-          age: 26,
-          address: "Ottawa No. 2 Lake Park",
-          date: "2016-10-04",
-          id: 1
-        }
-      ]
+      data: [],
+      page: 1,
+      rows: 10,
+      total: 0,
+      loading: false
     };
   },
   methods: {
@@ -141,9 +166,27 @@ export default {
           }, 2000);
         }
       });
+    },
+    loadData() {
+      this.loading = true;
+      getPlanList({ page: this.page, rows: this.rows }).then(res => {
+        this.data = res.data.list;
+        this.total = ~~res.data.total;
+        this.loading = false;
+      });
+    },
+    pageChange(page) {
+      this.page = page;
+      this.loadData();
+    },
+    sizeChange(size) {
+      this.rows = size;
+      this.loadData();
     }
   },
-  created() {}
+  created() {
+    this.loadData();
+  }
 };
 </script>
 

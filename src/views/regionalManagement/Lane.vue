@@ -143,7 +143,7 @@ export default {
   },
   computed: {
     regionData() {
-      let data = this.$store.state.RegionModule.REGION;
+      let data = this.$store.state.regionModule.data;
       let region = [];
       if (data) {
         data.forEach(element => {
@@ -156,12 +156,12 @@ export default {
       return region;
     },
     loading() {
-      return this.$store.state.RegionModule.LOADING;
+      return this.$store.state.regionModule.loading;
     }
   },
   created() {
-    if (!this.$store.state.RegionModule.REGION) {
-      this.$store.dispatch("SET_REGION");
+    if (!this.$store.state.regionModule.data.length) {
+      this.$store.dispatch("regionModule/SET_DATA");
     }
   }
 };

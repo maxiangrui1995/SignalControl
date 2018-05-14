@@ -2,10 +2,11 @@ import Vue from "vue";
 import Vuex from "vuex";
 Vue.use(Vuex);
 
-import RegionModule from './modules/region';
+import regionModule from './modules/region';
+import characterModule from './modules/character';
 
 export default new Vuex.Store({
   modules: {
-    RegionModule
+    regionModule, characterModule
   }
 });

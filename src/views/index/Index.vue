@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { login } from "@/api";
 export default {
   name: "IndexPage",
   data() {
@@ -39,6 +40,13 @@ export default {
     menuSelect(name) {
       this.$router.push({ path: name });
     }
+  },
+  created() {
+    /* login({
+      username: "admin",
+      password: "123456",
+      is_remember: "1"
+    }); */
   }
 };
 </script>

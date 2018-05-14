@@ -3,7 +3,7 @@
     <div class="dh-table-wrapper-header">
       <Breadcrumb>
         <BreadcrumbItem to="/characteristicParameter">特征参数</BreadcrumbItem>
-        <BreadcrumbItem>方案一</BreadcrumbItem>
+        <BreadcrumbItem>{{data.name}}</BreadcrumbItem>
       </Breadcrumb>
     </div>
     <Tabs @on-click="tabSelect" :value="tabsActive" :style="{'margin-top':'20px'}">
@@ -27,7 +27,8 @@
 export default {
   data() {
     return {
-      tabsActive: this.$route.path.split("/")[3]
+      tabsActive: this.$route.path.split("/")[3],
+      id: this.$route.params.id
     };
   },
   methods: {
@@ -37,9 +38,14 @@ export default {
       });
     }
   },
+  computed: {
+    data() {
+      return this.$store.state.characterModule.baseData;
+    }
+  },
   created() {
     let id = this.$route.params.id;
-    console.log(id);
+    this.$store.dispatch("characterModule/SET_DATA", id);
   }
 };
 </script>
