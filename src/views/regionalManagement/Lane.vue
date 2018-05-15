@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { updateArea, createArea, removeArea } from "@/api";
 export default {
   data() {
     return {
@@ -66,72 +67,95 @@ export default {
         }
       ],
       id: this.$route.params.id,
-      name: "",
-      newValue: ""
+      name: ""
     };
   },
   methods: {
     createData() {
-      this.newValue = "";
+      let newValue = "";
+      let self = this;
       this.$Modal.confirm({
         render: h => {
           return h("Input", {
             props: {
-              value: this.newValue,
+              value: newValue,
               autofocus: true,
-              placeholder: "请输入新增区域名称..."
+              placeholder: "请输入新的道路名称..."
             },
             on: {
               input: val => {
-                this.newValue = val;
+                newValue = val;
               }
             }
           });
         },
         loading: true,
         onOk() {
-          setTimeout(() => {
+          createArea({
+            pid: self.id,
+            name: newValue
+          }).then(res => {
+            if (res.status) {
+              this.$Message.success("添加成功");
+            } else {
+              this.$Message.error("添加失败");
+            }
             this.$Modal.remove();
-            this.$Message.success("新增成功");
-          }, 500);
+            self.$store.dispatch("regionModule/SET_DATA");
+          });
         }
       });
     },
     modifyData(id, name) {
-      this.newValue = name;
+      let newValue = name;
+      let self = this;
       this.$Modal.confirm({
         render: h => {
           return h("Input", {
             props: {
-              value: this.newValue,
+              value: newValue,
               autofocus: true,
-              placeholder: "请输入新的区域名称..."
+              placeholder: "请输入新的道路名称..."
             },
             on: {
               input: val => {
-                this.newValue = val;
+                newValue = val;
               }
             }
           });
         },
         loading: true,
         onOk() {
-          setTimeout(() => {
+          updateArea({
+            id: id,
+            name: newValue
+          }).then(res => {
+            if (res.status) {
+              this.$Message.success("修改成功");
+            } else {
+              this.$Message.error("修改失败");
+            }
             this.$Modal.remove();
-            this.$Message.success("修改成功");
-          }, 500);
+            self.$store.dispatch("regionModule/SET_DATA");
+          });
         }
       });
     },
     removeData(id) {
+      let self = this;
       this.$Modal.confirm({
         content: "<p>确定删除？删除后无法恢复！</p>",
         loading: true,
         onOk: () => {
-          setTimeout(() => {
+          removeArea({ id: id }).then(res => {
+            if (res.status) {
+              this.$Message.success("删除成功");
+            } else {
+              this.$Message.error("删除失败");
+            }
             this.$Modal.remove();
-            this.$Message.success("删除成功！");
-          }, 500);
+            self.$store.dispatch("regionModule/SET_DATA");
+          });
         }
       });
     },

@@ -17,8 +17,21 @@ export const getRegion = params => {
   return http.$post("d_area/treeList", params);
 };
 // 修改区域
-export const updateRegion = params => {
+export const updateArea = params => {
   return http.$post("d_area/dataUpdate", params);
+};
+// 新增区域
+export const createArea = params => {
+  return http.$post("d_area/dataAdd", params);
+};
+// 删除区域
+export const removeArea = params => {
+  return http.$post("d_area/dataDelete", params);
+};
+
+// 修改路口
+export const updateCrossing = params => {
+  return http.$post("d_crossing/dataUpdate", params);
 };
 
 // 获取路口下的设备信息

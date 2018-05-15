@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import { updateCrossing } from "@/api";
 const direction = {
   "1357": "普通十字路口",
   "135": "T字路口1",
@@ -85,7 +86,7 @@ export default {
                   on: {
                     click: event => {
                       event.stopPropagation();
-                      this.modifyData(params.row.id);
+                      this.modifyData(params.row);
                     }
                   }
                 },
@@ -123,10 +124,31 @@ export default {
   },
   methods: {
     formOk() {
-      setTimeout(() => {
+      /* setTimeout(() => {
         this.modal = false;
-      }, 500);
-      console.log(this.formItem.name);
+      }, 500); */
+      console.log(this.formItem);
+      if (this.formItem.id) {
+        //编辑
+        updateCrossing({
+          area_id: this.pid,
+          ...this.formItem,
+          road_data: [
+            { direction: 1, roadnum: 3, target: [3, 2, 4] },
+            { direction: 3, roadnum: 3, target: [3, 2, 4] },
+            { direction: 5, roadnum: 3, target: [3, 2, 4] },
+            { direction: 7, roadnum: 3, target: [3, 2, 4] }
+          ]
+        }).then(res => {
+          if (res.status) {
+            this.$Message.success("修改成功");
+          } else {
+            this.$Message.error("修改失败");
+          }
+          this.modal = false;
+          this.$store.dispatch("regionModule/SET_DATA");
+        });
+      }
     },
     createData() {
       this.formItem = {
@@ -138,17 +160,14 @@ export default {
       this.modal = true;
       this.formTitle = "路口信息新增";
     },
-    modifyData(id) {
+    modifyData(row) {
       this.modal = true;
       this.formTitle = "路口信息编辑";
-      this.regionData.forEach(item => {
-        if (item.id === id) {
-          this.formItem.name = item.name;
-          this.formItem.lat = item.lat;
-          this.formItem.lng = item.lng;
-          this.formItem.direction = item.direction;
-        }
-      });
+      this.formItem.name = row.name;
+      this.formItem.lat = row.lat;
+      this.formItem.lng = row.lng;
+      this.formItem.direction = row.direction;
+      this.formItem.id = row.id;
     },
     removeData(id) {
       this.$Modal.confirm({
