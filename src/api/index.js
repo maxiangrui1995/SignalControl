@@ -98,6 +98,19 @@ export const updateWayleave = params => {
 export const getPattern = params => {
   return http.$post("d_pattern/dataList", params);
 };
+// 特征参数-方案新增
+export const createPattern = params => {
+  return http.$post("d_pattern/dataAdd", params);
+};
+// 特征参数-方案修改
+export const updatePattern = params => {
+  return http.$post("d_pattern/dataUpdate", params);
+};
+// 特征参数-方案删除
+export const removePattern = params => {
+  return http.$post("d_pattern/dataDelete", params);
+};
+
 // 特征参数-日期类型
 export const getDateType = params => {
   return http.$post("d_week/dataList", params);

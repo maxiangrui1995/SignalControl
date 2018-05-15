@@ -8,6 +8,7 @@
 
 <script>
 import expandRow from "./components/Plan";
+import { removePattern, createPattern } from "@/api";
 export default {
   components: { expandRow },
   data() {
@@ -88,17 +89,25 @@ export default {
       });
     },
     createData() {
+      let self = this;
       this.$Modal.confirm({
         content: "<p>即将自动生成一条方案记录！</p>",
+        loading: true,
         onOk: () => {
-          this.$Message.info("Clicked ok");
-        },
-        onCancel: () => {
-          this.$Message.info("Clicked cancel");
+          createPattern({ plan_id: this.id }).then(res => {
+            if (res.status) {
+              this.$Message.success("添加成功");
+            } else {
+              this.$Message.error("添加失败");
+            }
+            this.$Modal.remove();
+            self.loadData();
+          });
         }
       });
     },
     removeData(id, index) {
+      let self = this;
       // 删除必须从最后一条记录开始
       if ((this.page - 1) * this.rows + index + 1 !== this.total) {
         this.$Modal.warning({
@@ -109,13 +118,25 @@ export default {
           content: "<p>确定删除？删除后无法恢复！</p>",
           loading: true,
           onOk: () => {
-            setTimeout(() => {
+            removePattern({ id: id }).then(res => {
+              if (res.status) {
+                this.$Message.success("删除成功");
+              } else {
+                this.$Message.error("删除失败");
+              }
               this.$Modal.remove();
-              this.$Message.success("删除成功！");
-            }, 500);
+              self.loadData();
+            });
           }
         });
       }
+    },
+    loadData() {
+      this.$store.dispatch("characterModule/SET_PLAN", {
+        id: this.id,
+        page: this.page,
+        rows: this.rows
+      });
     }
   },
   computed: {
@@ -131,11 +152,7 @@ export default {
   },
   created() {
     if (!this.$store.state.characterModule.planData.list) {
-      this.$store.dispatch("characterModule/SET_PLAN", {
-        id: this.id,
-        page: this.page,
-        rows: this.rows
-      });
+      this.loadData();
     }
     if (!this.$store.state.characterModule.phaseData.length) {
       this.$store.dispatch("characterModule/SET_PHASE", this.id);
