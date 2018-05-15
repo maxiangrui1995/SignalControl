@@ -29,9 +29,17 @@ export const removeArea = params => {
   return http.$post("d_area/dataDelete", params);
 };
 
+// 新增路口
+export const createCrossing = params => {
+  return http.$post("d_crossing/dataAdd", params);
+};
 // 修改路口
 export const updateCrossing = params => {
   return http.$post("d_crossing/dataUpdate", params);
+};
+// 删除路口
+export const removeCrossing = params => {
+  return http.$post("d_crossing/dataDelete", params);
 };
 
 // 获取路口下的设备信息
@@ -59,14 +67,33 @@ export const getSignal = params => {
 export const getPlanList = params => {
   return http.$post("d_plan/dataList", params);
 };
+// 特征参数新增
+export const createPlanList = params => {
+  return http.$post("d_plan/dataInit", params);
+};
+// 特征参数删除
+export const removePlanList = params => {
+  return http.$post("d_plan/dataDelete", params);
+};
+
 // 特征参数-详情
 export const getPlanView = params => {
   return http.$post("d_plan/dataView", params);
 };
+// 特征参数-详情编辑
+export const updatePlanView = params => {
+  return http.$post("d_plan/dataUpdate", params);
+};
+
 // 特征参数-通行权
 export const getWayleave = params => {
   return http.$post("d_passage/dataList", params);
 };
+// 特征参数-通行权编辑
+export const updateWayleave = params => {
+  return http.$post("d_passage/dataUpdateList", params);
+};
+
 // 特征参数-方案
 export const getPattern = params => {
   return http.$post("d_pattern/dataList", params);

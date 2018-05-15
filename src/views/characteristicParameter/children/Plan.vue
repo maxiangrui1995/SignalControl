@@ -60,7 +60,7 @@ export default {
                   on: {
                     click: event => {
                       event.stopPropagation();
-                      this.removeData(params.row.id);
+                      this.removeData(params.row.id, params.index);
                     }
                   }
                 },
@@ -81,7 +81,11 @@ export default {
   methods: {
     pageChange(page) {
       this.page = page;
-      this.loadData();
+      this.$store.dispatch("characterModule/SET_PLAN", {
+        id: this.id,
+        page: this.page,
+        rows: this.rows
+      });
     },
     createData() {
       this.$Modal.confirm({
@@ -94,17 +98,24 @@ export default {
         }
       });
     },
-    removeData(id) {
-      this.$Modal.confirm({
-        content: "<p>确定删除？删除后无法恢复！</p>",
-        loading: true,
-        onOk: () => {
-          setTimeout(() => {
-            this.$Modal.remove();
-            this.$Message.success("删除成功！");
-          }, 500);
-        }
-      });
+    removeData(id, index) {
+      // 删除必须从最后一条记录开始
+      if ((this.page - 1) * this.rows + index + 1 !== this.total) {
+        this.$Modal.warning({
+          content: "<p>删除必须从最后一条记录开始!</p>"
+        });
+      } else {
+        this.$Modal.confirm({
+          content: "<p>确定删除？删除后无法恢复！</p>",
+          loading: true,
+          onOk: () => {
+            setTimeout(() => {
+              this.$Modal.remove();
+              this.$Message.success("删除成功！");
+            }, 500);
+          }
+        });
+      }
     }
   },
   computed: {

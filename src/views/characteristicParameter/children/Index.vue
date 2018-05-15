@@ -43,6 +43,11 @@ export default {
       return this.$store.state.characterModule.baseData;
     }
   },
+  watch: {
+    $route() {
+      this.tabsActive = this.$route.path.split("/")[3];
+    }
+  },
   created() {
     let id = this.$route.params.id;
     this.$store.dispatch("characterModule/SET_DATA", id);

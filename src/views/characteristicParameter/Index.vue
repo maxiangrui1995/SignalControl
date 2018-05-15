@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { getPlanList } from "@/api";
+import { getPlanList, createPlanList, removePlanList } from "@/api";
 export default {
   name: "characteristicParameter",
   data() {
@@ -84,7 +84,7 @@ export default {
           key: "mc_width"
         },
         {
-          title: "Action",
+          title: "操作",
           key: "action",
           align: "center",
           width: 120,
@@ -133,19 +133,33 @@ export default {
   },
   methods: {
     createData() {
+      let newValue = "";
+      let self = this;
       this.$Modal.confirm({
         render: h => {
           return h("Input", {
             props: {
-              value: this.value,
+              value: newValue,
               autofocus: true,
-              placeholder: "请输入新增特征参数名称..."
+              placeholder: "请输入新的特征参数名称..."
             },
             on: {
               input: val => {
-                this.value = val;
+                newValue = val;
               }
             }
+          });
+        },
+        loading: true,
+        onOk: () => {
+          createPlanList({ name: newValue }).then(res => {
+            if (res.status) {
+              this.$Message.success("添加成功");
+            } else {
+              this.$Message.error("添加失败");
+            }
+            this.$Modal.remove();
+            self.loadData();
           });
         }
       });
@@ -156,14 +170,20 @@ export default {
       });
     },
     removeData(id) {
+      let self = this;
       this.$Modal.confirm({
         content: "<p>确定删除？删除后无法恢复！</p>",
         loading: true,
         onOk: () => {
-          setTimeout(() => {
+          removePlanList({ id: id }).then(res => {
+            if (res.status) {
+              this.$Message.success("删除成功");
+            } else {
+              this.$Message.error("删除失败");
+            }
             this.$Modal.remove();
-            this.$Message.info("Asynchronously close the dialog box");
-          }, 2000);
+            self.loadData();
+          });
         }
       });
     },

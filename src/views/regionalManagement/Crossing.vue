@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { updateCrossing } from "@/api";
+import { updateCrossing, createCrossing, removeCrossing } from "@/api";
 const direction = {
   "1357": "普通十字路口",
   "135": "T字路口1",
@@ -46,6 +46,12 @@ const direction = {
   "157": "T字路口3",
   "357": "T字路口4"
 };
+const road_data = [
+  { direction: 1, roadnum: 3, target: [3, 2, 4] },
+  { direction: 3, roadnum: 3, target: [3, 2, 4] },
+  { direction: 5, roadnum: 3, target: [3, 2, 4] },
+  { direction: 7, roadnum: 3, target: [3, 2, 4] }
+];
 export default {
   data() {
     return {
@@ -124,26 +130,32 @@ export default {
   },
   methods: {
     formOk() {
-      /* setTimeout(() => {
-        this.modal = false;
-      }, 500); */
-      console.log(this.formItem);
       if (this.formItem.id) {
         //编辑
         updateCrossing({
           area_id: this.pid,
           ...this.formItem,
-          road_data: [
-            { direction: 1, roadnum: 3, target: [3, 2, 4] },
-            { direction: 3, roadnum: 3, target: [3, 2, 4] },
-            { direction: 5, roadnum: 3, target: [3, 2, 4] },
-            { direction: 7, roadnum: 3, target: [3, 2, 4] }
-          ]
+          road_data: road_data
         }).then(res => {
           if (res.status) {
             this.$Message.success("修改成功");
           } else {
             this.$Message.error("修改失败");
+          }
+          this.modal = false;
+          this.$store.dispatch("regionModule/SET_DATA");
+        });
+      } else {
+        //新增
+        createCrossing({
+          area_id: this.pid,
+          ...this.formItem,
+          road_data: road_data
+        }).then(res => {
+          if (res.status) {
+            this.$Message.success("添加成功");
+          } else {
+            this.$Message.error("添加失败");
           }
           this.modal = false;
           this.$store.dispatch("regionModule/SET_DATA");
@@ -170,14 +182,20 @@ export default {
       this.formItem.id = row.id;
     },
     removeData(id) {
+      let self = this;
       this.$Modal.confirm({
         content: "<p>确定删除？删除后无法恢复！</p>",
         loading: true,
         onOk: () => {
-          setTimeout(() => {
+          removeCrossing({ id: id }).then(res => {
+            if (res.status) {
+              this.$Message.success("删除成功");
+            } else {
+              this.$Message.error("删除失败");
+            }
             this.$Modal.remove();
-            this.$Message.success("删除成功！");
-          }, 500);
+            self.$store.dispatch("regionModule/SET_DATA");
+          });
         }
       });
     },
