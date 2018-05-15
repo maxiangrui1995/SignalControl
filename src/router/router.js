@@ -89,6 +89,12 @@ export default [
             },
 
             {
+                path: '/privilege',
+                name: '特勤联动',
+                component: resolve => require(['@/views/privilege/Index'], resolve)
+            },
+
+            {
                 path: '/comprehensiveQuery',
                 name: '综合查询',
                 component: () =>

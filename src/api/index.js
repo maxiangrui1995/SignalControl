@@ -80,3 +80,10 @@ export const getVehicleInspection = params => {
 export const getGreenBelt = params => {
   return http.$post("d_green_wave/dataList", params);
 };
+
+
+/* ----------------------特勤联动--------------------------- */
+// 获取特勤信息
+export const getPrivilege = params => {
+  return http.$post("d_secret_service_plan/planList", params);
+};

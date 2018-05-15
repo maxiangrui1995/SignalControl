@@ -22,6 +22,10 @@
             <Icon type="flag"></Icon>
             <span>绿波带</span>
           </i-menu-item>
+          <i-menu-item name="/privilege">
+            <Icon type="ios-color-filter"></Icon>
+            <span>特勤联动</span>
+          </i-menu-item>
         </Menu>
       </Sider>
       <Content class="dh-layout-content">

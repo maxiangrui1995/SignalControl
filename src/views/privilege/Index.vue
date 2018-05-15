@@ -1,45 +1,45 @@
 <template>
-  <div>
-    <Card :style="{'width':'300px','position':'absolute','top':'20px','left':'20px'}" :padding="0">
-      <p slot="title">绿波带</p>
-      <a href="javascript:;" slot="extra" @click.prevent="createData">
-        <Icon type="plus"></Icon>
-        新增
-      </a>
-      <Table :columns="columns" :data="data" :showHeader="false" :loading="loading"></Table>
-      <Page :current="page" :total="total" :page-size="rows" simple @on-change="pageChange" :style="{'margin':'10px','text-align':'right'}"></Page>
-    </Card>
+    <div>
+        <Card :style="{'width':'300px','position':'absolute','top':'20px','left':'20px'}" :padding="0">
+            <p slot="title">特勤联动</p>
+            <a href="javascript:;" slot="extra" @click.prevent="createData">
+                <Icon type="plus"></Icon>
+                新增
+            </a>
+            <Table :columns="columns" :data="data" :showHeader="false" :loading="loading"></Table>
+            <Page :current="page" :total="total" :page-size="rows" simple @on-change="pageChange" :style="{'margin':'10px','text-align':'right'}"></Page>
+        </Card>
 
-    <Modal v-model="modal" :loading="true" :title="formTitle" @on-ok="formOk">
-      <Form :model="formItem" :label-width="80">
-        <FormItem label="子区名称">
-          <Input v-model="formItem.name" placeholder="请输入新的子区名称..." />
-        </FormItem>
-        <FormItem label="公共周期">
-          <InputNumber v-model="formItem.period" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
-        </FormItem>
-        <FormItem label="协调方向">
-          <Select v-model="formItem.coordinate_direction">
-            <Option value="1">正向</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="绿波类型">
-          <Select v-model="formItem.type" @on-change="typeChange">
-            <Option value="0">每天</Option>
-            <Option value="1">时间段</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="时间范围">
-          <DatePicker type="datetimerange" v-model="formItem.time" format="yyyy/MM/dd HH:mm" placeholder="请选择日期和时间范围..." v-if="seen" :style="{width:'100%'}"></DatePicker>
-          <TimePicker type="timerange" v-model="formItem.time" format="HH:mm" placeholder="请选择时间范围..." v-if="!seen" :style="{width:'100%'}"></TimePicker>
-        </FormItem>
-      </Form>
-    </Modal>
-  </div>
+        <!-- <Modal v-model="modal" :loading="true" :title="formTitle" @on-ok="formOk">
+            <Form :model="formItem" :label-width="80">
+                <FormItem label="子区名称">
+                    <Input v-model="formItem.name" placeholder="请输入新的子区名称..." />
+                </FormItem>
+                <FormItem label="公共周期">
+                    <InputNumber v-model="formItem.period" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
+                </FormItem>
+                <FormItem label="协调方向">
+                    <Select v-model="formItem.coordinate_direction">
+                        <Option value="1">正向</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="绿波类型">
+                    <Select v-model="formItem.type" @on-change="typeChange">
+                        <Option value="0">每天</Option>
+                        <Option value="1">时间段</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="时间范围">
+                    <DatePicker type="datetimerange" v-model="formItem.time" format="yyyy/MM/dd HH:mm" placeholder="请选择日期和时间范围..." v-if="seen" :style="{width:'100%'}"></DatePicker>
+                    <TimePicker type="timerange" v-model="formItem.time" format="HH:mm" placeholder="请选择时间范围..." v-if="!seen" :style="{width:'100%'}"></TimePicker>
+                </FormItem>
+            </Form>
+        </Modal> -->
+    </div>
 </template>
 
 <script>
-import { getGreenBelt } from "@/api";
+import { getGreenBelt, getPrivilege } from "@/api";
 
 const type = {
   "0": "每天",
@@ -53,8 +53,13 @@ export default {
     return {
       columns: [
         {
-          title: "名称",
-          key: "name",
+          type: "selection",
+          width: 60,
+          align: "center"
+        },
+        {
+          title: "预案名",
+          key: "sch_name",
           render: (h, params) => {
             return h(
               "Poptip",
@@ -66,30 +71,16 @@ export default {
                 }
               },
               [
-                h(
-                  "Tag",
-                  { props: { color: params.row.type === "0" ? "green" : "" } },
-                  params.row.name
-                ),
+                h("Tag", params.row.sch_name),
                 h(
                   "div",
                   {
                     slot: "content"
                   },
                   [
-                    h("div", "公共周期：" + params.row.period),
-                    h(
-                      "div",
-                      "协调方向：" + direction[params.row.coordinate_direction]
-                    ),
-                    h("div", "绿波类型：" + type[params.row.type]),
-                    h(
-                      "div",
-                      "时间范围：" +
-                        params.row.mon_day_start +
-                        " - " +
-                        params.row.mon_day_end
-                    )
+                    h("div", "预案号：" + params.row.sch_id),
+                    h("div", "绑定车牌：" + params.row.boundPlate),
+                    h("div", "是否激活：" + params.row.enabled)
                   ]
                 )
               ]
@@ -150,7 +141,7 @@ export default {
   methods: {
     loadData() {
       this.loading = true;
-      getGreenBelt({
+      getPrivilege({
         page: this.page,
         rows: this.rows
       }).then(res => {
