@@ -54,7 +54,6 @@ export default {
   },
   created() {
     this.loadData();
-    console.log(this.$route.params);
   }
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="dh-table-wrapper">
-      <div class="dh-table-wrapper-toolbar">
+      <!-- <div class="dh-table-wrapper-toolbar">
         <y-filterWrapper label="区域" :data="region1" />
       </div>
       <div class="dh-table-wrapper-toolbar">
@@ -9,6 +9,11 @@
       </div>
       <div class="dh-table-wrapper-toolbar">
         <y-filterWrapper label="路口" :data="region1" />
+      </div> -->
+      <div>
+        <span v-for="item in regionData" :key="item.id">{{item.name}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      </div>
+      <div>
       </div>
     </div>
   </div>
@@ -32,11 +37,25 @@ export default {
       ]
     };
   },
-  methods: {},
-  created() {}
+  computed: {
+    regionData() {
+      return this.$store.state.regionModule.data;
+    }
+  },
+  watch: {
+    regionData() {
+      let data = this.regionData;
+      console.log(data);
+    }
+  },
+  created() {
+    if (!this.$store.state.regionModule.data.length) {
+      this.$store.dispatch("regionModule/SET_DATA");
+    }
+  },
+  methods: {}
 };
 </script>
 
 <style scoped lang="less">
-
 </style>
