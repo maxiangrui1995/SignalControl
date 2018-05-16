@@ -115,10 +115,28 @@ export const removePattern = params => {
 export const getDateType = params => {
   return http.$post("d_week/dataList", params);
 };
+// 特征参数-日期类型修改
+export const updateDateType = params => {
+  return http.$post("d_week/dataUpdateList", params);
+};
+
 // 特征参数-时间调度
-export const geSchedule = params => {
+export const getSchedule = params => {
   return http.$post("d_timemanage/dataList", params);
 };
+// 特征参数-时间调度修改
+export const updateSchedule = params => {
+  return http.$post("d_timemanage/dataUpdate", params);
+};
+// 特征参数-时间调度新增
+export const createSchedule = params => {
+  return http.$post("d_timemanage/dataAdd", params);
+};
+// 特征参数-时间调度删除
+export const removeSchedule = params => {
+  return http.$post("d_timemanage/dataDelete", params);
+};
+
 // 特征参数-相位
 export const getPhase = params => {
   return http.$post("d_phasestatus/dataList", params);
@@ -132,6 +150,22 @@ export const getVehicleInspection = params => {
 // 获取绿波带信息
 export const getGreenBelt = params => {
   return http.$post("d_green_wave/dataList", params);
+};
+// 绿波带新增
+export const createGreenBelt = params => {
+  return http.$post("d_green_wave/dataAdd", params);
+};
+// 绿波带编辑
+export const modifyGreenBelt = params => {
+  return http.$post("d_green_wave/dataUpdate", params);
+};
+// 绿波带删除
+export const removeGreenBelt = params => {
+  return http.$post("d_green_wave/dataDelete", params);
+};
+// 绿波带详情
+export const getGreenBeltDetails = params => {
+  return http.$post("d_green_wave_sub/dataList", params);
 };
 
 

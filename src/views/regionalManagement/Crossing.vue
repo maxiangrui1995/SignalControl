@@ -182,7 +182,6 @@ export default {
       this.formItem.id = row.id;
     },
     removeData(id) {
-      let self = this;
       this.$Modal.confirm({
         content: "<p>确定删除？删除后无法恢复！</p>",
         loading: true,
@@ -194,7 +193,7 @@ export default {
               this.$Message.error("删除失败");
             }
             this.$Modal.remove();
-            self.$store.dispatch("regionModule/SET_DATA");
+            this.$store.dispatch("regionModule/SET_DATA");
           });
         }
       });

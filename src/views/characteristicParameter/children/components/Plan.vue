@@ -161,7 +161,6 @@ export default {
           content: "<p>删除必须从最后一条记录开始!</p>"
         });
       } else {
-        let self = this;
         this.$Modal.confirm({
           content: "<p>确定删除？删除后无法恢复！</p>",
           loading: true,
@@ -227,5 +226,4 @@ export default {
 </script>
 
 <style scoped lang="less">
-
 </style>

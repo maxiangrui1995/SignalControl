@@ -134,7 +134,6 @@ export default {
   methods: {
     createData() {
       let newValue = "";
-      let self = this;
       this.$Modal.confirm({
         render: h => {
           return h("Input", {
@@ -159,7 +158,7 @@ export default {
               this.$Message.error("添加失败");
             }
             this.$Modal.remove();
-            self.loadData();
+            this.loadData();
           });
         }
       });
@@ -170,7 +169,6 @@ export default {
       });
     },
     removeData(id) {
-      let self = this;
       this.$Modal.confirm({
         content: "<p>确定删除？删除后无法恢复！</p>",
         loading: true,
@@ -182,7 +180,7 @@ export default {
               this.$Message.error("删除失败");
             }
             this.$Modal.remove();
-            self.loadData();
+            this.loadData();
           });
         }
       });
@@ -211,5 +209,4 @@ export default {
 </script>
 
 <style>
-
 </style>

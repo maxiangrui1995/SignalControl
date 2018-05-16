@@ -89,7 +89,6 @@ export default {
       });
     },
     createData() {
-      let self = this;
       this.$Modal.confirm({
         content: "<p>即将自动生成一条方案记录！</p>",
         loading: true,
@@ -101,13 +100,12 @@ export default {
               this.$Message.error("添加失败");
             }
             this.$Modal.remove();
-            self.loadData();
+            this.loadData();
           });
         }
       });
     },
     removeData(id, index) {
-      let self = this;
       // 删除必须从最后一条记录开始
       if ((this.page - 1) * this.rows + index + 1 !== this.total) {
         this.$Modal.warning({
@@ -125,7 +123,7 @@ export default {
                 this.$Message.error("删除失败");
               }
               this.$Modal.remove();
-              self.loadData();
+              this.loadData();
             });
           }
         });
@@ -162,5 +160,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

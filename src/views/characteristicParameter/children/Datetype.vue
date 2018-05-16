@@ -1,9 +1,12 @@
 <template>
-  <Table :columns="columns" :data="data" :border="true" :loading="loading"></Table>
+  <div>
+    <Table :columns="columns" :data="data" :border="true" :loading="loading"></Table>
+    <Button type="primary" :loading="loading" @click="handleSubmit" :style="{'margin-top':'20px'}">确定</Button>
+  </div>
 </template>
 
 <script>
-import { getDateType } from "@/api";
+import { getDateType, updateDateType } from "@/api";
 export default {
   data() {
     return {
@@ -73,9 +76,8 @@ export default {
           }
         }
       ],
-      // data: [],
-      id: this.$route.params.id
-      // loading: false
+      id: this.$route.params.id,
+      copyData: []
     };
   },
   methods: {
@@ -90,10 +92,6 @@ export default {
         this.loading = false;
       });
     },
-    changeStatus(row, type) {
-      console.log(row, type);
-      row[type] = row[type] === "1" ? "0" : "1";
-    },
     tdRender(h, params, type) {
       return h(
         "div",
@@ -105,7 +103,9 @@ export default {
           },
           on: {
             click: () => {
-              this.changeStatus(params.row, type);
+              params.row[type] = params.row[type] === "1" ? "0" : "1";
+              this.copyData[params.index][type] =
+                this.copyData[params.index][type] === "1" ? "0" : "1";
             }
           }
         },
@@ -118,11 +118,32 @@ export default {
           })
         ]
       );
+    },
+    handleSubmit() {
+      updateDateType({
+        data: this.copyData
+      }).then(res => {
+        if (res.status) {
+          this.$Message.success("操作成功");
+        } else {
+          this.$Message.error("操作失败");
+        }
+        this.data.forEach((item, i) => {
+          item = Object.assign(item, this.copyData[i]);
+        });
+      });
     }
   },
   computed: {
     data() {
-      return this.$store.state.characterModule.weekData;
+      let data = this.$store.state.characterModule.weekData;
+
+      data.forEach(element => {
+        let copy = Object.assign({}, element);
+        this.copyData.push(copy);
+      });
+
+      return data;
     },
     loading() {
       return this.$store.state.characterModule.loading;
@@ -137,5 +158,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

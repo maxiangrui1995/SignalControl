@@ -7,7 +7,7 @@
     <Modal v-model="modal" :loading="true" :title="formTitle" @on-ok="formOk">
       <Form :model="formItem" :label-width="80">
         <FormItem label="日期类型">
-          <Select v-model="formItem.datetype" placeholder="请选择新的日期类型...">
+          <Select v-model="formItem.datetype" @on-change="datetypeChange" placeholder="请选择新的日期类型...">
             <Option v-for="item in datetype" :key="item.value" :value="item.value">{{item.label}}</Option>
           </Select>
         </FormItem>
@@ -17,7 +17,8 @@
           </Select>
         </FormItem>
         <FormItem label="日期范围">
-          <DatePicker format="MM/dd" type="daterange" v-model="formItem.custom_date" placement="bottom-end" confirm placeholder="请选择新的日期范围..." :style="{width:'100%'}"></DatePicker>
+          <DatePicker format="MM/dd" type="daterange" v-model="formItem.custom_date" placement="bottom-end" confirm v-if="seen" placeholder="请选择新的日期范围..." :style="{width:'100%'}"></DatePicker>
+          <i-input v-model="formItem.custom_date2" readonly v-if="!seen" :style="{width:'100%'}"></i-input>
         </FormItem>
         <FormItem label="开始时间">
           <TimePicker format="HH:mm" v-model="formItem.custom_time" placeholder="请选择新的开始时间... " :style="{width: '100%'} "></TimePicker>
@@ -33,7 +34,12 @@
 </template>
 
 <script>
-import { geSchedule } from "@/api";
+import {
+  getSchedule,
+  updateSchedule,
+  createSchedule,
+  removeSchedule
+} from "@/api";
 
 const week = {
   sunday: "周日",
@@ -174,10 +180,12 @@ export default {
               } / ${data.stop_day < 10 ? "0" + data.stop_day : data.stop_day}`;
             } else {
               let _msg = [];
-              let d = this.weekData[data.datetype];
-              for (let i in week) {
-                if (d[i] === "1") {
-                  _msg.push(week[i]);
+              if (this.weekData.length) {
+                let d = this.weekData[data.datetype];
+                for (let i in week) {
+                  if (d[i] === "1") {
+                    _msg.push(week[i]);
+                  }
                 }
               }
               msg = _msg.join(",");
@@ -262,25 +270,31 @@ export default {
       loading: false,
       modal: false,
       formTitle: "",
-      formItem: {}
+      formItem: {},
+      seen: true
     };
   },
   methods: {
-    removeData() {
+    removeData(id) {
       this.$Modal.confirm({
         content: "<p>确定删除？删除后无法恢复！</p>",
         loading: true,
         onOk: () => {
-          setTimeout(() => {
-            this.$Modal.remove();
-            this.$Message.success("删除成功！");
-          }, 500);
+          removeSchedule({ id }).then(res => {
+            if (res.status) {
+              this.$Message.success("删除成功");
+            } else {
+              this.$Message.error("删除失败");
+            }
+            this.modal = false;
+            this.loadData();
+          });
         }
       });
     },
     loadData() {
       this.loading = true;
-      geSchedule({
+      getSchedule({
         plan_id: this.id,
         page: this.page,
         rows: this.rows
@@ -294,10 +308,55 @@ export default {
       this.page = page;
       this.loadData();
     },
-    formOk() {},
+    formOk() {
+      let obj = {};
+      obj.datetype = this.formItem.datetype;
+      obj.func_num = this.formItem.func_num;
+      obj.patternid = this.formItem.patternid;
+      let date = this.formItem.custom_date;
+      let time = this.formItem.custom_time;
+      obj.start_mon = date[0].split("/")[0] || 0;
+      obj.start_day = date[0].split("/")[1] || 0;
+      obj.stop_mon = date[1].split("/")[0] || 0;
+      obj.stop_day = date[1].split("/")[1] || 0;
+      obj.start_hour = time.split(":")[0];
+      obj.start_min = time.split(":")[1];
+
+      if (this.formItem.type === "modify") {
+        updateSchedule({
+          id: this.formItem.id,
+          ...obj
+        }).then(res => {
+          if (res.status) {
+            this.$Message.success("编辑成功");
+          } else {
+            this.$Message.error("编辑失败");
+          }
+          this.modal = false;
+          this.loadData();
+        });
+      } else {
+        let serialid = this.total;
+        serialid++;
+        createSchedule({
+          plan_id: this.id,
+          serialid,
+          ...obj
+        }).then(res => {
+          if (res.status) {
+            this.$Message.success("添加成功");
+          } else {
+            this.$Message.error("添加失败");
+          }
+          this.modal = false;
+          this.loadData();
+        });
+      }
+    },
     createData() {
       this.modal = true;
       this.formTitle = "时间调度新增";
+      this.formItem.type = "create";
     },
     modifyData(row) {
       this.modal = true;
@@ -310,8 +369,25 @@ export default {
           `${row.stop_mon}/${row.stop_day}`
         ],
         custom_time: `${row.start_hour}/${row.start_min}`,
-        patternid: ~~row.patternid
+        patternid: ~~row.patternid,
+        id: row.id,
+        type: "modify"
       };
+    },
+    datetypeChange(value) {
+      if (value === "15") {
+        this.seen = true;
+      } else {
+        this.seen = false;
+        let _msg = [];
+        let d = this.weekData[value];
+        for (let i in week) {
+          if (d[i] === "1") {
+            _msg.push(week[i]);
+          }
+        }
+        this.formItem.custom_date2 = _msg.join(",");
+      }
     }
   },
   computed: {
@@ -342,5 +418,4 @@ export default {
 </script>
 
 <style>
-
 </style>
