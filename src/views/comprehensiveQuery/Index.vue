@@ -1,19 +1,17 @@
 <template>
   <div>
     <div class="dh-table-wrapper">
-      <!-- <div class="dh-table-wrapper-toolbar">
-        <y-filterWrapper label="区域" :data="region1" />
+      <div class="dh-table-wrapper-toolbar">
+        <y-filterWrapper label="区域" :data="regionData" />
       </div>
       <div class="dh-table-wrapper-toolbar">
-        <y-filterWrapper label="道路" :data="region1" />
+        <y-filterWrapper label="道路" :data="regionData2" />
       </div>
       <div class="dh-table-wrapper-toolbar">
-        <y-filterWrapper label="路口" :data="region1" />
-      </div> -->
-      <div>
-        <span v-for="item in regionData" :key="item.id">{{item.name}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <y-filterWrapper label="路口" :data="regionData3" />
       </div>
       <div>
+        <Button type="text" @click="btnClick">按钮 100001,100002</Button>
       </div>
     </div>
   </div>
@@ -27,14 +25,8 @@ export default {
   },
   data() {
     return {
-      region1: [
-        { name: "栖霞区1", id: "1" },
-        { name: "栖霞区2", id: "2" },
-        { name: "栖霞区3", id: "3" },
-        { name: "栖霞区4", id: "4" },
-        { name: "栖霞区5", id: "5" },
-        { name: "栖霞区6", id: "6" }
-      ]
+      regionData2: [],
+      regionData3: []
     };
   },
   computed: {
@@ -42,18 +34,39 @@ export default {
       return this.$store.state.regionModule.data;
     }
   },
-  watch: {
-    regionData() {
+  methods: {
+    formatterData() {
       let data = this.regionData;
       console.log(data);
+      data.forEach(element => {
+        if (element.children) {
+          this.regionData2.push(...element.children);
+          element.children.forEach(element => {
+            if (element.children) {
+              this.regionData3.push(...element.children);
+            }
+          });
+        }
+      });
+    },
+    btnClick() {
+      this.$router.push({
+        path: "/comprehensiveQuery/" + 100001
+      });
+    }
+  },
+  watch: {
+    regionData() {
+      /* */
+      this.formatterData();
     }
   },
   created() {
     if (!this.$store.state.regionModule.data.length) {
       this.$store.dispatch("regionModule/SET_DATA");
     }
-  },
-  methods: {}
+    this.formatterData();
+  }
 };
 </script>
 

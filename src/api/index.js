@@ -42,6 +42,10 @@ export const removeCrossing = params => {
   return http.$post("d_crossing/dataDelete", params);
 };
 
+// 获取路口常量
+export const getCrossingDefault = params => {
+  return http.$post("d_crossing/getVar", params);
+};
 // 获取路口下的设备信息
 export const getCrossingDev = params => {
   return http.$post("d_crossing/dataView", params);
@@ -135,6 +139,11 @@ export const createSchedule = params => {
 // 特征参数-时间调度删除
 export const removeSchedule = params => {
   return http.$post("d_timemanage/dataDelete", params);
+};
+
+// 特征参数-灯组
+export const getLightgroup = params => {
+  return http.$post("d_phaseinfo/dataList", params);
 };
 
 // 特征参数-相位

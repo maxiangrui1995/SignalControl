@@ -2,6 +2,9 @@
   <Layout :style="{height:'100%'}">
     <Header :style="{padding: '0'}" class="dh-layout-header">
       <div class="dh-logo">道路交通信号机控制平台</div>
+      <div class="dh-tools">
+        <y-message></y-message>
+      </div>
     </Header>
     <Layout>
       <Sider hide-trigger class="dh-layout-sider">
@@ -36,8 +39,10 @@
 </template>
 
 <script>
+import YMessage from "./components/Message";
 export default {
   name: "IndexPage",
+  components: { YMessage },
   data() {
     return {
       menuActiveName: "/" + this.$route.path.split("/")[1]
@@ -79,5 +84,9 @@ export default {
 .dh-layout-content {
   background: #193c7e;
   position: relative;
+}
+.dh-tools {
+  float: right;
+  margin-right: 30px;
 }
 </style>

@@ -82,14 +82,14 @@ export default [
                 ]
             },
 
-            { 
+            {
                 path: '/greenBelt',
                 name: '绿波带',
                 component: resolve => require(['@/views/greenBelt/Index'], resolve),
                 redirect: {
                     name: '绿波带列表'
                 },
-                children:[
+                children: [
                     {
                         path: '',
                         name: '绿波带列表',
@@ -112,8 +112,12 @@ export default [
             {
                 path: '/comprehensiveQuery',
                 name: '综合查询',
-                component: () =>
-                    import('@/views/comprehensiveQuery/Index')
+                component: resolve => require(['@/views/comprehensiveQuery/Index'], resolve)
+            },
+            {
+                path: '/comprehensiveQuery/:id',
+                name: '综合查询-详情',
+                component: resolve => require(['@/views/comprehensiveQuery/Details'], resolve)
             }
         ]
     },
