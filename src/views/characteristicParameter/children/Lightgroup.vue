@@ -1,8 +1,8 @@
 <template>
-    <div style="text-align:center;overflow:auto">
-        <!-- <y-scanvas :width="width" :height="height" :crossingData="crossingData"></y-scanvas> -->
-        <canvas id="my-canvas"></canvas>
-    </div>
+  <div style="text-align:center;overflow:auto">
+    <!-- <y-scanvas :width="width" :height="height" :crossingData="crossingData"></y-scanvas> -->
+    <canvas id="my-canvas"></canvas>
+  </div>
 </template>
 
 <script>
@@ -43,10 +43,12 @@ export default {
         ])
         .then(
           axios.spread(function(d_crossing, d_phaseinfo) {
-            Draw(canvas).view({
-              crossingData: d_crossing.data.data.road_data,
-              lightData: d_phaseinfo.data.data.list
-            });
+            Draw(canvas)
+              .view({
+                crossingData: d_crossing.data.data.road_data,
+                lightData: d_phaseinfo.data.data.list
+              })
+              .onClick();
           })
         );
     }

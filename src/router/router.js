@@ -84,21 +84,21 @@ export default [
 
             {
                 path: '/greenBelt',
-                name: '绿波带',
+                ame: '绿波带',
                 component: resolve => require(['@/views/greenBelt/Index'], resolve),
                 redirect: {
                     name: '绿波带列表'
                 },
                 children: [
                     {
-                        path: '',
+                        path: 'index',
                         name: '绿波带列表',
-                        component: resolve => require(['@/views/greenBelt/Main'], resolve)
+                        component: resolve => require(['@/views/greenBelt/List'], resolve),
                     },
                     {
-                        path: ':id',
+                        path: 'details',
                         name: '绿波带详情',
-                        component: resolve => require(['@/views/greenBelt/Details'], resolve)
+                        component: resolve => require(['@/views/greenBelt/Details'], resolve),
                     }
                 ]
             },

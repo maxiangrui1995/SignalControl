@@ -1,16 +1,17 @@
 <template>
-    <div>
-        <Card :style="{'width':'300px','position':'absolute','top':'20px','left':'20px'}" :padding="0">
-            <p slot="title">特勤联动</p>
-            <a href="javascript:;" slot="extra" @click.prevent="createData">
-                <Icon type="plus"></Icon>
-                新增
-            </a>
-            <Table :columns="columns" :data="data" :showHeader="false" :loading="loading"></Table>
-            <Page :current="page" :total="total" :page-size="rows" simple @on-change="pageChange" :style="{'margin':'10px','text-align':'right'}"></Page>
-        </Card>
+  <div style="height:100%;">
+    <g-map :lat="lat" :lng="lng" :markers="true" />
+    <Card :style="{'width':'300px','position':'absolute','top':'20px','left':'20px'}" :padding="0">
+      <p slot="title">特勤联动</p>
+      <a href="javascript:;" slot="extra" @click.prevent="createData">
+        <Icon type="plus"></Icon>
+        新增
+      </a>
+      <Table :columns="columns" :data="data" :showHeader="false" :loading="loading"></Table>
+      <Page :current="page" :total="total" :page-size="rows" simple @on-change="pageChange" :style="{'margin':'10px','text-align':'right'}"></Page>
+    </Card>
 
-        <!-- <Modal v-model="modal" :loading="true" :title="formTitle" @on-ok="formOk">
+    <!-- <Modal v-model="modal" :loading="true" :title="formTitle" @on-ok="formOk">
             <Form :model="formItem" :label-width="80">
                 <FormItem label="子区名称">
                     <Input v-model="formItem.name" placeholder="请输入新的子区名称..." />
@@ -35,10 +36,11 @@
                 </FormItem>
             </Form>
         </Modal> -->
-    </div>
+  </div>
 </template>
 
 <script>
+import GMap from "@/components/GMap";
 import { getGreenBelt, getPrivilege } from "@/api";
 
 const type = {
@@ -49,6 +51,9 @@ const direction = {
   "1": "正向"
 };
 export default {
+  components: {
+    GMap
+  },
   data() {
     return {
       columns: [
@@ -135,7 +140,9 @@ export default {
       modal: false,
       formTitle: "",
       formItem: {},
-      seen: true
+      seen: true,
+      lat: 119.77495282888412,
+      lng: 36.37174657521467
     };
   },
   methods: {
@@ -200,5 +207,4 @@ export default {
 </script>
 
 <style>
-
 </style>

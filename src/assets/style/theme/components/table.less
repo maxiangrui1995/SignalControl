@@ -1,27 +1,34 @@
 @import "../color.less";
-.ivu-table-wrapper {
-    border: none;
-    .ivu-table {
-        background-color: @background-color-base;
-        &:before,
-        &:after {
-            background: transparent;
-        }
-        td {
-            background-color: transparent;
-        }
-        &-row {
-            &:hover {
-                background-color: @table-td-hover-bg;
-                cursor: pointer;
-            }
-        }
-        &-border {
-            border-left: 1px solid @border-color-base;
-            border-top: 1px solid @border-color-base;
+.ivu-table {
+    background-color: @background-color-base;
+    &-wrapper {
+        border: none;
+        >.ivu-spin {
+            background: #10447e;
         }
     }
-    >.ivu-spin {
-        background: #10447e;
+    &:before,
+    &:after {
+        background: transparent;
+    }
+    td {
+        background-color: transparent;
+    }
+    &-row-highlight,
+    tr&-row-highlight&-row-hover {
+        td {
+            background-color: @table-td-highlight-bg;
+        }
+    }
+    /* &-row {
+        
+        &:hover {
+            background-color: @table-td-hover-bg;
+            cursor: pointer;
+        }
+    } */
+    &-border {
+        border-left: 1px solid @border-color-base;
+        border-top: 1px solid @border-color-base;
     }
 }
