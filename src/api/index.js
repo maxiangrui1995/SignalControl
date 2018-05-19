@@ -172,14 +172,44 @@ export const modifyGreenBelt = params => {
 export const removeGreenBelt = params => {
   return http.$post("d_green_wave/dataDelete", params);
 };
-// 绿波带详情
-export const getGreenBeltDetails = params => {
-  return http.$post("d_green_wave_sub/dataList", params);
-};
 
+/* 绿波带详情 */
+export const $d_green_wave_sub = {
+  // 列表
+  dataList(params) {
+    return http.$post("d_green_wave_sub/dataList", params);
+  },
+  // 新增
+  dataAdd(params) {
+    return http.$post("d_green_wave_sub/dataAdd", params);
+  },
+  // 修改
+  dataUpdate(params) {
+    return http.$post("d_green_wave_sub/dataUpdate", params);
+  },
+  // 批量修改
+  dataUpdateAll(params) {
+    return http.$post("d_green_wave_sub/dataUpdateAll", params);
+  },
+  // 删除
+  dataDelete(params) {
+    return http.$post("d_green_wave_sub/dataDelete", params);
+  },
+  // 给信号机下载绿波配置
+  downLoadSetting(params) {
+    return http.$post("d_green_wave_sub/downLoadSetting", params);
+  }
+};
 
 /* ----------------------特勤联动--------------------------- */
-// 获取特勤信息
-export const getPrivilege = params => {
-  return http.$post("d_secret_service_plan/planList", params);
-};
+
+export const d_secret_service_plan = {
+  // 列表
+  planList(params) {
+    return http.$post("d_secret_service_plan/planList", params);
+  },
+  // 线路
+  getLine(params) {
+    return http.$post("d_secret_service_plan/getLine", params);
+  }
+}

@@ -84,7 +84,7 @@ export default [
 
             {
                 path: '/greenBelt',
-                ame: '绿波带',
+                name: '绿波带',
                 component: resolve => require(['@/views/greenBelt/Index'], resolve),
                 redirect: {
                     name: '绿波带列表'
@@ -106,7 +106,17 @@ export default [
             {
                 path: '/privilege',
                 name: '特勤联动',
-                component: resolve => require(['@/views/privilege/Index'], resolve)
+                component: resolve => require(['@/views/privilege/Index'], resolve),
+                redirect: {
+                    path: ''
+                },
+                children: [
+                    {
+                        path: '',
+                        name: '特勤联动列表',
+                        component: resolve => require(['@/views/privilege/List'], resolve)
+                    }
+                ]
             },
 
             {
