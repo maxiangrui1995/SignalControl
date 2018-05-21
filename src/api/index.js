@@ -155,6 +155,29 @@ export const getVehicleInspection = params => {
   return http.$post("d_car_sensor/dataList", params);
 };
 
+// 特征参数-自适应方案
+export const getAdaptive_1 = params => {
+  return http.$post("d_pattern_adaptive/dataView", params);
+};
+export const getAdaptive_2 = params => {
+  return http.$post("d_pattern_adaptive_sub/dataList", params);
+};
+// 特征参数-自适应方案修改
+export const updateAdaptive_1 = params => {
+  return http.$post("d_pattern_adaptive/dataUpdate", params);
+};
+export const updateAdaptive_2 = params => {
+  return http.$post("d_pattern_adaptive_sub/dataUpdate", params);
+};
+// 特征参数-自适应方案新增
+export const createAdaptive = params => {
+  return http.$post("d_pattern_adaptive_sub/dataAdd", params);
+};
+// 特征参数-自适应方案删除
+export const removeAdaptive = params => {
+  return http.$post("d_pattern_adaptive_sub/dataDelete", params);
+};
+
 /* ----------------------绿波带--------------------------- */
 // 获取绿波带信息
 export const getGreenBelt = params => {
