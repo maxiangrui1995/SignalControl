@@ -1,21 +1,21 @@
 <template>
-    <div>
-        <div class="dh-table-wrapper-toolbar">
+  <div>
+    <!-- <div class="dh-table-wrapper-toolbar">
             <Button type="primary" icon="plus" @click="createData">车检器</Button>
-        </div>
-        <Table :columns="columns" :data="data"></Table>
+        </div> -->
+    <Table :columns="columns" :data="data"></Table>
 
-        <Modal v-model="modal" :loading="true" :title="formTitle" @on-ok="formOk">
-            <Form :model="formItem" :label-width="100">
-                <FormItem label="车检器IP">
-                    <Input v-model="formItem.ip" placeholder="请输入新的车检器IP..." />
-                </FormItem>
-                <FormItem label="车检器别名">
-                    <Input v-model="formItem.name" placeholder="请输入新的车检器别名..." />
-                </FormItem>
-            </Form>
-        </Modal>
-    </div>
+    <Modal v-model="modal" :loading="true" :title="formTitle" @on-ok="formOk">
+      <Form :model="formItem" :label-width="100">
+        <FormItem label="车检器IP">
+          <Input v-model="formItem.ip" placeholder="请输入新的车检器IP..." />
+        </FormItem>
+        <FormItem label="车检器别名">
+          <Input v-model="formItem.name" placeholder="请输入新的车检器别名..." />
+        </FormItem>
+      </Form>
+    </Modal>
+  </div>
 </template>
 
 <script>
@@ -26,8 +26,8 @@ export default {
         {
           title: "车检器IP",
           key: "ip"
-        },
-        {
+        }
+        /* {
           title: "车检器别名",
           key: "name"
         },
@@ -72,7 +72,7 @@ export default {
               )
             ]);
           }
-        }
+        } */
       ],
       modal: false,
       formTitle: "",
@@ -118,5 +118,4 @@ export default {
 };
 </script>
 <style>
-
 </style>

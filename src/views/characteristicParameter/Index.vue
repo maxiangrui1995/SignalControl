@@ -51,7 +51,7 @@ export default {
           render: (h, params) => {
             return h(
               "div",
-              `${params.row.min_green_down}阶段${params.row.min_green_up}相位`
+              `${params.row.min_green_down}-${params.row.min_green_up}`
             );
           }
         },
@@ -61,7 +61,7 @@ export default {
           render: (h, params) => {
             return h(
               "div",
-              `${params.row.max_green_down}阶段${params.row.max_green_up}相位`
+              `${params.row.max_green_down}-${params.row.max_green_up}`
             );
           }
         },
@@ -71,7 +71,7 @@ export default {
           render: (h, params) => {
             return h(
               "div",
-              `${params.row.extends_down}阶段${params.row.extends_up}相位`
+              `${params.row.extends_down}-${params.row.extends_up}`
             );
           }
         },

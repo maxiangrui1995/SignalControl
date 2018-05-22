@@ -1,12 +1,7 @@
 <template>
   <div style="width:300px">
     <Card :padding="0">
-      <p slot="title">
-        <Breadcrumb>
-          <BreadcrumbItem to="/regionalManagement">上一级</BreadcrumbItem>
-          <BreadcrumbItem>{{name}}</BreadcrumbItem>
-        </Breadcrumb>
-      </p>
+      <p slot="title">区域管理</p>
       <a href="javascript:;" slot="extra" @click.prevent="createData">
         <Icon type="plus"></Icon>
         新增
@@ -22,11 +17,9 @@ import { $d_area } from "@/api";
 export default {
   data() {
     return {
-      id: this.$route.params.id,
-      name: "",
       columns: [
         {
-          title: "道路名称",
+          title: "区域名称",
           key: "name"
         },
         {
@@ -75,6 +68,7 @@ export default {
           }
         }
       ],
+      data: [],
       loading: false,
       page: 1,
       rows: 5,
@@ -89,17 +83,17 @@ export default {
     loadData() {
       this.data = [];
       this.loading = true;
-      this.regionData.forEach((item, i) => {
+      this.tableData.forEach((item, i) => {
         if (i >= (this.page - 1) * this.rows && i < this.page * this.rows) {
           this.data.push(item);
         }
       });
-      this.total = this.regionData.length;
+      this.total = this.tableData.length;
       this.loading = false;
     },
     linkToDetails(row) {
       this.$router.push({
-        path: "/regionalManagement/" + this.id + "/" + row.id
+        path: "/regionalManagement/" + row.id
       });
     },
     createData() {
@@ -111,7 +105,7 @@ export default {
             props: {
               value: newValue,
               autofocus: true,
-              placeholder: "请输入新的道路名称..."
+              placeholder: "请输入新的区域名称..."
             },
             on: {
               input: val => {
@@ -124,7 +118,7 @@ export default {
         onOk() {
           $d_area
             .dataAdd({
-              pid: self.id,
+              pid: 0,
               name: newValue
             })
             .then(res => {
@@ -148,7 +142,7 @@ export default {
             props: {
               value: newValue,
               autofocus: true,
-              placeholder: "请输入新的道路名称..."
+              placeholder: "请输入新的区域名称..."
             },
             on: {
               input: val => {
@@ -196,22 +190,12 @@ export default {
     }
   },
   computed: {
-    regionData() {
-      let data = this.$store.state.regionModule.data;
-      let region = [];
-      if (data) {
-        data.forEach(element => {
-          if (element.id === this.id) {
-            region = element.children;
-            this.name = element.name;
-          }
-        });
-      }
-      return region;
+    tableData() {
+      return this.$store.state.regionModule.data;
     }
   },
   watch: {
-    regionData() {
+    tableData() {
       this.loadData();
     }
   },

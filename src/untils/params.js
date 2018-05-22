@@ -81,3 +81,16 @@ export const d_green_wave_sub = {
         }
     ]
 }
+
+/* 路口 */
+export const d_crossing = {
+    direction: {
+        '1357': "普通十字型路口"
+    },
+    road_data: [
+        { direction: 1, roadnum: 3, target: [3, 2, 4] },
+        { direction: 3, roadnum: 3, target: [3, 2, 4] },
+        { direction: 5, roadnum: 3, target: [3, 2, 4] },
+        { direction: 7, roadnum: 3, target: [3, 2, 4] }
+    ]
+}

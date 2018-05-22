@@ -12,44 +12,50 @@ export const isLogin = params => {
 
 
 /* ----------------------区域--------------------------- */
-// 获取所有区域/道路/路口
-export const getRegion = params => {
-  return http.$post("d_area/treeList", params);
+export const $d_area = {
+  // 列表
+  treeList(params) {
+    return http.$post("d_area/treeList", params);
+  },
+  // 修改
+  dataUpdate(params) {
+    return http.$post("d_area/dataUpdate", params);
+  },
+  // 新增
+  dataAdd(params) {
+    return http.$post("d_area/dataAdd", params);
+  },
+  // 删除
+  dataDelete(params) {
+    return http.$post("d_area/dataDelete", params);
+  }
 };
-// 修改区域
-export const updateArea = params => {
-  return http.$post("d_area/dataUpdate", params);
-};
-// 新增区域
-export const createArea = params => {
-  return http.$post("d_area/dataAdd", params);
-};
-// 删除区域
-export const removeArea = params => {
-  return http.$post("d_area/dataDelete", params);
-};
+// 路口
+export const $d_crossing = {
+  // 新增
+  dataAdd(params) {
+    return http.$post("d_crossing/dataAdd", params);
+  },
+  // 编辑
+  dataUpdate(params) {
+    return http.$post("d_crossing/dataUpdate", params);
+  },
+  // 删除
+  dataDelete(params) {
+    return http.$post("d_crossing/dataDelete", params);
+  },
+  // 获取路口下的设备信息
+  dataView(params) {
+    return http.$post("d_crossing/dataView", params);
+  }
+}
 
-// 新增路口
-export const createCrossing = params => {
-  return http.$post("d_crossing/dataAdd", params);
-};
-// 修改路口
-export const updateCrossing = params => {
-  return http.$post("d_crossing/dataUpdate", params);
-};
-// 删除路口
-export const removeCrossing = params => {
-  return http.$post("d_crossing/dataDelete", params);
-};
 
 // 获取路口常量
 export const getCrossingDefault = params => {
   return http.$post("d_crossing/getVar", params);
 };
-// 获取路口下的设备信息
-export const getCrossingDev = params => {
-  return http.$post("d_crossing/dataView", params);
-};
+
 // 获取路口执行方案信息
 export const getCrossingPlan = params => {
   return http.$post("d_machine_control/getMachinePlan", params);
@@ -142,9 +148,12 @@ export const removeSchedule = params => {
 };
 
 // 特征参数-灯组
-export const getLightgroup = params => {
-  return http.$post("d_phaseinfo/dataList", params);
-};
+export const $d_phaseinfo = {
+  dataList(params) {
+    return http.$post("d_phaseinfo/dataList", params);
+  }
+}
+
 
 // 特征参数-相位
 export const getPhase = params => {

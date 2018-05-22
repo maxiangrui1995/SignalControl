@@ -1,14 +1,20 @@
 /* 特征参数 */
-import { getPlanView, getDateType, getPattern, getPhase } from "@/api";
+import { getPlanView, getDateType, getPattern, getPhase, $d_phaseinfo } from "@/api";
 
 export default {
     namespaced: true,
     state: {
+        // 基本
         baseData: {},
+        // 日期类型
         weekData: [],
+        // 方案
         planData: {},
+        // 阶段
         phaseData: [],
-        loading: false
+        loading: false,
+        // 灯组信息
+        phaseinfo: []
     },
     mutations: {
         SET_DATA(state, data) {
@@ -25,6 +31,9 @@ export default {
         },
         SET_LOADING(state, data) {
             state.loading = data;
+        },
+        SET_PHASEINFO(state, data) {
+            state.phaseinfo = data;
         }
     },
     actions: {
@@ -75,7 +84,21 @@ export default {
             }).catch(res => {
                 console.error(res);
             });
-        }
+        },
+        SET_PHASEINFO(context, id) {
+            context.commit("SET_LOADING", true);
+            $d_phaseinfo
+                .dataList({
+                    plan_id: id,
+                    page: 1,
+                    rows: 16
+                }).then(res => {
+                    context.commit("SET_PHASEINFO", res.data.list || []);
+                    context.commit("SET_LOADING", false);
+                }).catch(res => {
+                    console.error(res);
+                });
+        },
     },
     getters: {}
 };

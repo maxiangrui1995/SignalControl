@@ -1,4 +1,4 @@
-import { getRegion } from "@/api";
+import { $d_area } from "@/api";
 
 
 export default {
@@ -18,7 +18,7 @@ export default {
   actions: {
     SET_DATA(context) {
       context.commit("SET_LOADING", true);
-      getRegion().then(res => {
+      $d_area.treeList().then(res => {
         let region = res.data || [];
         context.commit("SET_DATA", region);
         context.commit("SET_LOADING", false);

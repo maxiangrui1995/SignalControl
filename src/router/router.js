@@ -11,9 +11,34 @@ export default [
             {
                 path: '/regionalManagement',
                 name: '区域管理',
-                component: resolve => require(['@/views/regionalManagement/Index'], resolve)
+                component: resolve => require(['@/views/regionalManagement/Index'], resolve),
+                redirect: {
+                    path: ""
+                },
+                children: [
+                    {
+                        path: '',
+                        name: '区域管理-区域',
+                        component: resolve => require(['@/views/regionalManagement/Area'], resolve)
+                    },
+                    {
+                        path: ':id',
+                        name: '区域管理-道路',
+                        component: resolve => require(['@/views/regionalManagement/Lane'], resolve)
+                    },
+                    {
+                        path: ':id/:pid',
+                        name: '区域管理-路口',
+                        component: resolve => require(['@/views/regionalManagement/Crossing'], resolve)
+                    },
+                    {
+                        path: ':id/:pid/:crossing_id',
+                        name: '区域管理-设备',
+                        component: resolve => require(['@/views/regionalManagement/Details'], resolve)
+                    }
+                ]
             },
-            {
+            /* {
                 path: '/regionalManagement/:id',
                 name: '区域管理-道路',
                 component: resolve => require(['@/views/regionalManagement/Lane'], resolve)
@@ -27,7 +52,7 @@ export default [
                 path: '/regionalManagement/:id/:pid/:crossing_id',
                 name: '区域管理-详情',
                 component: resolve => require(['@/views/regionalManagement/Details'], resolve)
-            },
+            }, */
 
             {
                 path: '/characteristicParameter',

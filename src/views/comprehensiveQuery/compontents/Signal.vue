@@ -1,15 +1,15 @@
 <template>
     <Modal :value="modal" title="信号机实时监控" :mask-closable="false" :width="900" class-name="special-modal" @on-visible-change="change">
-        <y-signal></y-signal>
+        <!-- <y-signal></y-signal> -->
         <div slot="footer" :style="{display:'none'}"></div>
     </Modal>
 </template>
 
 <script>
-import YSignal from "@/components/SignalCanvas.vue";
+// import YSignal from "@/components/SignalCanvas.vue";
 export default {
   components: {
-    YSignal
+    // YSignal
   },
   props: {
     modal: Boolean

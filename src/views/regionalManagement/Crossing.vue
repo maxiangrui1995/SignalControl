@@ -1,16 +1,19 @@
 <template>
-  <div class="dh-table-wrapper">
-    <div class="dh-table-wrapper-header">
-      <Breadcrumb>
-        <BreadcrumbItem to="/regionalManagement">区域管理</BreadcrumbItem>
-        <BreadcrumbItem :to="breadcrumUrl">{{name}}</BreadcrumbItem>
-        <BreadcrumbItem>{{name2}}</BreadcrumbItem>
-      </Breadcrumb>
-    </div>
-    <div class="dh-table-wrapper-toolbar">
-      <Button type="primary" icon="plus" @click="createData">路口</Button>
-    </div>
-    <Table :columns="columns" :data="regionData" @on-row-click="tableRowClick" :loading="loading"></Table>
+  <div style="width:300px">
+    <Card :padding="0">
+      <p slot="title">
+        <Breadcrumb>
+          <BreadcrumbItem :to="'/regionalManagement/'+id">上一级</BreadcrumbItem>
+          <BreadcrumbItem>{{name}}</BreadcrumbItem>
+        </Breadcrumb>
+      </p>
+      <a href="javascript:;" slot="extra" @click.prevent="createData">
+        <Icon type="plus"></Icon>
+        新增
+      </a>
+      <Table :columns="columns" :data="data" :showHeader="false" :loading="loading" highlight-row></Table>
+      <Page :current="page" :total="total" :page-size="rows" simple @on-change="pageChange" :style="{'margin':'10px','text-align':'right'}"></Page>
+    </Card>
 
     <Modal v-model="modal" :loading="true" :title="formTitle" @on-ok="formOk">
       <Form :model="formItem" :label-width="80">
@@ -20,10 +23,6 @@
         <FormItem label="路口类型">
           <Select v-model="formItem.direction">
             <Option value="1357">标准十字路口</Option>
-            <Option value="135">T型路口1</Option>
-            <Option value="137">T型路口2</Option>
-            <Option value="157">T型路口3</Option>
-            <Option value="357">T型路口4</Option>
           </Select>
         </FormItem>
         <FormItem label="纬度">
@@ -38,129 +37,125 @@
 </template>
 
 <script>
-import { updateCrossing, createCrossing, removeCrossing } from "@/api";
-const direction = {
-  "1357": "普通十字路口",
-  "135": "T字路口1",
-  "137": "T字路口2",
-  "157": "T字路口3",
-  "357": "T字路口4"
-};
-const road_data = [
-  { direction: 1, roadnum: 3, target: [3, 2, 4] },
-  { direction: 3, roadnum: 3, target: [3, 2, 4] },
-  { direction: 5, roadnum: 3, target: [3, 2, 4] },
-  { direction: 7, roadnum: 3, target: [3, 2, 4] }
-];
+import { $d_crossing } from "@/api";
+import { d_crossing } from "@/untils/params";
 export default {
   data() {
     return {
+      name: "",
+      id: this.$route.params.id,
+      pid: this.$route.params.pid,
       columns: [
         {
           title: "路口名称",
-          key: "name"
-        },
-        {
-          title: "类型",
-          key: "direction",
+          key: "name",
           render: (h, params) => {
-            return h("div", direction[params.row.direction]);
+            return h(
+              "Poptip",
+              {
+                props: {
+                  trigger: "hover",
+                  title: "详细信息",
+                  placement: "right"
+                }
+              },
+              [
+                h("Tag", params.row.name),
+                h(
+                  "div",
+                  {
+                    slot: "content"
+                  },
+                  [
+                    h(
+                      "div",
+                      "路口类型：" +
+                        d_crossing["direction"][params.row.direction]
+                    ),
+                    h("div", "经度：" + params.row.lng),
+                    h("div", "纬度：" + params.row.lat)
+                  ]
+                )
+              ]
+            );
           }
-        },
-        {
-          title: "纬度",
-          key: "lng"
-        },
-        {
-          title: "经度",
-          key: "lat"
         },
         {
           title: "操作",
           key: "action",
           align: "center",
-          width: 120,
+          width: 80,
           render: (h, params) => {
-            return h("div", [
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "text",
-                    size: "small"
-                  },
-                  on: {
-                    click: event => {
-                      event.stopPropagation();
-                      this.modifyData(params.row);
+            return h(
+              "Dropdown",
+              {
+                // props: { trigger: "click" }
+                on: {
+                  "on-click": name => {
+                    switch (true) {
+                      case name === "details":
+                        this.linkToDetails(params.row);
+                        break;
+                      case name === "modify":
+                        this.modifyData(params.row);
+                        break;
+                      case name === "remove":
+                        this.removeData(params.row.id);
+                        break;
+                      default:
+                        break;
                     }
                   }
-                },
-                "修改"
-              ),
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "text",
-                    size: "small"
+                }
+              },
+              [
+                h("Icon", { props: { type: "ios-more", size: 20 } }),
+                h(
+                  "DropdownMenu",
+                  {
+                    slot: "list"
                   },
-                  on: {
-                    click: event => {
-                      event.stopPropagation();
-                      this.removeData(params.row.id);
-                    }
-                  }
-                },
-                "删除"
-              )
-            ]);
+                  [
+                    h("DropdownItem", { props: { name: "details" } }, "下一级"),
+                    h("DropdownItem", { props: { name: "modify" } }, "编辑"),
+                    h("DropdownItem", { props: { name: "remove" } }, "删除")
+                  ]
+                )
+              ]
+            );
           }
         }
       ],
-      name: "",
-      name2: "",
-      id: this.$route.params.id,
-      pid: this.$route.params.pid,
-      breadcrumUrl: "/regionalManagement/" + this.$route.params.id,
+      data: [],
+      loading: false,
+      page: 1,
+      rows: 5,
+      total: 0,
       modal: false,
       formTitle: "",
       formItem: {}
     };
   },
   methods: {
-    formOk() {
-      if (this.formItem.id) {
-        //编辑
-        updateCrossing({
-          area_id: this.pid,
-          ...this.formItem,
-          road_data: road_data
-        }).then(res => {
-          if (res.status) {
-            this.$Message.success("修改成功");
-          } else {
-            this.$Message.error("修改失败");
-          }
-          this.modal = false;
-          this.$store.dispatch("regionModule/SET_DATA");
-        });
-      } else {
-        //新增
-        createCrossing({
-          area_id: this.pid,
-          ...this.formItem,
-          road_data: road_data
-        }).then(res => {
-          if (res.status) {
-            this.$Message.success("添加成功");
-          } else {
-            this.$Message.error("添加失败");
-          }
-          this.modal = false;
-          this.$store.dispatch("regionModule/SET_DATA");
-        });
-      }
+    loadData() {
+      this.data = [];
+      this.loading = true;
+      this.regionData.forEach((item, i) => {
+        if (i >= (this.page - 1) * this.rows && i < this.page * this.rows) {
+          this.data.push(item);
+        }
+      });
+      this.total = this.regionData.length;
+      this.loading = false;
+    },
+    pageChange(page) {
+      this.page = page;
+      this.loadData();
+    },
+    linkToDetails(row) {
+      this.$router.push({
+        path: "/regionalManagement/" + this.id + "/" + this.pid + "/" + row.id
+      });
     },
     createData() {
       this.formItem = {
@@ -186,7 +181,7 @@ export default {
         content: "<p>确定删除？删除后无法恢复！</p>",
         loading: true,
         onOk: () => {
-          removeCrossing({ id: id }).then(res => {
+          $d_crossing.dataDelete({ id: id }).then(res => {
             if (res.status) {
               this.$Message.success("删除成功");
             } else {
@@ -198,16 +193,42 @@ export default {
         }
       });
     },
-    tableRowClick(row, index) {
-      this.$router.push({
-        path:
-          "/regionalManagement/" +
-          this.$route.params.id +
-          "/" +
-          this.$route.params.pid +
-          "/" +
-          row.id
-      });
+    formOk() {
+      if (this.formItem.id) {
+        //编辑
+        $d_crossing
+          .dataUpdate({
+            area_id: this.pid,
+            ...this.formItem,
+            road_data: d_crossing.road_data
+          })
+          .then(res => {
+            if (res.status) {
+              this.$Message.success("修改成功");
+            } else {
+              this.$Message.error("修改失败");
+            }
+            this.modal = false;
+            this.$store.dispatch("regionModule/SET_DATA");
+          });
+      } else {
+        //新增
+        $d_crossing
+          .dataAdd({
+            area_id: this.pid,
+            ...this.formItem,
+            road_data: d_crossing.road_data
+          })
+          .then(res => {
+            if (res.status) {
+              this.$Message.success("添加成功");
+            } else {
+              this.$Message.error("添加失败");
+            }
+            this.modal = false;
+            this.$store.dispatch("regionModule/SET_DATA");
+          });
+      }
     }
   },
   computed: {
@@ -217,11 +238,10 @@ export default {
       if (data) {
         data.forEach(element => {
           if (element.id === this.id) {
-            this.name = element.name;
             if (element.children) {
               element.children.forEach(element => {
                 if (element.id === this.pid) {
-                  this.name2 = element.name;
+                  this.name = element.name;
                   region = element.children;
                 }
               });
@@ -230,19 +250,18 @@ export default {
         });
       }
       return region;
-    },
-    loading() {
-      return this.$store.state.regionModule.loading;
+    }
+  },
+  watch: {
+    regionData() {
+      this.loadData();
     }
   },
   created() {
-    if (!this.$store.state.regionModule.data.length) {
-      this.$store.dispatch("regionModule/SET_DATA");
-    }
+    this.loadData();
   }
 };
 </script>
 
 <style>
-
 </style>

@@ -1,25 +1,41 @@
 <template>
-  <div class="dh-table-wrapper">
-    <div class="dh-table-wrapper-header">
-      <Breadcrumb>
-        <BreadcrumbItem to="/regionalManagement">区域管理</BreadcrumbItem>
-        <BreadcrumbItem :to="breadcrumUrl">{{name}}</BreadcrumbItem>
-        <BreadcrumbItem :to="breadcrumUrl2">{{name2}}</BreadcrumbItem>
-        <BreadcrumbItem>{{name3}}</BreadcrumbItem>
-      </Breadcrumb>
+    <div style="width:300px;">
+        <Card :padding="10">
+            <p slot="title">
+                <Breadcrumb>
+                    <BreadcrumbItem :to="'/regionalManagement/'+id+'/'+pid">上一级</BreadcrumbItem>
+                    <BreadcrumbItem>{{name}}</BreadcrumbItem>
+                </Breadcrumb>
+            </p>
+            <a href="javascript:;" slot="extra" @click.prevent="createData">
+                <Icon type="plus"></Icon>
+                新增
+            </a>
+            <Tabs value="signal">
+                <TabPane label="信号机" name="signal">
+                    <y-signal :data="signalData"></y-signal>
+                </TabPane>
+                <TabPane label="备用电源" name="ups">
+                    <y-ups :data="upsData"></y-ups>
+                </TabPane>
+                <TabPane label="车检服务器" name="ipc">
+                    <y-ipc :data="ipcData"></y-ipc>
+                </TabPane>
+                <TabPane label="电子警察" name="camera">
+                    <y-camera :data="cameraData"></y-camera>
+                </TabPane>
+            </Tabs>
+        </Card>
     </div>
-    <y-signal :data="signalData"></y-signal>
-    <y-ups :data="upsData"></y-ups>
-    <y-ipc :data="ipcData"></y-ipc>
-    <y-camera :data="cameraData"></y-camera>
-  </div>
 </template>
 
 <script>
+import GMap from "@/components/GMap";
 import YSignal from "./Details/Signal";
 import YUps from "./Details/Ups";
 import YCamera from "./Details/Camera";
 import YIpc from "./Details/Ipc";
+import { $d_crossing } from "@/api";
 export default {
   components: {
     YSignal,
@@ -33,75 +49,12 @@ export default {
       pid: this.$route.params.pid,
       crossing_id: this.$route.params.crossing_id,
       name: "",
-      name2: "",
-      name3: "",
-      breadcrumUrl: "/regionalManagement/" + this.$route.params.id,
-      breadcrumUrl2:
-        "/regionalManagement/" +
-        this.$route.params.id +
-        "/" +
-        this.$route.params.pid,
-      signalData: [{ ip: "192.168.0.8", port: 4001, id: 1 }],
-      upsData: [{ ip: "192.168.0.88", port: 5000, id: 1 }],
-      cameraData: [
-        {
-          ip: "192.168.0.1",
-          port: 2555,
-          type: "2",
-          username: "admin",
-          password: "123",
-          id: 1
-        },
-        {
-          ip: "192.168.0.2",
-          port: 2555,
-          type: "2",
-          username: "admin",
-          password: "123",
-          id: 2
-        },
-        {
-          ip: "192.168.0.3",
-          port: 2555,
-          type: "2",
-          username: "admin",
-          password: "123",
-          id: 3
-        },
-        {
-          ip: "192.168.0.4",
-          port: 2555,
-          type: "2",
-          username: "admin",
-          password: "123",
-          id: 4
-        }
-      ],
-      ipcData: [
-        {
-          ip: "192.168.0.1",
-          name: "192.168.0.1",
-          id: 1
-        },
-        {
-          ip: "192.168.0.2",
-          name: "192.168.0.1",
-          id: 2
-        },
-        {
-          ip: "192.168.0.3",
-          name: "192.168.0.1",
-          id: 3
-        },
-        {
-          ip: "192.168.0.4",
-          name: "192.168.0.1",
-          id: 4
-        }
-      ]
+      signalData: [],
+      upsData: [],
+      ipcData: [],
+      cameraData: []
     };
   },
-  methods: { createData() {} },
   computed: {
     regionData() {
       let data = this.$store.state.regionModule.data;
@@ -109,15 +62,13 @@ export default {
       if (data) {
         data.forEach(element => {
           if (element.id === this.id) {
-            this.name = element.name;
             if (element.children) {
               element.children.forEach(element => {
                 if (element.id === this.pid) {
-                  this.name2 = element.name;
                   if (element.children) {
                     element.children.forEach(element => {
                       if (element.id === this.crossing_id) {
-                        this.name3 = element.name;
+                        this.name = element.name;
                         region = element.children;
                       }
                     });
@@ -129,22 +80,29 @@ export default {
         });
       }
       return region;
-    },
-    loading() {
-      return this.$store.state.regionModule.loading;
-    }
-  },
-  created() {
-    if (!this.$store.state.regionModule.data.length) {
-      this.$store.dispatch("regionModule/SET_DATA");
     }
   },
   watch: {
     regionData() {}
+  },
+  created() {
+    $d_crossing
+      .dataView({
+        id: this.crossing_id
+      })
+      .then(res => {
+        let data = res.data;
+        this.signalData = data.machine ? [data.machine] : [];
+        this.upsData = data.ups ? [data.ups] : [];
+        this.ipcData = data.ipc ? data.ipc : [];
+        this.cameraData = data.camera ? data.camera : [];
+      });
+  },
+  methods: {
+    createData() {}
   }
 };
 </script>
 
 <style>
-
 </style>

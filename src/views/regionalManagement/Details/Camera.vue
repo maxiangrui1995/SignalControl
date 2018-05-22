@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="dh-table-wrapper-toolbar">
+    <!-- <div class="dh-table-wrapper-toolbar">
       <Button type="primary" icon="plus" @click="createData">相机</Button>
-    </div>
+    </div> -->
     <Table :columns="columns" :data="data"></Table>
 
     <Modal v-model="modal" :loading="true" :title="formTitle" @on-ok="formOk">
@@ -45,11 +45,11 @@ export default {
           title: "相机IP",
           key: "ip"
         },
-        {
+        /* {
           title: "相机端口号",
           key: "port"
-        },
-        {
+        }, */
+        /* {
           title: "类型",
           key: "type",
           render: (h, params) => {
@@ -105,7 +105,7 @@ export default {
               )
             ]);
           }
-        }
+        } */
       ],
       modal: false,
       formTitle: "",

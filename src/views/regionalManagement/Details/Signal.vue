@@ -1,8 +1,5 @@
 <template>
   <div>
-    <div class="dh-table-wrapper-toolbar">
-      <Button type="primary" icon="plus" @click="createData" :disabled="isDisabled">信号机</Button>
-    </div>
     <Table :columns="columns" :data="data"></Table>
 
     <Modal v-model="modal" :loading="true" :title="formTitle" @on-ok="formOk">
@@ -24,54 +21,8 @@ export default {
     return {
       columns: [
         {
-          title: "信号机IP",
+          title: "IP",
           key: "ip"
-        },
-        {
-          title: "信号机端口号",
-          key: "port"
-        },
-        {
-          title: "操作",
-          key: "active",
-          align: "center",
-          width: 120,
-          render: (h, params) => {
-            return h("div", [
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "text",
-                    size: "small"
-                  },
-                  on: {
-                    click: event => {
-                      event.stopPropagation();
-                      this.modifyData(params.row.id, params.row.name);
-                    }
-                  }
-                },
-                "修改"
-              ),
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "text",
-                    size: "small"
-                  },
-                  on: {
-                    click: event => {
-                      event.stopPropagation();
-                      this.removeData(params.row.id);
-                    }
-                  }
-                },
-                "删除"
-              )
-            ]);
-          }
         }
       ],
       id: this.$route.params.crossing_id,
@@ -84,8 +35,8 @@ export default {
     data: Array
   },
   computed: {
-    isDisabled() {
-      return this.data.length ? true : false;
+    disabled() {
+      return this.data.length > 0 ? true : false;
     }
   },
   methods: {
@@ -120,10 +71,12 @@ export default {
         }
       });
     }
+  },
+  created() {
+    console.log(this.data);
   }
 };
 </script>
 
 <style>
-
 </style>

@@ -1,6 +1,16 @@
 import imgs from "@/untils/imgs";
-
+// 图片信息
 let { img_lane, img_light } = imgs;
+
+/* 绘制信号机试图 */
+const VIEW = {
+    ele: null,//dom
+    ctx: null,//画布2d
+    show(elem) {
+        console.log(elem);
+
+    }
+};
 
 const APP = elem => {
     return new _APP(elem)
@@ -28,14 +38,14 @@ const view = function (params, X, Y) {
     // 车行道属性
     const laneWidth = 30;
     const laneColor = "#ddd";
-    if (!params) return false;
     let { crossingData, lightData } = params;
-    this.crossingData = crossingData;
-    this.lightData = lightData;
+    this.crossingData = crossingData || [];
+    this.lightData = lightData || [];
+
     // 设置路口
     let formatterCrossing_num = {};
     let formatterCrossing_target = {};
-    crossingData.forEach(item => {
+    this.crossingData.forEach(item => {
         formatterCrossing_num['n' + item.direction] = ~~item.roadnum;
         formatterCrossing_target['target' + item.direction] = item.target;
     });
@@ -89,7 +99,7 @@ const view = function (params, X, Y) {
         ctx.stroke();
         ctx.restore();
     }
-    drawYellow();
+    // drawYellow();
     // 绘制行车道
     const drawLane = () => {
         ctx.save();
@@ -129,7 +139,7 @@ const view = function (params, X, Y) {
         ctx.closePath();
         ctx.restore();
     }
-    drawLane();
+    // drawLane();
     // 绘制虚线行车道
     const drawDashLane = () => {
         ctx.save();
@@ -160,7 +170,7 @@ const view = function (params, X, Y) {
         ctx.closePath();
         ctx.restore();
     }
-    drawDashLane();
+    // drawDashLane();
     // 绘制人行道
     const drawWay = () => {
         ctx.save();
@@ -184,7 +194,7 @@ const view = function (params, X, Y) {
         ctx.closePath();
         ctx.restore();
     }
-    drawWay();
+    // drawWay();
     // 绘制围栏
     const drawWrapper = () => {
         ctx.save();
@@ -231,7 +241,7 @@ const view = function (params, X, Y) {
         ctx.stroke();
         ctx.restore();
     }
-    drawWrapper();
+    // drawWrapper();
     // 绘制车道类型
     const drawLaneTarget = () => {
         let fn = (x, y, p, t) => {
@@ -259,12 +269,12 @@ const view = function (params, X, Y) {
             fn(o7 - 4, t7 + laneWidth * i, 90, target7[i])
         }
     }
-    drawLaneTarget();
+    // drawLaneTarget();
     // 绘制信号灯
     const drawLight = () => {
         // console.log(lightData);
         let formatterLightData = {};
-        lightData.forEach(item => {
+        this.lightData.forEach(item => {
             if (!formatterLightData['d' + item.position]) {
                 formatterLightData['d' + item.position] = { 'car': [], 'man': [] };
             }
@@ -363,7 +373,7 @@ const view = function (params, X, Y) {
         manLight();
 
     }
-    drawLight()
+    // drawLight()
 
     return this;
 }
@@ -394,4 +404,4 @@ _APP.prototype = {
     onClick
 }
 
-export default APP;
+export default VIEW;
