@@ -196,6 +196,7 @@ export default {
         {
           title: "开始时间",
           key: "custom_time",
+          width: 180,
           render: (h, params) => {
             let data = params.row;
             return h(
@@ -211,6 +212,7 @@ export default {
         {
           title: "方案",
           key: "patternid",
+          width: 180,
           render: (h, params) => {
             return h("div", `方案${~~params.row.patternid + 1}`);
           }
@@ -238,7 +240,7 @@ export default {
                     }
                   }
                 },
-                "编辑"
+                [h("a", "编辑")]
               ),
               h(
                 "Button",
@@ -256,7 +258,7 @@ export default {
                     }
                   }
                 },
-                "删除"
+                [h("a", "删除")]
               )
             ]);
           }

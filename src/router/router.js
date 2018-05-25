@@ -7,6 +7,9 @@ export default [
         path: '/',
         name: '首页',
         component: () => import('@/views/index/Index'),
+        redirect: {
+            path: "/comprehensiveQuery"
+        },
         children: [
             {
                 path: '/regionalManagement',
@@ -38,21 +41,6 @@ export default [
                     }
                 ]
             },
-            /* {
-                path: '/regionalManagement/:id',
-                name: '区域管理-道路',
-                component: resolve => require(['@/views/regionalManagement/Lane'], resolve)
-            },
-            {
-                path: '/regionalManagement/:id/:pid',
-                name: '区域管理-路口',
-                component: resolve => require(['@/views/regionalManagement/Crossing'], resolve)
-            },
-            {
-                path: '/regionalManagement/:id/:pid/:crossing_id',
-                name: '区域管理-详情',
-                component: resolve => require(['@/views/regionalManagement/Details'], resolve)
-            }, */
 
             {
                 path: '/characteristicParameter',
@@ -150,7 +138,7 @@ export default [
                 component: resolve => require(['@/views/comprehensiveQuery/Index'], resolve)
             },
             {
-                path: '/comprehensiveQuery/:id',
+                path: '/comprehensiveQuery/map',
                 name: '综合查询-详情',
                 component: resolve => require(['@/views/comprehensiveQuery/Details'], resolve)
             }

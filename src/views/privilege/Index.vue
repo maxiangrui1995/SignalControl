@@ -1,9 +1,7 @@
 <template>
   <div style="height:100%;">
     <g-map markers @listenMap="getMap" />
-    <div style="width:300px;position:absolute;top:20px;left:20px">
-      <router-view></router-view>
-    </div>
+    <router-view></router-view>
   </div>
 </template>
 

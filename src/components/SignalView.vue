@@ -15,6 +15,7 @@ import imgs from "@/untils/imgs";
 const { img_lane, img_light } = imgs;
 export default {
   props: {
+    start: Boolean,
     width: {
       //画布宽度
       type: [Number, String],
@@ -85,23 +86,30 @@ export default {
   },
   created() {
     this.$nextTick(() => {
-      this.start();
+      if (this.start) {
+        this.begin();
+      }
     });
   },
   methods: {
-    start() {
+    begin() {
       let canvas = (this.canvas = this.$refs.canvas);
       canvas.width = this.width;
       canvas.height = this.height;
       canvas.style.background = "rgb(57, 61, 73)";
+      canvas.style.display = "block";
+      canvas.style.margin = "0 auto";
       this.ctx = canvas.getContext("2d");
 
       // 将canvas画布中心点位移到中心
       this.ctx.translate(this.width / 2, this.height / 2);
+      this.ctx.scale(this.scale, this.scale);
+      this.canvasWidth = this.width / this.scale;
+      this.canvasHeight = this.height / this.scale;
 
-      this.view();
-
-      this.view().drawLight();
+      this.timer = setInterval(() => {
+        this.view().drawLight();
+      }, 300);
     },
     /* 判断一个点是否在圆内 */
     isPointInsideCircle(point, circle, r) {
@@ -124,9 +132,10 @@ export default {
     },
     /* 视图 */
     view(XX, YY) {
+      this.clearView();
       let ctx = this.ctx;
-      let cX = this.width / 2;
-      let cY = this.height / 2;
+      let cX = this.canvasWidth / 2;
+      let cY = this.canvasHeight / 2;
       // 格式化路口每个方向的数目和其车道的类型
       let formatterNUM = {};
       let formatterTARGET = {};
@@ -382,13 +391,31 @@ export default {
           ctx.save();
           ctx.translate(x, y);
           ctx.rotate(Math.PI / 180 * r);
+          let str = "ABCDEFGHIJKLMNOPQ";
+          let index = str.indexOf(item.title);
+          let color = "default";
+          if (this.PHASEDATA) {
+            color = this.PHASEDATA[index];
+            if ("123678".indexOf(color) === -1) {
+              color = "default";
+            } else if (color === "6" || color === "7" || color === "8") {
+              if (!this._alpha) {
+                this._alpha = 1;
+              }
+              ctx.globalAlpha = this._alpha;
+              this._alpha -= 0.1;
+              if (this._alpha <= 0.3) {
+                this._alpha = 1;
+              }
+            }
+          }
 
           ctx.drawImage(
             img_light[
               item.lightorder === "0"
                 ? item.lightsharp === "1" ? item.target : "round"
                 : "11"
-            ]["default"],
+            ][color],
             -w / 2,
             -h / 2
           );
@@ -513,24 +540,37 @@ export default {
     }
   },
   computed: {
-    phase() {
-      // console.log(this.phaseData);
+    PHASEDATA() {
+      return this.phaseData;
     },
     LIGHTDATA() {
       return this.lightData;
     },
     CROSSINGDATA() {
       return this.crossingData;
+    },
+    START() {
+      return this.start;
     }
   },
   watch: {
-    phase() {},
-    LIGHTDATA() {
+    PHASEDATA() {
       this.view().drawLight();
+    },
+    LIGHTDATA() {
+      // this.view().drawLight();
     },
     CROSSINGDATA() {
       console.log(this.CROSSINGDATA);
+    },
+    START() {
+      if (this.START) {
+        this.begin();
+      }
     }
+  },
+  destroyed() {
+    clearInterval(this.timer);
   }
 };
 </script>

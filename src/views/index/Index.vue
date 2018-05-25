@@ -9,13 +9,13 @@
     <Layout>
       <Sider hide-trigger class="dh-layout-sider">
         <Menu :active-name="menuActiveName" width="auto" @on-select="menuSelect" :style="{background:'transparent', height:'100%'}">
-          <i-menu-item name="/regionalManagement">
-            <Icon type="ios-navigate"></Icon>
-            <span>区域管理</span>
-          </i-menu-item>
           <i-menu-item name="/comprehensiveQuery">
             <Icon type="search"></Icon>
             <span>综合查询</span>
+          </i-menu-item>
+          <i-menu-item name="/regionalManagement">
+            <Icon type="ios-navigate"></Icon>
+            <span>区域管理</span>
           </i-menu-item>
           <i-menu-item name="/characteristicParameter">
             <Icon type="settings"></Icon>

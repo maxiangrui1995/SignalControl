@@ -1,6 +1,6 @@
 <template>
   <div style="text-align:center;overflow:auto">
-    <y-signalView :phaseData="phaseData" :lightData="lightData"></y-signalView>
+    <y-signalView :start="true" :phaseData="phaseData" :lightData="lightData"></y-signalView>
   </div>
 </template>
 

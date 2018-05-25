@@ -34,43 +34,71 @@ img_light[3]['default'] = new Image();
 img_light[3]['default'].src = light_left;
 img_light[3]['1'] = new Image();
 img_light[3]['1'].src = light_left_red;
+img_light[3]['6'] = img_light[3]['1'];
+
 img_light[3]['2'] = new Image();
 img_light[3]['2'].src = light_left_yellow;
+img_light[3]['7'] = img_light[3]['2'];
+
 img_light[3]['3'] = new Image();
 img_light[3]['3'].src = light_left_green;
+img_light[3]['8'] = img_light[3]['3'];
+
 img_light[2]['default'] = new Image();
 img_light[2]['default'].src = light_vertical;
 img_light[2]['1'] = new Image();
 img_light[2]['1'].src = light_vertical_red;
+img_light[2]['6'] = img_light[2]['1'];
+
 img_light[2]['2'] = new Image();
 img_light[2]['2'].src = light_vertical_yellow;
+img_light[2]['7'] = img_light[2]['2'];
+
 img_light[2]['3'] = new Image();
 img_light[2]['3'].src = light_vertical_green;
+img_light[2]['8'] = img_light[2]['3'];
+
 img_light[4]['default'] = new Image();
 img_light[4]['default'].src = light_right;
 img_light[4]['1'] = new Image();
 img_light[4]['1'].src = light_right_red;
+img_light[4]['6'] = img_light[4]['1'];
+
 img_light[4]['2'] = new Image();
 img_light[4]['2'].src = light_right_yellow;
+img_light[4]['7'] = img_light[4]['2'];
+
 img_light[4]['3'] = new Image();
 img_light[4]['3'].src = light_right_green;
+img_light[4]['8'] = img_light[4]['3'];
+
 img_light[11]['default'] = new Image();
 img_light[11]['default'].src = light_foot;
 img_light[11]['1'] = new Image();
 img_light[11]['1'].src = light_foot_red;
+img_light[11]['6'] = img_light[4]['1'];
+
 img_light[11]['2'] = new Image();
 img_light[11]['2'].src = light_foot_yellow;
+img_light[11]['7'] = img_light[4]['2'];
+
 img_light[11]['3'] = new Image();
 img_light[11]['3'].src = light_foot_green;
+img_light[11]['8'] = img_light[4]['3'];
+
 img_light['round']['default'] = new Image();
 img_light['round']['default'].src = light_round;
 img_light['round']['1'] = new Image();
 img_light['round']['1'].src = light_round_red;
+img_light['round']['6'] = img_light[11]['1'];
+
 img_light['round']['2'] = new Image();
 img_light['round']['2'].src = light_round_yellow;
+img_light['round']['7'] = img_light[11]['2'];
+
 img_light['round']['3'] = new Image();
 img_light['round']['3'].src = light_round_green;
-
+img_light['round']['8'] = img_light[11]['3'];
 
 
 export default { img_lane, img_light }

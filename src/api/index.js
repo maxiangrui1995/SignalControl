@@ -49,6 +49,17 @@ export const $d_crossing = {
     return http.$post("d_crossing/dataView", params);
   }
 }
+// 方案
+export const $d_machine_control = {
+  // 获取路口执行方案信息
+  getMachinePlan(params) {
+    return http.$post("d_machine_control/getMachinePlan", params);
+  },
+  // 获取websocket连接地址
+  getVar(params) {
+    return http.$post("d_machine_control/getVar", params);
+  }
+}
 
 
 // 获取路口常量
@@ -212,7 +223,7 @@ export const $d_green_wave_sub = {
 
 /* ----------------------特勤联动--------------------------- */
 
-export const d_secret_service_plan = {
+export const $d_secret_service_plan = {
   // 列表
   planList(params) {
     return http.$post("d_secret_service_plan/planList", params);
