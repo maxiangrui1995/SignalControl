@@ -49,7 +49,7 @@ export const $d_crossing = {
     return http.$post("d_crossing/dataView", params);
   }
 }
-// 方案
+/* -------------------------------------------------- 获取信号机信息 -------------------------------------------------------------------- */
 export const $d_machine_control = {
   // 获取路口执行方案信息
   getMachinePlan(params) {
@@ -58,6 +58,10 @@ export const $d_machine_control = {
   // 获取websocket连接地址
   getVar(params) {
     return http.$post("d_machine_control/getVar", params);
+  },
+  // 开特勤、关特勤、全红、等等
+  sendToMachine(params) {
+    return http.$post("d_machine_control/sendToMachine", params);
   }
 }
 
@@ -233,3 +237,6 @@ export const $d_secret_service_plan = {
     return http.$post("d_secret_service_plan/getLine", params);
   }
 }
+
+
+

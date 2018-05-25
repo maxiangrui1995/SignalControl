@@ -2,7 +2,7 @@
   <Modal :value="modal" title="信号机实时监控" :mask-closable="false" :width="900" :padding="0" class-name="special-modal" @on-visible-change="change">
     <div class="box">
       <div class="left">
-        <y-signalView :start="modal" :lightData="lightData" :phaseData="phaseData" :width="600" :height="500" :scale="0.8"></y-signalView>
+        <y-signalView :start="modal" :lightData="lightData" :phaseData="phaseData" :count-time="count" :width="600" :height="500" :scale="0.8"></y-signalView>
       </div>
       <div class="right">
         <Tabs value="name1" :style="{width:'280px'}">
@@ -33,6 +33,8 @@ export default {
       wsUrl: "",
       lightData: [],
       phaseData: "",
+      // 倒计时
+      count: 0,
       // 实时信号机数据
       realtimeSignalData: {},
       // 信号机当前方案所有信息
@@ -97,6 +99,18 @@ export default {
           self.phaseData = machine.status + "/" + Math.random();
           machine.signal_ip = self.signal_ip;
           self.realtimeSignalData = machine;
+          // 计算倒计时
+          let current_plan =
+            self.machinePlan.data_pattern[machine.current_plan];
+          let time_interval = ~~self.machinePlan.data_passage[0].time_interval;
+          if (machine.current_step_num == 160) {
+            self.count = time_interval - machine.current_phase_time;
+          } else {
+            self.count =
+              ~~current_plan["time" + machine.current_step_num] +
+              time_interval -
+              machine.current_phase_time;
+          }
         }
       };
       w.onerror = function() {

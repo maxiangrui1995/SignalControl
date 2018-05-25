@@ -1,6 +1,6 @@
 <template>
   <div style="text-align:center;overflow:auto">
-    <y-signalView :start="true" :phaseData="phaseData" :lightData="lightData"></y-signalView>
+    <y-signalView :start="true" :phaseData="phaseData" :lightData="lightData" :on-click="onClick"></y-signalView>
   </div>
 </template>
 
@@ -21,7 +21,11 @@ export default {
       this.$store.dispatch("characterModule/SET_PHASEINFO", this.id);
     }
   },
-  methods: {},
+  methods: {
+    onClick() {
+      console.log(1);
+    }
+  },
   computed: {
     lightData() {
       return this.$store.state.characterModule.phaseinfo;

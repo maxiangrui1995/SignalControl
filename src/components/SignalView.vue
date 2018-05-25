@@ -66,7 +66,11 @@ export default {
       //灯组信息
       type: [Array],
       default: () => []
-    }
+    },
+    // 倒计时
+    countTime: [Number, String],
+    // 点击事件
+    onClick: Function
   },
   data() {
     return {
@@ -88,6 +92,9 @@ export default {
     this.$nextTick(() => {
       if (this.start) {
         this.begin();
+      }
+      if (this.onClick) {
+        this.canvasEvent();
       }
     });
   },
@@ -112,14 +119,14 @@ export default {
       }, 300);
     },
     /* 判断一个点是否在圆内 */
-    isPointInsideCircle(point, circle, r) {
+    isPointInsideCircle(x, y, r) {
       // 点到圆心的距离小于半经
       if (r === 0) return false;
-      return (
-        Math.sqrt(
-          Math.pow(point[0] - circle[0], 2) + Math.pow(point[1] - circle[1], 2)
-        ) < r
-      );
+      if (Math.sqrt(Math.pow(this._x - x, 2) + Math.pow(this._y - y, 2)) < r) {
+        console.log("asdasdsa", x, y, this._x, this._y);
+      }
+
+      return Math.sqrt(Math.pow(this._x - x, 2) + Math.pow(this._y - y, 2)) < r;
     },
     /* 清空 */
     clearView() {
@@ -301,7 +308,6 @@ export default {
           let x = -yw - this.laneWidth * i;
           let y = o1 - 4;
           draw(x, y, 180, target1[i]);
-          // console.log(this.isPointInsideCircle([XX, YY], [x - 15, y - 15], 15));
         }
         // 3
         for (let i = 0; i < n3; i++) {
@@ -409,6 +415,7 @@ export default {
               }
             }
           }
+          this.isPointInsideCircle(x - 15, y - 15, 15);
 
           ctx.drawImage(
             img_light[
@@ -512,6 +519,25 @@ export default {
         };
         draw_7();
       };
+      // 倒计时
+      const drawCountTime = () => {
+        ctx.save();
+        ctx.textBaseline = "middle";
+        ctx.font = "30px Verdana";
+        ctx.globalAlpha = 0.6;
+        ctx.fillStyle = "#836249";
+        ctx.fillText(
+          this.countTime,
+          -ctx.measureText(this.countTime).width / 2,
+          0
+        );
+        ctx.restore();
+      };
+
+      if (this.countTime >= 0) {
+        drawCountTime();
+      }
+
       drawYellow();
       drawLane();
       drawDashLane();
@@ -529,8 +555,8 @@ export default {
         let e = event || window.event;
         let x = e.clientX - this.canvas.getBoundingClientRect().left;
         let y = e.clientY - this.canvas.getBoundingClientRect().top;
-        this.clearView();
-        this.view(x - this.width / 2, y - this.height / 2);
+        this._x = x - this.width / 2;
+        this._y = y - this.height / 2;
       };
       // 移动事件
       const onMouse = event => {};
@@ -560,14 +586,13 @@ export default {
     LIGHTDATA() {
       // this.view().drawLight();
     },
-    CROSSINGDATA() {
-      console.log(this.CROSSINGDATA);
-    },
+    CROSSINGDATA() {},
     START() {
       if (this.START) {
         this.begin();
       }
-    }
+    },
+    countTime() {}
   },
   destroyed() {
     clearInterval(this.timer);

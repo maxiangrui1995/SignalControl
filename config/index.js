@@ -12,7 +12,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       "/api": {
-        target: "http://192.168.0.152/SignalControl/web/public/index.php/index",
+        // target: "http://192.168.0.152/SignalControl/web/public/index.php/index",
+        target: "http://192.168.0.8/SignalControl/web/public/index.php/index",
         changeOrigin: true,
         pathRewrite: {
           "^/api": ""
