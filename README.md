@@ -1,6 +1,6 @@
-# app
+# signalcontrol
 
-> A Vue.js project
+> 信号机控制平台
 
 ## Build Setup
 
@@ -27,4 +27,12 @@ npm run e2e
 npm test
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## v.1.0.0
+```bash
+基础功能
+```
+## v.1.1.0
+```bash
+项目结构优化,引入jquery，jcanvas等绘图插件
+项目皮肤功能,方便日后风格切换
+```

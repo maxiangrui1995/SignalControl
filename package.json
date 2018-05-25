@@ -1,7 +1,7 @@
 {
-  "name": "app",
-  "version": "1.0.0",
-  "description": "A Vue.js project",
+  "name": "signalcontrol",
+  "version": "1.1.0",
+  "description": "信号机控制平台",
   "author": "maxiangrui <928651424@qq.com>",
   "private": true,
   "scripts": {
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "iview": "^2.13.1",
+    "iview": "^2.14.0",
     "less": "^3.0.2",
     "less-loader": "^4.1.0",
     "vue": "^2.5.2",
