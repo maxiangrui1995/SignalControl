@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { $d_secret_service_plan } from "./api";
+// import { $d_secret_service_plan } from "./api";
 export default {
   name: "App",
   data() {
@@ -11,15 +11,15 @@ export default {
   },
   methods: {
     /* 加载已激活的特勤 */
-    loadPrivilege() {
+    /*   loadPrivilege() {
       $d_secret_service_plan.planList({ status: 1 }).then(res => {
         if (res.data.total > 0) {
           this.showNotice();
         }
       });
-    },
+    }, */
     /* 显示notice */
-    showNotice() {
+    /* showNotice() {
       setTimeout(() => {
         this.$Notice.info({
           title: "特勤联动",
@@ -27,10 +27,10 @@ export default {
           duration: 10
         });
       }, 500);
-    }
+    } */
   },
   created() {
-    this.loadPrivilege();
+    // this.loadPrivilege();
   }
 };
 </script>

@@ -1,26 +1,20 @@
 <template>
-  <div class="dh-table-wrapper">
-    <div class="dh-table-wrapper-header">
-      <Breadcrumb>
-        <BreadcrumbItem>特征参数</BreadcrumbItem>
-      </Breadcrumb>
-    </div>
-    <div class="dh-table-wrapper-toolbar">
-      <Button type="primary" icon="plus" @click="createData">新增</Button>
-    </div>
+  <div class="wrapper">
     <Table :columns="columns" :data="data" :loading="loading"></Table>
-    <div class="dh-table-wrapper-page">
-      <Page :total="total" show-elevator show-sizer show-total @on-change="pageChange" @on-page-size-change="sizeChange"></Page>
-    </div>
   </div>
 </template>
 
 <script>
-import { getPlanList, createPlanList, removePlanList } from "@/api";
+import { dataList } from "@/api/d_plan";
 export default {
   name: "characteristicParameter",
   data() {
     return {
+      // page
+      page: 1,
+      rows: 10,
+      total: 0,
+      // tabs
       columns: [
         {
           type: "index",
@@ -125,81 +119,21 @@ export default {
         }
       ],
       data: [],
-      page: 1,
-      rows: 10,
-      total: 0,
       loading: false
     };
   },
   methods: {
-    createData() {
-      let newValue = "";
-      this.$Modal.confirm({
-        render: h => {
-          return h("Input", {
-            props: {
-              value: newValue,
-              autofocus: true,
-              placeholder: "请输入新的特征参数名称..."
-            },
-            on: {
-              input: val => {
-                newValue = val;
-              }
-            }
-          });
-        },
-        loading: true,
-        onOk: () => {
-          createPlanList({ name: newValue }).then(res => {
-            if (res.status) {
-              this.$Message.success("添加成功");
-            } else {
-              this.$Message.error("添加失败");
-            }
-            this.$Modal.remove();
-            this.loadData();
-          });
-        }
-      });
-    },
-    pathToDetails(id) {
-      this.$router.push({
-        path: "/characteristicParameter/" + id
-      });
-    },
-    removeData(id) {
-      this.$Modal.confirm({
-        content: "<p>确定删除？删除后无法恢复！</p>",
-        loading: true,
-        onOk: () => {
-          removePlanList({ id: id }).then(res => {
-            if (res.status) {
-              this.$Message.success("删除成功");
-            } else {
-              this.$Message.error("删除失败");
-            }
-            this.$Modal.remove();
-            this.loadData();
-          });
-        }
-      });
-    },
+    // 加载数据
     loadData() {
       this.loading = true;
-      getPlanList({ page: this.page, rows: this.rows }).then(res => {
+      dataList({
+        page: this.page,
+        rows: this.rows
+      }).then(res => {
         this.data = res.data.list;
         this.total = ~~res.data.total;
         this.loading = false;
       });
-    },
-    pageChange(page) {
-      this.page = page;
-      this.loadData();
-    },
-    sizeChange(size) {
-      this.rows = size;
-      this.loadData();
     }
   },
   created() {
@@ -208,5 +142,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped lang='less'>
+.wrapper {
+  margin: 20px;
+}
 </style>

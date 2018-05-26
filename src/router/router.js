@@ -1,9 +1,43 @@
 
-
-
+/* 测试页 */
+const Test = {
+    path: '/test',
+    name: 'test',
+    component: () => import('@/views/test')
+}
+/* 登录页 */
+const Login = {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/login/Index')
+}
+/* 综合查询 */
+const Query = [
+    {
+        path: '/comprehensiveQuery',
+        name: '综合查询',
+        component: resolve => require(['@/views/comprehensiveQuery/Index'], resolve)
+    }
+]
+/* 特征参数 */
+const Parameter = [
+    {
+        path: '/characteristicParameter',
+        name: '特征参数',
+        component: resolve => require(['@/views/characteristicParameter/Index'], resolve)
+    }
+]
+/* 首页 */
+const IndexPage = {
+    path: '/',
+    name: 'IndexPage',
+    component: () => import('@/views/IndexPage/Index'),
+    children: [...Query, ...Parameter]
+}
 
 export default [
-    {
+    IndexPage, Test, Login
+    /* {
         path: '/',
         name: '首页',
         component: () => import('@/views/index/Index'),
@@ -148,5 +182,5 @@ export default [
         path: '/login',
         name: '登录页',
         component: () => import('@/views/login/Index')
-    }
+    }, */
 ]
