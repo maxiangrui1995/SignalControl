@@ -63,8 +63,8 @@ export default {
 </script>
 
 <style scoped lang="less">
-@import "~less/color.less";
-@header: ~"@{css-prefix}layout-header";
+// @import "~less/color.less";
+/* @header: ~"@{css-prefix}layout-header";
 @sider: ~"@{css-prefix}layout-sider";
 @content: ~"@{css-prefix}layout-content";
 @menu: ~"@{css-prefix}menu";
@@ -111,5 +111,5 @@ export default {
       }
     }
   }
-}
+} */
 </style>
