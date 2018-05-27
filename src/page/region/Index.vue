@@ -67,8 +67,7 @@ export default {
     };
   },
   methods: {
-    renderContent(h, { root, node, data }) {
-      console.log(root, node, data);
+    renderContent(h, { root, node, data }) { 
 
       return h(
         "span",

@@ -1,22 +1,25 @@
 <template>
-    <div>
-        <div style="position:absolute;top:20px;left:20px;width:300px;">
-            <Card :bordered="false" :padding="10">
-                <p slot="title">绿波带</p>
-                <a href="javascript:;" slot="extra" @click.prevent="createData">
-                    <Icon type="plus"></Icon>
-                    新增
-                </a>
-                <Table :columns="columns" :data="data" :showHeader="false" :loading="loading"></Table>
-                <Page :current="page" :total="total" :page-size="rows" simple @on-change="pageChange" :style="{'margin':'10px','text-align':'right'}"></Page>
-            </Card>
-        </div>
+  <div style="height:100%;">
+    <g-map />
+    <div style="position:absolute;top:20px;left:20px;width:300px;">
+      <Card :bordered="false" :padding="10">
+        <p slot="title">绿波带</p>
+        <a href="javascript:;" slot="extra" @click.prevent="createData">
+          <Icon type="plus"></Icon>
+          新增
+        </a>
+        <Table :columns="columns" :data="data" :showHeader="false" :loading="loading"></Table>
+        <Page :current="page" :total="total" :page-size="rows" simple @on-change="pageChange" :style="{'margin':'10px','text-align':'right'}"></Page>
+      </Card>
     </div>
+  </div>
 </template>
 
 <script>
+import GMap from "@/components/gmap";
 export default {
   name: "greenBelt",
+  components: { GMap },
   data() {
     return {
       // page
