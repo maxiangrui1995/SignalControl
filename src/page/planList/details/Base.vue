@@ -67,18 +67,38 @@
     </Row>
 </template>
 <script>
+import { dataUpdate } from "@/api/d_plan";
 export default {
   data() {
     return {
       id: this.$route.params.id,
-      loading: false,
-      formItem: { name: "123" }
+      loading: false
     };
   },
   methods: {
-    handleSubmit() {}
+    handleSubmit() {
+      this.loading = true;
+      dataUpdate(this.formItem).then(res => {
+        if (res.status) {
+          this.$Message.success("修改成功");
+        } else {
+          this.$Message.error("修改失败");
+        }
+        this.loading = false;
+      });
+    }
   },
-  computed: {},
-  created() {}
+  computed: {
+    formItem() {
+      let data = this.$store.state.characterModule.baseData;
+      for (let i in data) {
+        let item = data[i];
+        if (!isNaN(item)) {
+          data[i] = ~~item;
+        }
+      }
+      return data;
+    }
+  }
 };
 </script>

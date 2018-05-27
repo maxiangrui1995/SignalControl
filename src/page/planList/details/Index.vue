@@ -2,7 +2,7 @@
   <div class="wrapper">
     <Breadcrumb :style="{'margin':'10px'}">
       <BreadcrumbItem to="/planList">特征参数</BreadcrumbItem>
-      <BreadcrumbItem>adasd</BreadcrumbItem>
+      <BreadcrumbItem>{{data.name}}</BreadcrumbItem>
     </Breadcrumb>
     <Tabs @on-click="tabSelect" :value="tabsActive">
       <TabPane label="基本" name="base"></TabPane>
@@ -22,11 +22,13 @@
 </template>
 
 <script>
+import { dataView } from "@/api/d_plan";
 export default {
   name: "planLists",
   data() {
     return {
-      tabsActive: this.$route.path.split("/")[3]
+      tabsActive: this.$route.path.split("/")[3],
+      id: this.$route.params.id
     };
   },
   methods: {
@@ -34,6 +36,22 @@ export default {
       this.$router.push({
         path: name
       });
+    },
+    loadData() {
+      dataView({ id: this.id }).then(res => {
+        if (res.status === "1") {
+          this.$store.dispatch("characterModule/DATA", res.data);
+        }
+      });
+    }
+  },
+  created() {
+    this.loadData();
+  },
+  computed: {
+    data() {
+      let data = this.$store.state.characterModule.baseData;
+      return data;
     }
   }
 };

@@ -65,7 +65,22 @@ const GreenBelt = [
   {
     path: "/greenBelt",
     name: "greenBelt",
-    component: resolve => require(["@/page/greenBelt/Index"], resolve)
+    component: resolve => require(["@/page/greenBelt/Index"], resolve),
+    redirect: {
+      name: "greenBelt-main"
+    },
+    children: [
+      {
+        path: "",
+        name: "greenBelt-main",
+        component: resolve => require(["@/page/greenBelt/main"], resolve)
+      },
+      {
+        path: "details",
+        name: "greenBelt-details",
+        component: resolve => require(["@/page/greenBelt/Details"], resolve)
+      }
+    ]
   }
 ];
 /* 特勤 */

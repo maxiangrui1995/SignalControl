@@ -1,17 +1,19 @@
 <template>
   <div>
-    <Card :padding="0">
-      <p slot="title">绿波带</p>
-      <a href="javascript:;" slot="extra" @click.prevent="createData">
-        <Icon type="plus"></Icon>
-        新增
-      </a>
-      <Table :columns="columns" :data="tableData" :showHeader="false" :loading="loading" highlight-row></Table>
-      <Page :current="page" :total="total" :page-size="rows" simple @on-change="pageChange" :style="{'margin':'10px','text-align':'right'}"></Page>
-    </Card>
+    <div style="position:absolute;top:20px;left:20px;width:300px;">
+      <Card :bordered="false" :padding="10">
+        <p slot="title">绿波带</p>
+        <a href="javascript:;" slot="extra" @click.prevent="createData">
+          <Icon type="plus"></Icon>
+          新增
+        </a>
+        <Table :columns="columns" :data="data" :showHeader="false" :loading="loading"></Table>
+        <Page :current="page" :total="total" :page-size="rows" simple @on-change="pageChange" :style="{'margin':'10px','text-align':'right'}"></Page>
+      </Card>
+    </div>
 
-    <Modal v-model="modal" :loading="true" :title="formTitle" @on-ok="formOk">
-      <Form ref="form" :model="formItem" :rules="formRules" :label-width="80">
+    <Modal v-model="modal" :title="modalTitle">
+      <Form ref="form" :model="formItem" :rules="formRules" :label-width="90">
         <FormItem label="绿波带名称" prop="name">
           <Input v-model="formItem.name" placeholder="请输入新的绿波带名称..." />
         </FormItem>
@@ -29,37 +31,42 @@
             <Option value="1">时间段</Option>
           </Select>
         </FormItem>
-        <FormItem label="时间范围" prop="time">
+        <FormItem label="时间范围" prop="time1">
           <DatePicker type="datetimerange" v-model="formItem.time1" format="yyyy/MM/dd HH:mm" placeholder="请选择日期和时间范围..." v-if="seen" :style="{width:'100%'}"></DatePicker>
-          <TimePicker type="timerange" v-model="formItem.time0" format="HH:mm" placeholder="请选择时间范围..." v-if="!seen" :style="{width:'100%'}"></TimePicker>
+        </FormItem>
+        <FormItem label="时间范围" prop="time2" v-if="!seen">
+          <TimePicker type="timerange" v-model="formItem.time0" format="HH:mm" placeholder="请选择时间范围..." :style="{width:'100%'}"></TimePicker>
         </FormItem>
       </Form>
+
+      <div slot="footer">
+        <Button type="text" @click="modal = false">取消</Button>
+        <Button type="primary" :loading="modal_loading" @click="formOk">确定</Button>
+      </div>
     </Modal>
   </div>
 </template>
 
 <script>
-import GMap from "@/components/GMap";
-import {
-  getGreenBelt,
-  createGreenBelt,
-  modifyGreenBelt,
-  removeGreenBelt
-} from "@/api";
-import { d_green_wave } from "@/untils/params.js";
+import { dataList, dataDelete, dataAdd, dataUpdate } from "@/api/d_green_wave";
+import { d_green_wave } from "@/untils/params";
+import formatterTime from "@/untils/formatterTime";
 export default {
-  components: {
-    GMap
-  },
+  name: "greenBelt-main",
   data() {
     return {
+      // page
+      rows: 5,
+      page: 1,
+      total: 0,
       // table
-      tableData: [],
+      loading: false,
       columns: [
         {
-          title: "名称",
           key: "name",
+          title: "name",
           render: (h, params) => {
+            let row = params.row;
             return h(
               "Poptip",
               {
@@ -70,32 +77,34 @@ export default {
                 }
               },
               [
-                h(
-                  "Tag",
-                  { props: { color: params.row.type === "0" ? "green" : "" } },
-                  params.row.name
-                ),
+                h("Tag", row.name),
                 h(
                   "div",
                   {
                     slot: "content"
                   },
                   [
-                    h("div", "公共周期：" + params.row.period),
                     h(
                       "div",
+                      { style: { "margin-bottom": "10px" } },
+                      "公共周期：" + row.period
+                    ),
+                    h(
+                      "div",
+                      { style: { "margin-bottom": "10px" } },
                       "协调方向：" +
                         d_green_wave.coordinate_direction[
-                          params.row.coordinate_direction
+                          row.coordinate_direction
                         ]
                     ),
-                    h("div", "绿波类型：" + d_green_wave.type[params.row.type]),
                     h(
                       "div",
-                      "时间范围：" +
-                        params.row.mon_day_start +
-                        " - " +
-                        params.row.mon_day_end
+                      { style: { "margin-bottom": "10px" } },
+                      "绿波类型：" + d_green_wave.type[row.type]
+                    ),
+                    h(
+                      "div",
+                      "时间范围：" + row.mon_day_start + " - " + row.mon_day_end
                     )
                   ]
                 )
@@ -104,7 +113,7 @@ export default {
           }
         },
         {
-          title: "操作",
+          title: "active",
           key: "active",
           width: 80,
           align: "center",
@@ -112,7 +121,6 @@ export default {
             return h(
               "Dropdown",
               {
-                // props: { trigger: "click" }
                 on: {
                   "on-click": name => {
                     switch (true) {
@@ -149,14 +157,11 @@ export default {
           }
         }
       ],
-      loading: false,
-      // page
-      page: 1,
-      rows: 5,
-      total: 0,
-      // modal,form
+      data: [],
+      // modal
       modal: false,
-      formTitle: "",
+      modal_loading: false,
+      modalTitle: "",
       formItem: {},
       seen: true,
       formRules: {
@@ -166,7 +171,13 @@ export default {
             message: "请填写绿波带名称"
           }
         ],
-        time: [
+        time0: [
+          {
+            required: true,
+            message: "请选择时间"
+          }
+        ],
+        time1: [
           {
             required: true,
             message: "请选择时间"
@@ -176,20 +187,96 @@ export default {
     };
   },
   methods: {
-    /* ======== table ========= */
-    /* 新增 */
+    pageChange(page) {
+      this.page = page;
+      this.loadData();
+    },
+    loadData() {
+      this.loading = true;
+      dataList({
+        page: this.page,
+        rows: this.rows
+      }).then(res => {
+        this.loading = false;
+        if (res.status === "1") {
+          this.data = res.data.list;
+          this.total = ~~res.data.total;
+        }
+      });
+    },
+    formOk() {
+      this.modal_loading = true;
+      this.$refs["form"].validate(valid => {
+        if (!valid) {
+          this.modal_loading = false;
+          return;
+        }
+        let {
+          id,
+          name,
+          type,
+          coordinate_direction,
+          period,
+          time0,
+          time1
+        } = this.formItem;
+        let formData = { name, type, coordinate_direction, period };
+        if (type === "0") {
+          formData.mon_day_start = time0[0];
+          formData.mon_day_end = time0[1];
+        } else if (type === "1") {
+          formData.mon_day_start = formatterTime(time1[0]);
+          formData.mon_day_end = formatterTime(time1[1]);
+        }
+        if (this.formItem.id) {
+          dataUpdate({
+            id,
+            ...formData
+          }).then(res => {
+            if (res.status) {
+              this.$Message.success("修改成功");
+              this.modal = false;
+              this.loadData();
+            } else {
+              this.$Message.error("修改失败");
+            }
+            this.modal_loading = false;
+          });
+        } else {
+          dataAdd(formData).then(res => {
+            if (res.status) {
+              this.$Message.success("添加成功");
+              this.modal = false;
+              this.loadData();
+            } else {
+              this.$Message.error("添加失败");
+            }
+            this.modal_loading = false;
+          });
+        }
+      });
+    },
+    typeChange() {},
     createData() {
       this.modal = true;
-      this.formTitle = "绿波带新增";
+      this.modalTitle = "绿波带新增";
       this.formItem = {};
       this.formItem.period = 80;
       this.formItem.coordinate_direction = "1";
       this.formItem.type = "1";
     },
-    /* 编辑 */
+    linkToDetails(row) {
+      this.$router.push({
+        path: "/greenBelt/details",
+        query: {
+          id: row.id,
+          name: encodeURIComponent(row.name)
+        }
+      });
+    },
     modifyData(row) {
       this.modal = true;
-      this.formTitle = "绿波带编辑";
+      this.modalTitle = "绿波带编辑";
       this.formItem.name = row.name;
       this.formItem.period = ~~row.period;
       this.formItem.coordinate_direction = row.coordinate_direction;
@@ -197,13 +284,12 @@ export default {
       this.formItem["time" + row.type] = [row.mon_day_start, row.mon_day_end];
       this.formItem.id = row.id;
     },
-    /* 删除 */
     removeData(id) {
       this.$Modal.confirm({
         content: "<p>确定删除？删除后无法恢复！</p>",
         loading: true,
         onOk: () => {
-          removeGreenBelt({ id: id }).then(res => {
+          dataDelete({ id: id }).then(res => {
             if (res.status) {
               this.$Message.success("删除成功");
             } else {
@@ -214,91 +300,6 @@ export default {
           });
         }
       });
-    },
-    /* 加载数据 */
-    loadData() {
-      this.loading = true;
-      getGreenBelt({
-        page: this.page,
-        rows: this.rows
-      }).then(res => {
-        this.tableData = res.data.list;
-        this.total = ~~res.data.total;
-        this.loading = false;
-      });
-    },
-    /* 分页切换 */
-    pageChange(page) {
-      this.page = page;
-      this.loadData();
-    },
-    /* 跳转至详情 */
-    linkToDetails(row) {
-      this.$router.push({
-        path: "/greenBelt/details",
-        query: {
-          id: row.id,
-          name: encodeURIComponent(row.name)
-        }
-      });
-    },
-    /* ======== from ========= */
-    /* 绿波类型切换 */
-    typeChange(value) {
-      if (value === "1") {
-        this.seen = true;
-      } else {
-        this.seen = false;
-      }
-    },
-    /* 新增或编辑的确定 */
-    formOk() {
-      let {
-        id,
-        name,
-        type,
-        coordinate_direction,
-        period,
-        time0,
-        time1
-      } = this.formItem;
-      let formData = { name, type, coordinate_direction, period };
-      if (type === "0") {
-        formData.mon_day_start = time0[0];
-        formData.mon_day_end = time0[1];
-      } else if (type === "1") {
-        formData.mon_day_start = `${time1[0].getFullYear()}/${time1[0].getMonth() +
-          1}/${time1[0].getDate()} ${time1[0].getHours()}:${time1[0].getMinutes()}`;
-        formData.mon_day_end = `${time1[1].getFullYear()}/${time1[1].getMonth() +
-          1}/${time1[1].getDate()} ${time1[1].getHours()}:${time1[1].getMinutes()}`;
-      }
-
-      if (this.formItem.id) {
-        //编辑
-        modifyGreenBelt({
-          id,
-          ...formData
-        }).then(res => {
-          if (res.status) {
-            this.$Message.success("修改成功");
-          } else {
-            this.$Message.error("修改失败");
-          }
-          this.modal = false;
-          this.loadData();
-        });
-      } else {
-        // 新增
-        createGreenBelt(formData).then(res => {
-          if (res.status) {
-            this.$Message.success("添加成功");
-          } else {
-            this.$Message.error("添加失败");
-          }
-          this.modal = false;
-          this.loadData();
-        });
-      }
     }
   },
   created() {

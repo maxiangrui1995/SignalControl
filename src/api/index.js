@@ -11,44 +11,7 @@ export const isLogin = params => {
 };
 
 
-/* ----------------------区域--------------------------- */
-export const $d_area = {
-  // 列表
-  treeList(params) {
-    return http.$post("d_area/treeList", params);
-  },
-  // 修改
-  dataUpdate(params) {
-    return http.$post("d_area/dataUpdate", params);
-  },
-  // 新增
-  dataAdd(params) {
-    return http.$post("d_area/dataAdd", params);
-  },
-  // 删除
-  dataDelete(params) {
-    return http.$post("d_area/dataDelete", params);
-  }
-};
-// 路口
-export const $d_crossing = {
-  // 新增
-  dataAdd(params) {
-    return http.$post("d_crossing/dataAdd", params);
-  },
-  // 编辑
-  dataUpdate(params) {
-    return http.$post("d_crossing/dataUpdate", params);
-  },
-  // 删除
-  dataDelete(params) {
-    return http.$post("d_crossing/dataDelete", params);
-  },
-  // 获取路口下的设备信息
-  dataView(params) {
-    return http.$post("d_crossing/dataView", params);
-  }
-}
+
 /* -------------------------------------------------- 获取信号机信息 -------------------------------------------------------------------- */
 export const $d_machine_control = {
   // 获取路口执行方案信息
@@ -179,51 +142,7 @@ export const getVehicleInspection = params => {
   return http.$post("d_car_sensor/dataList", params);
 };
 
-/* ----------------------绿波带--------------------------- */
-// 获取绿波带信息
-export const getGreenBelt = params => {
-  return http.$post("d_green_wave/dataList", params);
-};
-// 绿波带新增
-export const createGreenBelt = params => {
-  return http.$post("d_green_wave/dataAdd", params);
-};
-// 绿波带编辑
-export const modifyGreenBelt = params => {
-  return http.$post("d_green_wave/dataUpdate", params);
-};
-// 绿波带删除
-export const removeGreenBelt = params => {
-  return http.$post("d_green_wave/dataDelete", params);
-};
 
-/* 绿波带详情 */
-export const $d_green_wave_sub = {
-  // 列表
-  dataList(params) {
-    return http.$post("d_green_wave_sub/dataList", params);
-  },
-  // 新增
-  dataAdd(params) {
-    return http.$post("d_green_wave_sub/dataAdd", params);
-  },
-  // 修改
-  dataUpdate(params) {
-    return http.$post("d_green_wave_sub/dataUpdate", params);
-  },
-  // 批量修改
-  dataUpdateAll(params) {
-    return http.$post("d_green_wave_sub/dataUpdateAll", params);
-  },
-  // 删除
-  dataDelete(params) {
-    return http.$post("d_green_wave_sub/dataDelete", params);
-  },
-  // 给信号机下载绿波配置
-  downLoadSetting(params) {
-    return http.$post("d_green_wave_sub/downLoadSetting", params);
-  }
-};
 
 
 
