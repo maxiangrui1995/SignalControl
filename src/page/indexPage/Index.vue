@@ -59,6 +59,9 @@ export default {
     menuSelect(name) {
       this.$router.push({ path: name });
     }
+  },
+  mounted() {
+    // Scrollbar.init(this.$refs.app.$el);
   }
 };
 </script>

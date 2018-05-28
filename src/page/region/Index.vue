@@ -1,7 +1,7 @@
 <template>
   <div style="height:100%">
     <g-map />
-    <div style="position:absolute;top:20px;left:20px;width:400px;max-height:500px;overflow:auto">
+    <div style="position:absolute;top:20px;left:20px;width:400px;max-height:500px;overflow:auto" ref="tree">
       <Card :bordered="false">
         <Button type="primary" @click="createData" :style="{'margin-bottom':'10px'}">
           <Icon type="plus"></Icon>
@@ -471,6 +471,9 @@ export default {
   },
   created() {
     this.loadData();
+    this.$nextTick(() => {
+      Scrollbar.init(this.$refs.tree);
+    });
   }
 };
 </script>

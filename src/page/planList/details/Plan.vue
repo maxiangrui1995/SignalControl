@@ -1,13 +1,54 @@
 <template>
   <div>
-    <Button type="primary" icon="plus" :style="{'margin-bottom':'10px'}">新增</Button>
+    <Button type="primary" icon="plus" @click="createData" :style="{'margin-bottom':'10px'}">新增</Button>
     <Table :columns="columns" :data="data" :loading="loading"></Table>
     <Page :total="total" @on-change="pageChange" :style="{'margin-top':'10px','text-align':'right'}"></Page>
+
+    <Modal v-model="modal" :title="modalTitle">
+      <Form :model="formItem" :label-width="40">
+        <Row :gutter="20" v-for="(item,$index) in ~~formItem.step" :key="$index">
+          <i-col span="6">
+            <FormItem label="步号">
+              <Input :value="$index+1" readonly />
+            </FormItem>
+          </i-col>
+          <i-col span="7">
+            <FormItem label="阶段">
+              <Select v-model="formItem['phase'+($index+1)]">
+                <Option v-for="item in phaseData" :key="item.id" :value="item.serialid">阶段{{~~item.serialid+1}}</Option>
+              </Select>
+            </FormItem>
+          </i-col>
+          <i-col span="7">
+            <FormItem label="时长">
+              <InputNumber v-model="formItem['time'+($index+1)]" :max="255" :min="0" :style="{width:'100%'}"></InputNumber>
+            </FormItem>
+          </i-col>
+          <i-col span="4">
+            <Button type="text" @click="removeStep($index)">
+              <a href="javascript:;">
+                删除
+              </a>
+            </Button>
+          </i-col>
+        </Row>
+        <Row>
+          <i-col>
+            <Button type="dashed" long @click="addStep" v-if="formItem.step<8" icon="plus-round">新增步号</Button>
+          </i-col>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <Button type="text" @click="modal = false">取消</Button>
+        <Button type="primary" :loading="modal_loading" @click="formOk">确定</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
-import { dataList, dataDelete, dataUpdate } from "@/api/d_pattern";
+import { dataList, dataDelete, dataUpdate, dataAdd } from "@/api/d_pattern";
+import { dataList as dataList_phase } from "@/api/d_phasestatus";
 export default {
   data() {
     return {
@@ -116,7 +157,12 @@ export default {
       loading: false,
       total: 0,
       page: 1,
-      rows: 10
+      rows: 10,
+      modal: false,
+      modal_loading: false,
+      modalTitle: "",
+      formItem: {},
+      phaseData: []
     };
   },
   methods: {
@@ -136,6 +182,13 @@ export default {
         }
       );
     },
+    loadData_phase() {
+      dataList_phase({ plan_id: this.id, page: 1, rows: 8 }).then(res => {
+        if (res.status) {
+          this.phaseData = res.data.list;
+        }
+      });
+    },
     removeData(id, index) {
       // 删除必须从最后一条记录开始
       if ((this.page - 1) * this.rows + index + 1 !== this.total) {
@@ -151,7 +204,7 @@ export default {
               if (res.status) {
                 this.$Message.success("删除成功");
               } else {
-                this.$Message.error("删除失败");
+                this.$Message.error(res.message);
               }
               this.$Modal.remove();
               this.loadData();
@@ -160,12 +213,79 @@ export default {
         });
       }
     },
-    modifyData(row){
-      
+    modifyData(row) {
+      this.modal = true;
+      this.modalTitle = "方案编辑";
+      this.formItem = Object.assign({}, row);
+      for (let i = 0; i < ~~this.formItem.step; i++) {
+        this.formItem["time" + (i + 1)] = ~~this.formItem["time" + (i + 1)];
+      }
+    },
+    createData() {
+      this.$Modal.confirm({
+        content: "<p>即将自动生成一条方案记录！</p>",
+        loading: true,
+        onOk: () => {
+          dataAdd({ plan_id: this.id }).then(res => {
+            if (res.status) {
+              this.$Message.success("添加成功");
+            } else {
+              this.$Message.error(res.message);
+            }
+            this.$Modal.remove();
+            this.loadData();
+          });
+        }
+      });
+    },
+    addStep() {
+      this.formItem.step++;
+      this.formItem["phase" + this.formItem.step] = "0";
+      this.formItem["time" + this.formItem.step] = 25;
+    },
+    removeStep(index) {
+      if (index + 1 < this.formItem.step) {
+        this.$Modal.warning({
+          content: "<p>删除必须从最后一条记录开始!</p>"
+        });
+      } else if (index <= 1) {
+        this.$Modal.warning({
+          content: "<p>至少保留两条步号!</p>"
+        });
+      } else {
+        this.formItem.step--;
+        this.formItem["phase" + (this.formItem.step + 1)] = "255";
+        this.formItem["time" + (this.formItem.step + 1)] = 0;
+      }
+    },
+    formOk() {
+      this.modal_loading = true;
+      let period = 0;
+      for (let i = 0; i < ~~this.formItem.step; i++) {
+        period +=
+          ~~this.formItem["time" + (i + 1)] + ~~this.formItem["time_interval"];
+      }
+      this.formItem.period = period;
+      delete this.formItem._index;
+      delete this.formItem._rowKey;
+      delete this.formItem.patternid;
+      delete this.formItem.plan_id;
+      delete this.formItem.time_interval;
+      dataUpdate(this.formItem).then(res => {
+        if (res.status) {
+          this.$Message.success("修改成功");
+          this.modal = false;
+          this.loadData();
+        } else {
+          this.$Message.error(res.message);
+        }
+        this.modal_loading = false;
+      });
     }
   },
   created() {
     this.loadData();
+    this.loadData_phase();
   }
 };
 </script>

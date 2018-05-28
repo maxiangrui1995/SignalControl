@@ -108,6 +108,37 @@ export const control_func = {
   "181": "锁阶段特勤控制，或手动控制和步进",
   "200": "自适应方案"
 };
+/* 时间调度功能 */
+export const func_num = [
+  {
+    value: "0",
+    label: "定周期方式"
+  },
+  {
+    value: "1",
+    label: "待机黄闪"
+  },
+  {
+    value: "2",
+    label: "待机全红"
+  },
+  {
+    value: "3",
+    label: "无线缆协调"
+  },
+  {
+    value: "4",
+    label: "感应方式"
+  },
+  {
+    value: "9",
+    label: "时钟同步"
+  },
+  {
+    value: "200",
+    label: "自适应方案"
+  }
+]
 
 /* 信号机等待位置 */
 export const position = {
@@ -116,3 +147,14 @@ export const position = {
   "3": "北",
   "4": "西"
 };
+
+/* 周几 */
+export const week = {
+  sunday: "周日",
+  monday: "周一",
+  tuesday: "周二",
+  wednesday: "周三",
+  thursday: "周四",
+  friday: "周五",
+  saturday: "周六"
+}

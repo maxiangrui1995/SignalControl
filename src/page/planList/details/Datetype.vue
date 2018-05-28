@@ -1,11 +1,12 @@
 <template>
-    <div>
-        <Table :columns="columns" :data="data" :border="true" :loading="loading"></Table>
-        <Button type="primary" :loading="loading" @click="handleSubmit" :style="{'margin-top':'10px'}">确定</Button>
-    </div>
+  <div>
+    <Table :columns="columns" :data="data" :border="true" :loading="loading"></Table>
+    <Button type="primary" :loading="loading" @click="handleSubmit" :style="{'margin-top':'10px'}">确定</Button>
+  </div>
 </template>
 
 <script>
+import { dataList, dataUpdateList } from "@/api/d_week";
 export default {
   data() {
     return {
@@ -15,7 +16,7 @@ export default {
           key: "num",
           align: "center",
           render: (h, params) => {
-            return h("div", `类型${~~params.row.num + 1}`);
+            return h("div", `类型${params.row.num}`);
           }
         },
         {
@@ -81,7 +82,57 @@ export default {
     };
   },
   methods: {
-    handleSubmit() {}
+    tdRender(h, params, type) {
+      return h(
+        "div",
+        {
+          style: {
+            width: "100%",
+            height: "48px",
+            "line-height": "48px"
+          },
+          on: {
+            click: () => {
+              params.row[type] = params.row[type] === "1" ? "0" : "1";
+              this.data[params.index][type] =
+                this.data[params.index][type] === "1" ? "0" : "1";
+            }
+          }
+        },
+        [
+          h("Icon", {
+            props: {
+              type: "checkmark",
+              color: params.row[type] === "1" ? "" : "#444"
+            }
+          })
+        ]
+      );
+    },
+    loadData() {
+      this.loading = true;
+      dataList({ plan_id: this.id, page: 1, rows: 10 }).then(res => {
+        if (res.status) {
+          this.data = res.data.list;
+          this.loading = false;
+        }
+      });
+    },
+    handleSubmit() {
+      dataUpdateList({
+        data: this.data
+      }).then(res => {
+        if (res.status) {
+          this.$Message.success("操作成功");
+        } else {
+          this.$Message.error("操作失败");
+        }
+        this.loadData();
+      });
+    }
+  },
+  created() {
+    this.loadData();
   }
 };
 </script>

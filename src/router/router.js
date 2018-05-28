@@ -1,9 +1,4 @@
-// /* 登录页 */
-// const Login = {
-//   path: "/login",
-//   name: "login",
-//   component: () => import("@/page/login/Index")
-// };
+// 
 // /* 综合查询 */
 // const Query = [
 //   {
@@ -12,6 +7,12 @@
 //     component: resolve => require(["@/page/comprehensiveQuery/Index"], resolve)
 //   }
 // ];
+/* 登录页 */
+const Login = {
+  path: "/login",
+  name: "login",
+  component: () => import("@/page/login/Index")
+};
 /* 特征参数 */
 const PlanList = [
   {
@@ -48,6 +49,18 @@ const PlanList = [
         name: "planLists-scheduling",
         component: resolve =>
           require(["@/page/planList/details/Scheduling"], resolve)
+      },
+      {
+        path: "vehicleInspection",
+        name: "planLists-vehicleInspection",
+        component: resolve =>
+          require(["@/page/planList/details/VehicleInspection"], resolve)
+      },
+      {
+        path: "adaptive",
+        name: "planLists-adaptive",
+        component: resolve =>
+          require(["@/page/planList/details/Adaptive"], resolve)
       }
     ]
   }
@@ -73,7 +86,7 @@ const GreenBelt = [
       {
         path: "",
         name: "greenBelt-main",
-        component: resolve => require(["@/page/greenBelt/main"], resolve)
+        component: resolve => require(["@/page/greenBelt/Main"], resolve)
       },
       {
         path: "details",
@@ -88,7 +101,17 @@ const Privilege = [
   {
     path: "/privilege",
     name: "privilege",
-    component: resolve => require(["@/page/privilege/Index"], resolve)
+    component: resolve => require(["@/page/privilege/Index"], resolve),
+    redirect: {
+      name: "privilege-main"
+    },
+    children: [
+      {
+        path: "",
+        name: "privilege-main",
+        component: resolve => require(["@/page/privilege/Main"], resolve)
+      }
+    ]
   }
 ];
 /* 首页 */
@@ -99,4 +122,4 @@ const IndexPage = {
   children: [...PlanList, ...Region, ...GreenBelt, ...Privilege]
 };
 
-export default [IndexPage];
+export default [IndexPage, Login];
