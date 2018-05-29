@@ -9,3 +9,15 @@ export const planList = params => {
 export const getLine = params => {
     return http.$post("d_secret_service_plan/getLine", params);
 }
+
+export const activation = params => {
+    return http.$post("d_secret_service_plan/activation", params);
+}
+
+export const planDel = params => {
+    return http.$post("d_secret_service_plan/planDel", params);
+}
+
+export const planEdit = params => {
+    return http.$post("d_secret_service_plan/planEdit", params);
+}

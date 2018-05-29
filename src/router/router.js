@@ -1,12 +1,23 @@
-// 
-// /* 综合查询 */
-// const Query = [
-//   {
-//     path: "/comprehensiveQuery",
-//     name: "综合查询",
-//     component: resolve => require(["@/page/comprehensiveQuery/Index"], resolve)
-//   }
-// ];
+/* 综合查询 */
+const Query = [
+  {
+    path: "/comprehensiveQuery",
+    name: "comprehensiveQuery",
+    component: resolve => require(["@/page/comprehensiveQuery/Index"], resolve)
+  },
+  {
+    path: "/comprehensiveQuery/:id",
+    name: "comprehensiveQuery-details",
+    component: resolve => require(["@/page/comprehensiveQuery/Details"], resolve),
+    children: [
+      {
+        path: "signalView",
+        name: "comprehensiveQuery-signalView",
+        component: resolve => require(["@/page/comprehensiveQuery/SignalView"], resolve)
+      }
+    ]
+  }
+];
 /* 登录页 */
 const Login = {
   path: "/login",
@@ -61,6 +72,24 @@ const PlanList = [
         name: "planLists-adaptive",
         component: resolve =>
           require(["@/page/planList/details/Adaptive"], resolve)
+      },
+      {
+        path: "wayleave",
+        name: "planLists-wayleave",
+        component: resolve =>
+          require(["@/page/planList/details/Wayleave"], resolve)
+      },
+      {
+        path: "lightgroup",
+        name: "planLists-lightgroup",
+        component: resolve =>
+          require(["@/page/planList/details/Lightgroup"], resolve)
+      },
+      {
+        path: "phase",
+        name: "planLists-phase",
+        component: resolve =>
+          require(["@/page/planList/details/Phase"], resolve)
       }
     ]
   }
@@ -119,7 +148,7 @@ const IndexPage = {
   path: "/",
   name: "IndexPage",
   component: () => import("@/page/indexPage/Index"),
-  children: [...PlanList, ...Region, ...GreenBelt, ...Privilege]
+  children: [...PlanList, ...Region, ...GreenBelt, ...Privilege, ...Query]
 };
 
 export default [IndexPage, Login];

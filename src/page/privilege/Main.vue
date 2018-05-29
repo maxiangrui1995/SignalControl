@@ -1,26 +1,107 @@
 <template>
-    <div style="position:absolute;top:20px;left:20px;width:300px;">
-        <Card :bordered="false" :padding="10">
-            <p slot="title">特勤联动</p>
-            <a href="javascript:;" slot="extra" @click.prevent="createData">
-                <Icon type="plus"></Icon>
-                新增
-            </a>
-            <div class="ivu-article">
-                <blockquote>
-                    <p>最多同时激活3条，当前已激活
-                        <i class="ivu-total">{{data_active.length}}</i> 条。</p>
-                    <Tag closable v-for="item in data_active" :key="item.sch_id">{{item.sch_name}}</Tag>
-                </blockquote>
-            </div>
-            <Table :columns="columns" :data="data" :showHeader="false" :loading="loading"></Table>
-            <Page :current="page" :total="total" :page-size="rows" simple @on-change="pageChange" :style="{'margin':'10px','text-align':'right'}"></Page>
-        </Card>
-    </div>
+  <div style="position:absolute;top:20px;left:20px;width:300px;">
+    <Card :bordered="false" :padding="10">
+      <p slot="title">特勤联动</p>
+      <a href="javascript:;" slot="extra" @click.prevent="createData">
+        <Icon type="plus"></Icon>
+        新增
+      </a>
+      <div class="ivu-article">
+        <blockquote>
+          <p>当前已激活
+            <i class="ivu-total">{{data_active.length}}</i> / 3条。
+            <a href="javascript:;" v-if="data_active.length">立即查看</a>
+          </p>
+          <Tag closable v-for="item in data_active" :key="item.sch_id">{{item.sch_name}}</Tag>
+        </blockquote>
+      </div>
+      <Table :columns="columns" :data="data" :showHeader="false" :loading="loading"></Table>
+      <Page :current="page" :total="total" :page-size="rows" simple @on-change="pageChange" :style="{'margin':'10px','text-align':'right'}"></Page>
+    </Card>
+
+    <Modal v-model="modal" :title="modalTitle" :width="900">
+      <Form ref="form" :model="formItem" :rules="formRules" :label-width="50">
+        <Row :gutter="16">
+          <i-col span="8">
+            <FormItem label="预案号" prop="sch_id">
+              <InputNumber v-model="formItem.sch_id" :disabled="sch_id_disabled" :min="0" :style="{width:'100%'}"></InputNumber>
+            </FormItem>
+          </i-col>
+          <i-col span="8">
+            <FormItem label="预案名" prop="sch_name">
+              <Input v-model="formItem.sch_name" placeholder="请输入预案名" />
+            </FormItem>
+          </i-col>
+          <i-col span="8">
+            <FormItem label="警车号" prop="boundPlate">
+              <Input v-model="formItem.boundPlate" placeholder="请输入车牌号" />
+            </FormItem>
+          </i-col>
+        </Row>
+        <Row :gutter="16" v-for="(item,index) in formItem.children" :key="index">
+          <i-col span="8">
+            <FormItem label="信号机" prop="id">
+              <Select v-model="item.id">
+                <Option v-for="value in data_machine" :key="value.id+item.id" :value="''+value.id">{{value.name}}</Option>
+              </Select>
+            </FormItem>
+          </i-col>
+          <i-col span="3">
+            <FormItem label="由" prop="sch_name">
+              <Select v-model="item.dir_from">
+                <Option v-for="(value,key,index) in position" :key="index" :value="''+key">{{value}}</Option>
+              </Select>
+            </FormItem>
+          </i-col>
+          <i-col span="3">
+            <FormItem label="向" prop="dir_to">
+              <Select v-model="item.dir_to">
+                <Option v-for="(value,key,index) in position" :key="index" :value="''+key">{{value}}</Option>
+              </Select>
+            </FormItem>
+          </i-col>
+          <i-col span="4">
+            <FormItem label="距离" prop="distance">
+              <InputNumber v-model="item.distance" :min="0" :formatter="value => `${value} 米`" :parser="value => value.replace(' 米', '')" :style="{width:'100%'}"></InputNumber>
+            </FormItem>
+          </i-col>
+          <i-col span="4">
+            <FormItem label="延时" prop="delay">
+              <InputNumber v-model="item.delay" :min="0" :formatter="value => `${value} 秒`" :parser="value => value.replace(' 秒', '')" :style="{width:'100%'}"></InputNumber>
+            </FormItem>
+          </i-col>
+          <i-col span="2">
+            <Button type="text">
+              <a href="javascript:;">
+                删除
+              </a>
+            </Button>
+          </i-col>
+        </Row>
+        <Row>
+          <i-col>
+            <Button type="dashed" long icon="plus-round">新增步号</Button>
+          </i-col>
+        </Row>
+      </Form>
+
+      <div slot="footer">
+        <Button type="text" @click="modal = false">取消</Button>
+        <Button type="primary" :loading="modal_loading" @click="formOk">确定</Button>
+      </div>
+    </Modal>
+  </div>
 </template>
 
 <script>
-import { planList } from "@/api/d_secret_service_plan";
+import {
+  planList,
+  activation,
+  planDel,
+  planEdit
+} from "@/api/d_secret_service_plan";
+import { dataList } from "@/api/d_machine";
+import { position } from "@/untils/params";
 export default {
   name: "greenBelt",
   data() {
@@ -96,14 +177,14 @@ export default {
                 on: {
                   "on-click": name => {
                     switch (true) {
-                      case name === "details":
-                        this.linkToDetails(params.row);
-                        break;
                       case name === "modify":
                         this.modifyData(params.row);
                         break;
                       case name === "remove":
-                        this.removeData(params.row.id);
+                        this.removeData(params.row);
+                        break;
+                      case name === "active":
+                        this.active(params.row);
                         break;
                       default:
                         break;
@@ -119,10 +200,13 @@ export default {
                     slot: "list"
                   },
                   [
-                    h("DropdownItem", { props: { name: "details" } }, "详情"),
                     h("DropdownItem", { props: { name: "modify" } }, "编辑"),
                     h("DropdownItem", { props: { name: "remove" } }, "删除"),
-                    h("DropdownItem", { props: { name: "active" } }, "激活")
+                    h(
+                      "DropdownItem",
+                      { props: { name: "active" } },
+                      params.row.enabled === "0" ? "激活" : "注销"
+                    )
                   ]
                 )
               ]
@@ -131,12 +215,26 @@ export default {
         }
       ],
       data: [],
-      data_active: []
+      data_active: [],
+      data_machine: [],
+      modal: false,
+      modal_loading: false,
+      modalTitle: "",
+      formItem: {
+        sch_name: "",
+        sch_id: 0,
+        boundPlate: "",
+        children: []
+      },
+      formRules: {},
+      position: position,
+      sch_id_disabled: false
     };
   },
   methods: {
     pageChange(page) {
       this.page = page;
+      this.loadData();
     },
     loadData() {
       this.loading = true;
@@ -156,6 +254,8 @@ export default {
           this.loading = false;
         }
       });
+    },
+    loadData_active() {
       planList({
         status: 1
       }).then(res => {
@@ -163,10 +263,115 @@ export default {
           this.data_active = res.data.list;
         }
       });
+    },
+    loadData_machine() {
+      dataList({ page: 1, rows: 9999 }).then(res => {
+        if (res.status === "1") {
+          this.data_machine = res.data.list;
+        }
+      });
+    },
+    active(row) {
+      this.$Modal.confirm({
+        content:
+          "<p>确定" +
+          (row.enabled === "1" ? "注销" : "激活") +
+          "这条方案？</p>",
+        loading: true,
+        onOk: () => {
+          activation({
+            id: row.sch_id,
+            status: row.enabled === "1" ? "0" : "1"
+          }).then(res => {
+            if (res.data.status === "1") {
+              this.$Message.success("操作成功！");
+            } else {
+              this.$Message.error(res.data.msg);
+            }
+            this.$Modal.remove();
+            this.loadData();
+            this.loadData_active();
+          });
+        }
+      });
+    },
+    modifyData(row) {
+      if (row.enabled === "1") {
+        this.$Modal.warning({
+          content: "当前方案正在执行特勤！请稍后再试"
+        });
+      } else {
+        this.modal = true;
+        this.modalTitle = "特勤方案编辑";
+        this.formItem.sch_id = ~~row.sch_id;
+        this.formItem.sch_name = row.sch_name;
+        this.formItem.boundPlate = row.boundPlate;
+        row.children.forEach(item => {
+          item.distance = ~~item.distance;
+          item.delay = ~~item.delay;
+        });
+        this.formItem.children = row.children;
+        this.sch_id_disabled = true;
+      }
+    },
+    removeData(row) {
+      if (row.enabled === "1") {
+        this.$Modal.warning({
+          content: "当前方案正在执行特勤！请稍后再试"
+        });
+      } else {
+        this.$Modal.confirm({
+          content: "<p>确定删除这条方案？</p>",
+          loading: true,
+          onOk: () => {
+            planDel({
+              id: row.sch_id
+            }).then(res => {
+              if (res.data.status === "1") {
+                this.$Message.success("操作成功！");
+              } else {
+                this.$Message.error(res.data.msg);
+                this.$Modal.remove();
+                this.loadData();
+              }
+            });
+          }
+        });
+      }
+    },
+    formOk() {
+      this.modal_loading = true;
+      console.log(this.formItem);
+      let sch_id = this.formItem.sch_id;
+      let sch_name = this.formItem.sch_name;
+      let boundPlate = this.formItem.boundPlate;
+      let arr = [];
+      this.formItem.children.forEach((item, index) => {
+        arr.push(
+          `(${sch_id},'${sch_name}','${boundPlate}',${index + 1},${item.id},${
+            item.dir_from
+          },${item.dir_to},${item.distance},${item.delay})`
+        );
+      });
+      console.log(arr);
+      planEdit({
+        data: arr.join(",")
+      }).then(res => {
+        if (res.data.status === "1") {
+          this.$Message.success("操作成功");
+        } else {
+          this.$Message.error(res.data.msg);
+        }
+        this.modal = false;
+        this.loadData();
+        this.modal_loading = false;
+      });
     }
   },
   created() {
     this.loadData();
+    this.loadData_active();
+    this.loadData_machine();
   }
 };
 </script>

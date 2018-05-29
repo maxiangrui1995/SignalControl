@@ -158,3 +158,26 @@ export const week = {
   friday: "周五",
   saturday: "周六"
 }
+
+/* 灯色 */
+export const light_color = {
+  "1": "红", "2": "黄", "3": "绿",
+  "6": "红闪", "7": "黄闪", "8": "绿闪",
+};
+/* 灯序 */
+export const lightorder = {
+  "1": "行车",
+  "2": "行人"
+};
+/* 灯型 */
+export const lightsharp = {
+  "0": "满屏",
+  "1": "箭头",
+  "2": "行人"
+};
+export const target = {
+  "2": "直行",
+  "3": "左转",
+  "4": "右转",
+  "11": "直行"
+};

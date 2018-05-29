@@ -1,15 +1,15 @@
 <template>
-  <div class="search-wrapper">
-    <div class="search-wrapper-item">{{label}}：</div>
-    <div class="search-wrapper-item" :class="{'collapse': collapse}">
-      <p v-for="item in data" :key="item.id" @click="click(item)" :class="{'active': item.active}" class="item">{{item.name}}</p>
+    <div class="search-wrapper">
+        <div class="search-wrapper-item">{{label}}：</div>
+        <div class="search-wrapper-item" :class="{'collapse': collapse}">
+            <p v-for="item in data" :key="item.id" @click="click(item)" :class="{'active': item.active}" class="item">{{item.name}}</p>
+        </div>
+        <div class="search-wrapper-item">
+            <a href="javascript:;" @click="more">更多
+                <Icon type="arrow-down-b"></Icon>
+            </a>
+        </div>
     </div>
-    <div class="search-wrapper-item">
-      <a href="javascript:;" @click="more">更多
-        <Icon type="arrow-down-b"></Icon>
-      </a>
-    </div>
-  </div>
 </template>
 
 <script>
