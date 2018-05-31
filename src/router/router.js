@@ -8,14 +8,12 @@ const Query = [
   {
     path: "/comprehensiveQuery/:id",
     name: "comprehensiveQuery-details",
-    component: resolve => require(["@/page/comprehensiveQuery/Details"], resolve),
-    children: [
-      {
-        path: "signalView",
-        name: "comprehensiveQuery-signalView",
-        component: resolve => require(["@/page/comprehensiveQuery/SignalView"], resolve)
-      }
-    ]
+    component: resolve => require(["@/page/comprehensiveQuery/Details"], resolve)
+  },
+  {
+    path: "/comprehensiveQuery/:id/monitoring",
+    name: "comprehensiveQuery-monitoring",
+    component: resolve => require(["@/page/comprehensiveQuery/components/RealtimeMonitoring"], resolve)
   }
 ];
 /* 登录页 */

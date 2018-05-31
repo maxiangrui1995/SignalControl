@@ -15,7 +15,7 @@
       <div class="dh-wrapper-toolheader">
         <Icon type="social-buffer"></Icon>
         <span>共有
-          <i>{{total}}</i>&nbsp;条数据</span>
+          <i class="ivu-total">{{total}}</i>&nbsp;条数据</span>
         <a href="javascript:;" @click="reset">重置</a>
       </div>
       <div class="dh-wrapper-content">
@@ -90,7 +90,15 @@ export default {
     },
     listenActive(item) {
       console.log(item);
-      if (item.type_ === "crossing") {
+      if (item.type_ === "area") {
+        item.children.forEach(element => {
+          element.active = item.active;
+          if (element.children) {
+            element.children.forEach(element => {
+              element.active = item.active;
+            });
+          }
+        });
       }
     },
     /* 重置条件 */
@@ -128,11 +136,6 @@ export default {
   &-toolheader {
     background: @table-thead-bg;
     padding: 10px;
-    > span {
-      i {
-        color: @warning-color;
-      }
-    }
     a {
       margin-left: 20px;
     }

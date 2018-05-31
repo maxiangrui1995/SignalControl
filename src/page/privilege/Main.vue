@@ -20,8 +20,8 @@
     </Card>
 
     <Modal v-model="modal" :title="modalTitle" :width="900">
-      <Form ref="form" :model="formItem" :rules="formRules" :label-width="50">
-        <Row :gutter="16">
+      <Form ref="form" :model="formItem" :rules="formRules" :label-width="60">
+        <Row :gutter="1">
           <i-col span="8">
             <FormItem label="预案号" prop="sch_id">
               <InputNumber v-model="formItem.sch_id" :disabled="sch_id_disabled" :min="0" :style="{width:'100%'}"></InputNumber>
@@ -38,8 +38,13 @@
             </FormItem>
           </i-col>
         </Row>
-        <Row :gutter="16" v-for="(item,index) in formItem.children" :key="index">
-          <i-col span="8">
+        <Row :gutter="1" v-for="(item,index) in formItem.children" :key="index">
+          <i-col span="3">
+            <FormItem label="序号">
+              <Input :value="index+1" readonly/>
+            </FormItem>
+          </i-col>
+          <i-col span="5">
             <FormItem label="信号机" prop="id">
               <Select v-model="item.id">
                 <Option v-for="value in data_machine" :key="value.id+item.id" :value="''+value.id">{{value.name}}</Option>
@@ -47,7 +52,7 @@
             </FormItem>
           </i-col>
           <i-col span="3">
-            <FormItem label="由" prop="sch_name">
+            <FormItem label="由" prop="dir_from">
               <Select v-model="item.dir_from">
                 <Option v-for="(value,key,index) in position" :key="index" :value="''+key">{{value}}</Option>
               </Select>
@@ -72,7 +77,7 @@
           </i-col>
           <i-col span="2">
             <Button type="text">
-              <a href="javascript:;">
+              <a href="javascript:;" @click="removeSignalStep(index)">
                 删除
               </a>
             </Button>
@@ -80,7 +85,7 @@
         </Row>
         <Row>
           <i-col>
-            <Button type="dashed" long icon="plus-round">新增步号</Button>
+            <Button type="dashed" long icon="plus-round" @click="addSignalStep">新增信号机</Button>
           </i-col>
         </Row>
       </Form>
@@ -98,7 +103,8 @@ import {
   planList,
   activation,
   planDel,
-  planEdit
+  planEdit,
+  planAdd
 } from "@/api/d_secret_service_plan";
 import { dataList } from "@/api/d_machine";
 import { position } from "@/untils/params";
@@ -176,6 +182,8 @@ export default {
               {
                 on: {
                   "on-click": name => {
+                    console.log(this);
+
                     switch (true) {
                       case name === "modify":
                         this.modifyData(params.row);
@@ -204,7 +212,16 @@ export default {
                     h("DropdownItem", { props: { name: "remove" } }, "删除"),
                     h(
                       "DropdownItem",
-                      { props: { name: "active" } },
+                      {
+                        props: {
+                          name: "active",
+                          disabled:
+                            params.row.enabled === "0" &&
+                            this.data_active.length >= 3
+                              ? true
+                              : false
+                        }
+                      },
                       params.row.enabled === "0" ? "激活" : "注销"
                     )
                   ]
@@ -226,12 +243,19 @@ export default {
         boundPlate: "",
         children: []
       },
-      formRules: {},
+      formRules: {
+        sch_id: [{ required: true, message: "请输入预案号" }],
+        sch_name: [{ required: true, message: "请输入预案名" }],
+        boundPlate: [{ required: true, message: "请输入车牌号" }]
+      },
       position: position,
       sch_id_disabled: false
     };
   },
   methods: {
+    dropClick(name) {
+      console.log(name);
+    },
     pageChange(page) {
       this.page = page;
       this.loadData();
@@ -306,11 +330,21 @@ export default {
         this.formItem.sch_id = ~~row.sch_id;
         this.formItem.sch_name = row.sch_name;
         this.formItem.boundPlate = row.boundPlate;
+        this.formItem.children = [];
         row.children.forEach(item => {
-          item.distance = ~~item.distance;
-          item.delay = ~~item.delay;
+          let distance = ~~item.distance;
+          let delay = ~~item.delay;
+          let id = item.id;
+          let dir_from = item.dir_from;
+          let dir_to = item.dir_to;
+          this.formItem.children.push({
+            distance,
+            delay,
+            id,
+            dir_from,
+            dir_to
+          });
         });
-        this.formItem.children = row.children;
         this.sch_id_disabled = true;
       }
     },
@@ -341,31 +375,92 @@ export default {
     },
     formOk() {
       this.modal_loading = true;
-      console.log(this.formItem);
-      let sch_id = this.formItem.sch_id;
-      let sch_name = this.formItem.sch_name;
-      let boundPlate = this.formItem.boundPlate;
-      let arr = [];
-      this.formItem.children.forEach((item, index) => {
-        arr.push(
-          `(${sch_id},'${sch_name}','${boundPlate}',${index + 1},${item.id},${
-            item.dir_from
-          },${item.dir_to},${item.distance},${item.delay})`
-        );
-      });
-      console.log(arr);
-      planEdit({
-        data: arr.join(",")
-      }).then(res => {
-        if (res.data.status === "1") {
-          this.$Message.success("操作成功");
-        } else {
-          this.$Message.error(res.data.msg);
+      this.$refs["form"].validate(valid => {
+        if (!valid) {
+          return;
         }
-        this.modal = false;
-        this.loadData();
-        this.modal_loading = false;
+        let sch_id = this.formItem.sch_id;
+        let sch_name = this.formItem.sch_name;
+        let boundPlate = this.formItem.boundPlate;
+        let arr = [];
+        this.formItem.children.forEach((item, index) => {
+          arr.push(
+            `(${sch_id},'${sch_name}','${boundPlate}',${index + 1},${item.id},${
+              item.dir_from
+            },${item.dir_to},${item.distance},${item.delay})`
+          );
+        });
+        if (this.formItem.type_ === "create") {
+          planAdd({
+            data: arr.join(",")
+          }).then(res => {
+            if (res.data.status === "1") {
+              this.$Message.success("操作成功");
+            } else {
+              this.$Message.error(res.data.msg);
+            }
+            this.modal = false;
+            this.loadData();
+            this.modal_loading = false;
+          });
+        } else {
+          planEdit({
+            data: arr.join(",")
+          }).then(res => {
+            if (res.data.status === "1") {
+              this.$Message.success("操作成功");
+            } else {
+              this.$Message.error(res.data.msg);
+            }
+            this.modal = false;
+            this.loadData();
+            this.modal_loading = false;
+          });
+        }
       });
+    },
+    removeSignalStep(index) {
+      if (this.formItem.children.length <= 2) {
+        return this.$Modal.warning({
+          content: "至少保留2条信号机序号!"
+        });
+      }
+      this.formItem.children.splice(index, 1);
+    },
+    addSignalStep() {
+      this.formItem.children.push({
+        id: this.data_machine[0].id,
+        dir_from: "2",
+        dir_to: "4",
+        distance: 500,
+        delay: 120
+      });
+    },
+    createData() {
+      this.modal = true;
+      this.modalTitle = "特勤方案新增";
+      this.formItem = {
+        sch_name: "",
+        sch_id: 0,
+        boundPlate: "",
+        children: [
+          {
+            id: this.data_machine[0].id,
+            dir_from: "2",
+            dir_to: "4",
+            distance: 500,
+            delay: 120
+          },
+          {
+            id: this.data_machine[0].id,
+            dir_from: "2",
+            dir_to: "4",
+            distance: 500,
+            delay: 120
+          }
+        ],
+        type_: "create"
+      };
     }
   },
   created() {

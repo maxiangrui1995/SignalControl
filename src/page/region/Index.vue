@@ -1,14 +1,13 @@
 <template>
-  <div style="height:100%">
-    <g-map />
-    <div style="position:absolute;top:20px;left:20px;width:400px;max-height:500px;overflow:auto" ref="tree">
-      <Card :bordered="false">
-        <Button type="primary" @click="createData" :style="{'margin-bottom':'10px'}">
-          <Icon type="plus"></Icon>
-          新增</Button>
-        <Tree :data="data" :render="renderContent"></Tree>
-      </Card>
-    </div>
+  <!-- <div style="height:100%"> -->
+  <!-- <g-map /> -->
+  <!-- <div style="position:absolute;top:20px;left:20px;width:400px;max-height:500px;overflow:auto" ref="tree"> -->
+  <!-- <Card :bordered="false"> -->
+  <div class="wrapper" style="position:absolute;top:0;right:0;bottom:0;left:0;overflow-y:auto;overflow-x:hidden;">
+    <Button type="primary" @click="createData" :style="{'margin-bottom':'10px'}">
+      <Icon type="plus"></Icon>
+      新增</Button>
+    <Tree :data="data" :render="renderContent"></Tree>
 
     <Modal v-model="modal" :title="modalTitle">
       <Form ref="form" :rules="formRules" :model="formItem" :label-width="80">
@@ -33,9 +32,14 @@
       </div>
     </Modal>
   </div>
+
+  <!-- </Card> -->
+  <!-- </div> -->
+
+  <!-- </div> -->
 </template>
 <script>
-import GMap from "@/components/gmap";
+// import GMap from "@/components/gmap";
 import { dataList, dataAdd, dataDelete, dataUpdate } from "@/api/d_area";
 import {
   dataAdd as dataAdd_crossing,
@@ -45,7 +49,7 @@ import {
 import { d_crossing } from "@/untils/params";
 export default {
   name: "region",
-  components: { GMap },
+  // components: { GMap },
   data() {
     return {
       data: [],
@@ -106,7 +110,7 @@ export default {
                     props: {
                       trigger: "hover",
                       title: "详细信息",
-                      placement: "right"
+                      placement: "top-start"
                     }
                   },
                   [
@@ -472,7 +476,7 @@ export default {
   created() {
     this.loadData();
     this.$nextTick(() => {
-      Scrollbar.init(this.$refs.tree);
+      // Scrollbar.init(this.$refs.tree);
     });
   }
 };

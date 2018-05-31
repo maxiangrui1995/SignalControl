@@ -297,6 +297,22 @@ view.prototype.draw = function (options = {}) {
             let index = str.indexOf(item.title);
             let color = "default";
 
+            if (this.PHASEDATA) {
+                color = this.PHASEDATA[index];
+                if ("123678".indexOf(color) === -1) {
+                    color = "default";
+                } else if (color === "6" || color === "7" || color === "8") {
+                    if (!this._alpha) {
+                        this._alpha = 1;
+                    }
+                    ctx.globalAlpha = this._alpha;
+                    this._alpha -= 0.1;
+                    if (this._alpha <= 0.3) {
+                        this._alpha = 1;
+                    }
+                }
+            }
+
             ctx.drawImage(
                 img_light[
                 item.lightorder === "0"
@@ -308,7 +324,6 @@ view.prototype.draw = function (options = {}) {
             );
             if (this.isPointInsideCircle(x, y, 15)) {
                 console.log(1);
-                
             }
 
             ctx.globalAlpha = 0.3;
@@ -405,6 +420,20 @@ view.prototype.draw = function (options = {}) {
         draw_5();
         draw_7();
     };
+    // 倒计时
+    const drawCountTime = () => {
+        ctx.save();
+        ctx.textBaseline = "middle";
+        ctx.font = "30px Verdana";
+        ctx.globalAlpha = 0.6;
+        ctx.fillStyle = "#836249";
+        ctx.fillText(
+            this.COUNT || '0',
+            -ctx.measureText(this.COUNT || '0').width / 2,
+            0
+        );
+        ctx.restore();
+    };
 
 
     let draw = () => {
@@ -415,6 +444,7 @@ view.prototype.draw = function (options = {}) {
         drawRoadWay();
         drawLaneTarget();
         drawWrapper();
+        drawCountTime();
         if (LIGHTDATA) {
             drawLight();
         }

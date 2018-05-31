@@ -21,3 +21,7 @@ export const planDel = params => {
 export const planEdit = params => {
     return http.$post("d_secret_service_plan/planEdit", params);
 }
+
+export const planAdd = params => {
+    return http.$post("d_secret_service_plan/planAdd", params);
+}
