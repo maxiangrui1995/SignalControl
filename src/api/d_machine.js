@@ -4,3 +4,13 @@ import http from './public'
 export const dataList = params => {
     return http.$post("d_machine/dataList", params);
 };
+export const dataUpdate = params => {
+    return http.$post("d_machine/dataUpdate", params);
+};
+export const dataAdd = params => {
+    return http.$post("d_machine/dataAdd", params);
+};
+
+export const dataDelete = params => {
+    return http.$post("d_machine/dataDelete", params);
+};

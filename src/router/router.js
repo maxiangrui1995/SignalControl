@@ -98,6 +98,11 @@ const Region = [
     path: "/region",
     name: "region",
     component: resolve => require(["@/page/region/Index"], resolve)
+  },
+  {
+    path: "/region/:id",
+    name: "region-dev",
+    component: resolve => require(["@/page/region/Dev"], resolve)
   }
 ];
 /* 绿波带 */
@@ -137,6 +142,11 @@ const Privilege = [
         path: "",
         name: "privilege-main",
         component: resolve => require(["@/page/privilege/Main"], resolve)
+      },
+      {
+        path: "view",
+        name: "privilege-view",
+        component: resolve => require(["@/page/privilege/View"], resolve)
       }
     ]
   }
@@ -146,6 +156,9 @@ const IndexPage = {
   path: "/",
   name: "IndexPage",
   component: () => import("@/page/indexPage/Index"),
+  redirect: {
+    name: "comprehensiveQuery"
+  },
   children: [...PlanList, ...Region, ...GreenBelt, ...Privilege, ...Query]
 };
 

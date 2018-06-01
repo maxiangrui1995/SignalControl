@@ -4,3 +4,6 @@ import http from './public'
 export const dataList = params => {
     return http.$post("d_phaseinfo/dataList", params);
 };
+export const updateAll = params => {
+    return http.$post("d_phaseinfo/updateAll", params);
+};

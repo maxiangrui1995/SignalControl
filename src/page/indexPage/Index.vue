@@ -2,6 +2,10 @@
   <Layout :style="{height:'100%'}">
     <Header :style="{padding: '0 10px'}">
       <div class="logo">{{logo}}</div>
+      <div class="tools">
+        <y-message></y-message>
+        <y-users></y-users>
+      </div>
     </Header>
     <Layout>
       <Sider hide-trigger>
@@ -20,8 +24,11 @@
 </template>
 
 <script>
+import YMessage from "./components/Message";
+import YUsers from "./components/Users";
 export default {
   name: "IndexPage",
+  components: { YMessage, YUsers },
   data() {
     return {
       logo: "道路交通信号机控制平台",
@@ -70,5 +77,9 @@ export default {
 .logo {
   font-size: 18px;
   font-weight: 600;
+  float: left;
+}
+.tools {
+  float: right;
 }
 </style>

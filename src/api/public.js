@@ -1,7 +1,7 @@
 import axios from 'axios'
 import iView from "iview"
 
-axios.defaults.baseURL = "/api/";
+axios.defaults.baseURL = "/api/index";
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
 

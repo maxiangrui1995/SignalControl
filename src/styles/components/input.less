@@ -1,14 +1,11 @@
 @input-prefix-cls: ~"@{css-prefix}input";
-
 .@{input-prefix-cls} {
     .input;
-    &-wrapper{
+    &-wrapper {
         display: inline-block;
         width: 100%;
         position: relative;
-        vertical-align: middle;
-
-        // #2149 & #2219
+        vertical-align: middle; // #2149 & #2219
         line-height: normal
     }
     &-icon {
@@ -22,78 +19,77 @@
         right: 0;
         z-index: 3;
     }
-    &-hide-icon &-icon{
+    &-hide-icon &-icon {
         display: none;
     }
-    &-icon-validate{
+    &-icon-validate {
         display: none;
     }
-
-    &-icon-clear{
+    &-icon-clear {
         display: none;
     }
-
-    &-wrapper:hover{
-        .@{input-prefix-cls}-icon-clear{
+    &-wrapper:hover {
+        .@{input-prefix-cls}-icon-clear {
             display: inline-block;
         }
     }
-
-    &-icon-normal + &{
+    &-icon-normal+& {
         padding-right: 32px;
-    }
-    // #554
-    &-hide-icon &-icon-normal + &{
+    } // #554
+    &-hide-icon &-icon-normal+& {
         padding-right: @input-padding-horizontal;
     }
-
-    &-wrapper-large &-icon{
+    &-wrapper-large &-icon {
         font-size: 18px;
         height: @input-height-large;
         line-height: @input-height-large;
     }
-    &-wrapper-small &-icon{
+    &-wrapper-small &-icon {
         width: 24px;
         font-size: 14px;
         height: @input-height-small;
-        line-height: @input-height-small;
-
-        //+ .@{input-prefix-cls} {
+        line-height: @input-height-small; //+ .@{input-prefix-cls} {
         //    padding-right: 24px;
         //}
     }
 }
 
-.@{input-prefix-cls}-group{
+.@{input-prefix-cls}-group {
     .input-group(~"@{input-prefix-cls}");
 }
 
-.@{form-item-prefix-cls}-error{
-    .@{input-prefix-cls}{
+.@{form-item-prefix-cls}-error {
+    .@{input-prefix-cls} {
         .input-error;
-        &-icon{
+        &-icon {
             color: @error-color;
         }
     }
-    .@{input-prefix-cls}-group{
+    .@{input-prefix-cls}-group {
         .input-group-error;
     }
     .@{transfer-prefix-cls} {
         .@{input-prefix-cls} {
             .input;
-            &-icon{
+            &-icon {
                 color: @subsidiary-color;
             }
         }
     }
 }
-.@{form-item-prefix-cls}-validating{
-    .@{input-prefix-cls}{
-        &-icon-validate{
+
+.@{form-item-prefix-cls}-validating {
+    .@{input-prefix-cls} {
+        &-icon-validate {
             display: inline-block;
         }
-        &-icon + .@{input-prefix-cls}{
+        &-icon+.@{input-prefix-cls} {
             padding-right: 32px;
         }
     }
+}
+
+.@{input-prefix-cls}-group-prepend,
+.@{input-prefix-cls}-group-append {
+    background-color: transparent !important;
 }

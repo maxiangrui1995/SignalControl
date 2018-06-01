@@ -110,7 +110,8 @@ export default {
                     props: {
                       trigger: "hover",
                       title: "详细信息",
-                      placement: "top-start"
+                      placement: "top-start",
+                      transfer: true
                     }
                   },
                   [
@@ -192,7 +193,19 @@ export default {
                       }
                     }
                   })
-                : "",
+                : h("Button", {
+                    props: Object.assign({}, this.buttonProps, {
+                      icon: "information"
+                    }),
+                    style: {
+                      marginRight: "8px"
+                    },
+                    on: {
+                      click: () => {
+                        this.dev(data);
+                      }
+                    }
+                  }),
               h("Button", {
                 props: Object.assign({}, this.buttonProps, {
                   icon: "ios-minus-empty"
@@ -470,6 +483,11 @@ export default {
             this.modal_loading = false;
           });
         }
+      });
+    },
+    dev(data) {
+      this.$router.push({
+        path: "/region/" + data.id
       });
     }
   },

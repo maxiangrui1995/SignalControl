@@ -181,3 +181,16 @@ export const target = {
   "4": "右转",
   "11": "直行"
 };
+export const light_title = {
+  "A": "A",
+  "B": "B",
+  "C": "C",
+  "D": "D", "E": "E", "F": "F", "G": "G", "H": "H", "I": "I", "J": "J", "K": "K", "L": "L", "M": "M", "N": "N", "O": "O", "P": "P"
+};
+
+
+// 相机类型
+export const camera_type = {
+  "1": "车流量相机",
+  "2": "电子警察"
+}

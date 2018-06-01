@@ -10,7 +10,7 @@
         <blockquote>
           <p>当前已激活
             <i class="ivu-total">{{data_active.length}}</i> / 3条。
-            <a href="javascript:;" v-if="data_active.length">立即查看</a>
+            <a href="javascript:;" v-if="data_active.length" @click="view">立即查看</a>
           </p>
           <Tag closable v-for="item in data_active" :key="item.sch_id">{{item.sch_name}}</Tag>
         </blockquote>
@@ -182,8 +182,6 @@ export default {
               {
                 on: {
                   "on-click": name => {
-                    console.log(this);
-
                     switch (true) {
                       case name === "modify":
                         this.modifyData(params.row);
@@ -192,7 +190,13 @@ export default {
                         this.removeData(params.row);
                         break;
                       case name === "active":
-                        this.active(params.row);
+                        if (
+                          params.row.enabled === "0" &&
+                          this.data_active.length >= 3
+                        ) {
+                        } else {
+                          this.active(params.row);
+                        }
                         break;
                       default:
                         break;
@@ -253,9 +257,6 @@ export default {
     };
   },
   methods: {
-    dropClick(name) {
-      console.log(name);
-    },
     pageChange(page) {
       this.page = page;
       this.loadData();
@@ -461,6 +462,12 @@ export default {
         ],
         type_: "create"
       };
+    },
+    // 立即查看
+    view() {
+      this.$router.push({
+        path: "/privilege/view"
+      });
     }
   },
   created() {

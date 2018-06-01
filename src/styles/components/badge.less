@@ -1,11 +1,9 @@
 @badge-prefix-cls: ~"@{css-prefix}badge";
-
 .@{badge-prefix-cls} {
     position: relative;
     display: inline-block;
     line-height: 1;
     vertical-align: middle;
-
     &-count {
         position: absolute;
         transform: translateX(50%);
@@ -24,13 +22,11 @@
         white-space: nowrap;
         transform-origin: -10% center;
         z-index: 10;
-        box-shadow: 0 0 0 1px #fff;
-
+        box-shadow: none;
         a,
         a:hover {
             color: #fff;
         }
-
         &-alone {
             top: auto;
             display: block;
@@ -38,7 +34,6 @@
             transform: translateX(0);
         }
     }
-
     &-dot {
         position: absolute;
         transform: translateX(-50%);
@@ -50,6 +45,6 @@
         border-radius: 100%;
         background: @error-color;
         z-index: 10;
-        box-shadow: 0 0 0 1px #fff;
+        box-shadow: none;
     }
 }

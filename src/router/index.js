@@ -28,6 +28,7 @@ router.beforeEach((to, from, next) => {
 					});
 				} else {
 					store.dispatch("login", true);
+					store.dispatch("user", res.data.username);
 					next();
 				}
 			})
