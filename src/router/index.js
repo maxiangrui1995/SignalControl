@@ -9,7 +9,7 @@ import { isLogin } from '@/api/d_user'
 Vue.use(Router)
 
 const router = new Router({
-	mode: "history",
+	mode: "hash",
 	routes: routers
 });
 
