@@ -151,6 +151,14 @@ const Privilege = [
     ]
   }
 ];
+/* 测试 */
+const Test = [
+  {
+    path: "/test",
+    name: "test",
+    component: resolve => require(["@/components/test"], resolve)
+  }
+];
 /* 首页 */
 const IndexPage = {
   path: "/",
@@ -162,4 +170,4 @@ const IndexPage = {
   children: [...PlanList, ...Region, ...GreenBelt, ...Privilege, ...Query]
 };
 
-export default [IndexPage, Login];
+export default [IndexPage, Login, ...Test];
