@@ -17,7 +17,9 @@
         </Menu>
       </Sider>
       <Content :style="{position:'relative'}" ref="app">
-        <router-view/>
+        <vue-scrollbar style="width:100%;height:100%;">
+            <router-view/>
+        </vue-scrollbar>
       </Content>
     </Layout>
   </Layout>
@@ -26,18 +28,19 @@
 <script>
 import YMessage from "./components/Message";
 import YUsers from "./components/Users";
+import VueScrollbar from "vue2-scrollbar";
 export default {
   name: "IndexPage",
-  components: { YMessage, YUsers },
+  components: { YMessage, YUsers,VueScrollbar },
   data() {
     return {
       logo: "道路交通信号机控制平台",
       menu: [
-        {
+        /* {
           name: "workplace",
           title: "工作台",
           icon: "speedometer"
-        },
+        }, */
         {
           name: "comprehensiveQuery",
           title: "综合查询",
@@ -69,11 +72,10 @@ export default {
   },
   methods: {
     menuSelect(name) {
-      // this.$router.push({ path: name });
+      this.$router.push({ path: name });
     }
   },
   mounted() {
-    // Scrollbar.init(this.$refs.app.$el);
   }
 };
 </script>

@@ -151,12 +151,12 @@ const Privilege = [
     ]
   }
 ];
-/* 绿波带 */
-const Workplace = [
+/* 测试 */
+const Test = [
   {
-    path: "/workplace",
-    name: "workplace",
-    component: resolve => require(["@/page/workplace/Index"], resolve)
+    path: "/test",
+    name: "test",
+    component: resolve => require(["@/components/test"], resolve)
   }
 ];
 /* 首页 */
@@ -164,10 +164,10 @@ const IndexPage = {
   path: "/",
   name: "IndexPage",
   component: () => import("@/page/indexPage/Index"),
-  redirect: {
-    name: "workplace"
-  },
-  children: [...PlanList, ...Region, ...GreenBelt, ...Privilege, ...Query, ...Workplace]
+  /*  redirect: {
+     name: "comprehensiveQuery"
+   }, */
+  children: [...PlanList, ...Region, ...GreenBelt, ...Privilege, ...Query]
 };
 
-export default [IndexPage, Login];
+export default [IndexPage, Login, ...Test];

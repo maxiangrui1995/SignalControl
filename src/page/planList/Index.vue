@@ -1,10 +1,12 @@
 <template>
-  <div class="wrapper">
-    <Button type="primary" @click="createData" :style="{'margin-bottom':'10px'}">
-      <Icon type="plus"></Icon>
-      新增</Button>
-    <Table :columns="columns" :data="data" :loading="loading"></Table>
-    <Page :current="page" :total="total" :page-size="rows" @on-change="pageChange" :style="{'margin':'10px','text-align':'right'}"></Page>
+  <div style="padding:20px;">
+    <Card dis-hover :bordered="false">
+      <Button type="primary" @click="createData" :style="{'margin-bottom':'10px'}">
+        <Icon type="plus"></Icon>
+        新增</Button>
+      <Table :columns="columns" :data="data" :loading="loading" class="ivu-table-noborder"></Table>
+      <Page show-sizer show-elevator :current="page" :total="total" :page-size="rows" @on-page-size-change="pageSizeChange" @on-change="pageChange" :style="{'margin':'10px','text-align':'right'}"></Page>
+    </Card>
   </div>
 </template>
 
@@ -30,6 +32,7 @@ export default {
           key: "name",
           render: (h, params) => {
             let row = params.row;
+            let style = { "margin-bottom": "6px" };
             return h(
               "Poptip",
               {
@@ -50,9 +53,7 @@ export default {
                     h(
                       "div",
                       {
-                        style: {
-                          "margin-bottom": "6px"
-                        }
+                        style: style
                       },
                       "最小绿范围：" +
                         `${row.min_green_down} - ${row.min_green_up}`
@@ -60,9 +61,7 @@ export default {
                     h(
                       "div",
                       {
-                        style: {
-                          "margin-bottom": "6px"
-                        }
+                        style: style
                       },
                       "最大绿范围：" +
                         `${row.max_green_down} - ${row.max_green_up}`
@@ -80,6 +79,7 @@ export default {
         {
           title: "类型",
           key: "type",
+          align: "center",
           render: (h, params) => {
             return h(
               "div",
@@ -147,6 +147,11 @@ export default {
   methods: {
     pageChange(page) {
       this.page = page;
+      this.loadData();
+    },
+    pageSizeChange(rows) {
+      this.rows = rows;
+      this.loadData();
     },
     pathToDetails(id) {
       this.$router.push({

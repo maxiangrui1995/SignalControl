@@ -1,0 +1,31 @@
+/* layout */
+
+.ivu-layout-header {
+    background: @layout-header-bg;
+    color: @text-color;
+}
+
+.ivu-layout-sider {
+    background: @layout-sider-bg;
+    color: @text-color;
+}
+
+/* menu */
+
+.ivu-menu {
+    color: @text-color;
+}
+
+.ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu) {
+    color: @active-color;
+    border-right: 2px solid @active-color;
+}
+
+.ivu-menu-vertical .ivu-menu-item:hover,
+.ivu-menu-vertical .ivu-menu-submenu-title:hover {
+    background: @link-color;
+}
+
+.ivu-menu-vertical.ivu-menu-light:after {
+    background: fade(@link-color, 20%);
+}

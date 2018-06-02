@@ -37,5 +37,6 @@ npm test
 ```
 ## v.1.2.0
 ```bash
-升级
+1.引入vue2-scroller,https://github.com/BosNaufal/vue2-scrollbar;
+2.颜色主题做调整,两套主题(默认,蓝色)
 ```
