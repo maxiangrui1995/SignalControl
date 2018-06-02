@@ -1,20 +1,17 @@
 <template>
-  <div style="width:100%;height:100%;">
-    <div id="gmap" style="height:100%;"></div>
-  </div>
+    <div style="width:100%;height:100%;">
+        <div id="gmap" style="height:100%;"></div>
+    </div>
 </template>
 
 <script>
 export default {
+  name: "gmap",
   data() {
     return {
-      gmap: null,
       lat: "119.77495282888412",
       lng: "36.37174657521467"
     };
-  },
-  props: {
-    markers: Boolean
   },
   methods: {
     loadGMap() {
@@ -56,53 +53,10 @@ export default {
       gMap.mapTypes.set("locaMap", localMapType);
       gMap.setMapTypeId("locaMap");
 
-      this.gmap = gMap;
-      this.$emit("listenMap", gMap);
-      if (this.markers) {
-        this.drawMarkers();
-      }
-    },
-    drawMarkers() {
-      let markers = {};
-      for (let item of this.region) {
-        if (item.children) {
-          for (let item2 of item.children) {
-            if (item2.children) {
-              for (let item3 of item2.children) {
-                let marker = new google.maps.Marker({
-                  position: new google.maps.LatLng(item3.lat, item3.lng),
-                  icon: "/static/images/gcrossing.png",
-                  title: item3.name,
-                  id: item3.id,
-                  map: this.gmap
-                });
-                markers[item3.id] = marker;
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  mounted() {
-    this.loadGMap();
-  },
-  computed: {
-    region() {
-      return this.$store.state.regionModule.data;
-    }
-  },
-  watch: {
-    region() {
-      if (this.markers) {
-        this.drawMarkers();
-      }
+      this.$store.dispatch("GMAP", gMap);
     }
   },
   created() {
-    if (!this.$store.state.regionModule.data.length) {
-      this.$store.dispatch("regionModule/SET_DATA");
-    }
     this.$nextTick(() => {
       this.loadGMap();
     });
@@ -110,5 +64,5 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 </style>

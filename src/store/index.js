@@ -2,13 +2,13 @@ import Vue from "vue";
 import Vuex from "vuex";
 Vue.use(Vuex);
 
-import regionModule from './modules/region';
 import characterModule from './modules/character';
 
 export default new Vuex.Store({
   state: {
     isLogin: false,
-    gmap: null
+    gmap: null,
+    user: ""
   },
   mutations: {
     login(state, data) {
@@ -16,17 +16,23 @@ export default new Vuex.Store({
     },
     gmap(state, data) {
       state.gmap = data;
+    },
+    user(state, data) {
+      state.user = data;
     }
   },
   actions: {
     login(context, data) {
       context.commit("login", data);
     },
-    gmap(context, data) {
+    user(context, data) {
+      context.commit("user", data);
+    },
+    GMAP(context, data) {
       context.commit("gmap", data);
     }
   },
   modules: {
-    regionModule, characterModule
+    characterModule
   }
 });

@@ -12,8 +12,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       "/api": {
-        // target: "http://192.168.0.152/SignalControl/web/public/index.php/index",
-        target: "http://192.168.0.8/SignalControl/web/public/index.php/index",
+        target: "http://192.168.0.152/SignalControl/web/public/index.php",
+        // target: "http://192.168.0.8/SignalControl/web/public/index.php/index",
         changeOrigin: true,
         pathRewrite: {
           "^/api": ""
@@ -52,7 +52,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: './',
 
     /**
      * Source Maps

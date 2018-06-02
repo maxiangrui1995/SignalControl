@@ -1,6 +1,6 @@
-# app
+# signalcontrol
 
-> A Vue.js project
+> 信号机控制平台
 
 ## Build Setup
 
@@ -27,4 +27,16 @@ npm run e2e
 npm test
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## v.1.0.0
+```bash
+基础功能
+```
+## v.1.1.0
+```bash
+项目结构优化
+```
+## v.1.2.0
+```bash
+1.引入vue2-scroller,https://github.com/BosNaufal/vue2-scrollbar;
+2.颜色主题做调整,两套主题(默认,蓝色)
+```
