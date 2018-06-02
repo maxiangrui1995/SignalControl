@@ -34,6 +34,11 @@ export default {
       logo: "道路交通信号机控制平台",
       menu: [
         {
+          name: "workplace",
+          title: "工作台",
+          icon: "speedometer"
+        },
+        {
           name: "comprehensiveQuery",
           title: "综合查询",
           icon: "search"
@@ -64,7 +69,7 @@ export default {
   },
   methods: {
     menuSelect(name) {
-      this.$router.push({ path: name });
+      // this.$router.push({ path: name });
     }
   },
   mounted() {
@@ -78,6 +83,7 @@ export default {
   font-size: 18px;
   font-weight: 600;
   float: left;
+  cursor: pointer;
 }
 .tools {
   float: right;

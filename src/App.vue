@@ -1,43 +1,24 @@
 <template>
-  <router-view/>
+  <div id="app" class="app-main">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-// import { $d_secret_service_plan } from "./api";
 export default {
-  name: "App",
-  data() {
-    return {};
-  },
-  methods: {
-    /* 加载已激活的特勤 */
-    /*   loadPrivilege() {
-      $d_secret_service_plan.planList({ status: 1 }).then(res => {
-        if (res.data.total > 0) {
-          this.showNotice();
-        }
-      });
-    }, */
-    /* 显示notice */
-    /* showNotice() {
-      setTimeout(() => {
-        this.$Notice.info({
-          title: "特勤联动",
-          desc: "特勤方案正在执行！",
-          duration: 10
-        });
-      }, 500);
-    } */
-  },
-  created() {
-    // this.loadPrivilege();
-  }
+  name: "App"
 };
 </script>
 
 <style>
-body,
-html {
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background: #f0f0f0;
+  overflow: hidden;
+}
+.app-main {
   width: 100%;
   height: 100%;
 }

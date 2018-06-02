@@ -14,9 +14,11 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "echarts": "^4.1.0",
     "iview": "^2.14.0",
     "less": "^3.0.2",
     "less-loader": "^4.1.0",
+    "mockjs": "^1.0.1-beta3",
     "smooth-scrollbar": "^8.2.7",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",

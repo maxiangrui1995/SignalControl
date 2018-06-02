@@ -16,7 +16,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
 	iView.LoadingBar.start();
 	next();
-	if (to.name === 'login') {
+	/*if (to.name === 'login') {
 		next();
 	} else {
 		if (!store.state.isLogin) {
@@ -35,7 +35,7 @@ router.beforeEach((to, from, next) => {
 		} else {
 			next()
 		}
-	}
+	} */
 
 });
 router.afterEach((to) => {
