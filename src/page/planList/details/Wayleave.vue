@@ -4,7 +4,7 @@
       <Row :gutter="16">
         <i-col :xs="24" :sm="12" :md="12" :lg="6">
           <FormItem label="间隔总时间">
-            <InputNumber :max="255" :min="0" v-model="lighttime" :style="{width:'100%'}"></InputNumber>
+            <InputNumber :max="9" :min="0" v-model="lighttime" :style="{width:'100%'}"></InputNumber>
           </FormItem>
         </i-col>
       </Row>
@@ -100,28 +100,21 @@ export default {
       let arr = [];
       let warning = [];
       this.data.forEach((item, index) => {
-        let first_step = item.first_step;
-        let first_step_time = item.first_step_time;
-        let sec_step = item.sec_step;
-        let sec_step_time = item.sec_step_time;
-        let third_step = item.third_step;
-        let third_step_time = item.third_step_time;
-        let type = item.type;
-        let remark = item.remark;
-        let id = item.id;
         arr.push({
-          first_step,
-          first_step_time,
-          sec_step,
-          sec_step_time,
-          third_step,
-          third_step_time,
-          type,
-          remark,
-          id
+          first_step: item.first_step,
+          first_step_time: item.first_step_time,
+          sec_step: item.sec_step,
+          sec_step_time: item.sec_step_time,
+          third_step: item.third_step,
+          third_step_time: item.third_step_time,
+          type: item.type,
+          remark: item.remark,
+          id: item.id
         });
         if (
-          ~~first_step_time + ~~sec_step_time + ~~third_step_time !==
+          ~~item.first_step_time +
+            ~~item.sec_step_time +
+            ~~item.third_step_time !==
           ~~this.lighttime
         ) {
           warning.push(this.card_title[index]);
@@ -129,7 +122,7 @@ export default {
       });
       if (warning.length) {
         this.$Modal.warning({
-          content: warning.join(" , ") + "  三步时间之和≠间隔总时间"
+          content: warning.join(" , ") + "  三步时间之和 ≠ 间隔总时间"
         });
       } else {
         dataUpdateList({

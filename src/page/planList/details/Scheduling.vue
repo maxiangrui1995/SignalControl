@@ -28,7 +28,7 @@
         </FormItem>
         <FormItem label="方案" prop="patternid">
           <Select v-model="formItem.patternid" placeholder="请选择新的方案... ">
-            <Option v-for="item in planData" :key="item.patternid " :value="item.patternid">方案{{~~item.patternid+1}}</Option>
+            <Option v-for="item in planData" :key="item.patternid " :value="''+item.patternid">方案{{~~item.patternid+1}}</Option>
           </Select>
         </FormItem>
       </Form>
@@ -220,6 +220,7 @@ export default {
       this.formItem.patternid = row.patternid;
       this.formItem.id = row.id;
       this.formItem.type = "modify";
+      console.log(this.formItem);
     },
     removeData(id) {
       this.$Modal.confirm({

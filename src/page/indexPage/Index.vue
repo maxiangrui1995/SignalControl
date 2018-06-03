@@ -3,7 +3,7 @@
     <Header :style="{padding: '0 10px'}">
       <div class="logo">{{logo}}</div>
       <div class="tools">
-        <y-message></y-message>
+        <!-- <y-message></y-message> -->
         <y-users></y-users>
       </div>
     </Header>
@@ -18,7 +18,7 @@
       </Sider>
       <Content :style="{position:'relative'}" ref="app">
         <vue-scrollbar style="width:100%;height:100%;">
-            <router-view/>
+          <router-view/>
         </vue-scrollbar>
       </Content>
     </Layout>
@@ -31,7 +31,7 @@ import YUsers from "./components/Users";
 import VueScrollbar from "vue2-scrollbar";
 export default {
   name: "IndexPage",
-  components: { YMessage, YUsers,VueScrollbar },
+  components: { /* YMessage, */ YUsers, VueScrollbar },
   data() {
     return {
       logo: "道路交通信号机控制平台",
@@ -75,8 +75,7 @@ export default {
       this.$router.push({ path: name });
     }
   },
-  mounted() {
-  }
+  mounted() {}
 };
 </script>
 

@@ -1,10 +1,22 @@
 .vue-scrollbar__wrapper {
-    background: transparent;
+  background: transparent;
 }
 
 .ivu-table-noborder {
-    border: none;
-    .ivu-table:after {
-        width: 0;
+  border: none;
+  .ivu-table:after {
+    width: 0;
+  }
+}
+.ivu-table-dishover {
+  .ivu-table-row-hover {
+    td {
+      background: none;
     }
+  }
+  td {
+    &:hover {
+      background: #ebf7ff;
+    }
+  }
 }

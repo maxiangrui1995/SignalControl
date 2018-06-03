@@ -67,12 +67,13 @@
     </Row>
 </template>
 <script>
-import { dataUpdate } from "@/api/d_plan";
+import { dataUpdate, dataView } from "@/api/d_plan";
 export default {
   data() {
     return {
       id: this.$route.params.id,
-      loading: false
+      loading: false,
+      formItem: {}
     };
   },
   methods: {
@@ -81,24 +82,52 @@ export default {
       dataUpdate(this.formItem).then(res => {
         if (res.status) {
           this.$Message.success("修改成功");
+          this.loadData();
         } else {
           this.$Message.error("修改失败");
         }
         this.loading = false;
       });
+    },
+    loadData() {
+      dataView({ id: this.id }).then(res => {
+        if (res.status === "1") {
+          this.$store.dispatch("characterModule/DATA", res.data);
+        }
+      });
+    },
+    formatterData() {
+      let data = this.data;
+      this.formItem = {
+        id: data.id,
+        name: data.name,
+        extends_down: ~~data.extends_down,
+        extends_up: ~~data.extends_up,
+        light_count: ~~data.light_count,
+        max_green_down: ~~data.max_green_down,
+        max_green_up: ~~data.max_green_up,
+        mc_countdown: ~~data.mc_countdown,
+        mc_width: ~~data.mc_width,
+        min_green_down: ~~data.min_green_down,
+        min_green_up: ~~data.min_green_up,
+        phase_count: ~~data.phase_count,
+        phase_difference: ~~data.phase_difference
+      };
     }
   },
   computed: {
-    formItem() {
+    data() {
       let data = this.$store.state.characterModule.baseData;
-      for (let i in data) {
-        let item = data[i];
-        if (!isNaN(item)) {
-          data[i] = ~~item;
-        }
-      }
       return data;
     }
+  },
+  watch: {
+    data() {
+      this.formatterData();
+    }
+  },
+  created() {
+    this.formatterData();
   }
 };
 </script>

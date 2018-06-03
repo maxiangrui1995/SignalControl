@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Table :columns="columns" :data="data" :border="true" :loading="loading"></Table>
+    <Table :columns="columns" :data="data" :border="true" :loading="loading" class="ivu-table-dishover"></Table>
     <Button type="primary" :loading="loading" @click="handleSubmit" :style="{'margin-top':'10px'}">确定</Button>
   </div>
 </template>
@@ -103,7 +103,7 @@ export default {
           h("Icon", {
             props: {
               type: "checkmark",
-              color: params.row[type] === "1" ? "" : "#444"
+              color: params.row[type] === "1" ? "" : "#ccc"
             }
           })
         ]

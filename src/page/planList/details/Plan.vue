@@ -2,7 +2,7 @@
   <div>
     <Button type="primary" icon="plus" @click="createData" :style="{'margin-bottom':'10px'}">新增</Button>
     <Table :columns="columns" :data="data" :loading="loading"></Table>
-    <Page :total="total" @on-change="pageChange" :style="{'margin-top':'10px','text-align':'right'}"></Page>
+    <Page show-sizer show-elevator show-total :current="page" :total="total" :page-size="rows" @on-page-size-change="pageSizeChange" @on-change="pageChange" v-if="showPage" :style="{'margin':'10px','text-align':'right'}"></Page>
 
     <Modal v-model="modal" :title="modalTitle">
       <Form :model="formItem" :label-width="40">
@@ -15,7 +15,7 @@
           <i-col span="7">
             <FormItem label="阶段">
               <Select v-model="formItem['phase'+($index+1)]">
-                <Option v-for="item in phaseData" :key="item.id" :value="item.serialid">阶段{{~~item.serialid+1}}</Option>
+                <Option v-for="item in phaseData" :key="item.id" :value="''+item.serialid">阶段{{~~item.serialid+1}}</Option>
               </Select>
             </FormItem>
           </i-col>
@@ -54,10 +54,16 @@ export default {
     return {
       columns: [
         {
+          type: "index",
+          width: 60,
+          align: "center"
+        },
+        {
           title: "方案名称",
           key: "patternid",
           render: (h, params) => {
             let row = params.row;
+            let style = { "margin-bottom": "10px" };
             let step = [];
             for (let i = 1; i <= row.step; i++) {
               step.push({
@@ -85,7 +91,7 @@ export default {
                     step.map((item, index) => {
                       return h(
                         "div",
-                        { style: { "margin-bottom": "10px" } },
+                        { style: style },
                         `步号${index + 1} - 阶段：${~~item.phase + 1} - 时长：${
                           item.time
                         }`
@@ -155,9 +161,11 @@ export default {
       data: [],
       id: this.$route.params.id,
       loading: false,
+      // page
       total: 0,
       page: 1,
       rows: 10,
+      showPage: false,
       modal: false,
       modal_loading: false,
       modalTitle: "",
@@ -168,6 +176,10 @@ export default {
   methods: {
     pageChange(page) {
       this.page = page;
+      this.loadData();
+    },
+    pageSizeChange(rows) {
+      this.rows = rows;
       this.loadData();
     },
     loadData() {
@@ -286,6 +298,11 @@ export default {
   created() {
     this.loadData();
     this.loadData_phase();
+  },
+  watch: {
+    total() {
+      this.showPage = this.total > 0 ? true : false;
+    }
   }
 };
 </script>
