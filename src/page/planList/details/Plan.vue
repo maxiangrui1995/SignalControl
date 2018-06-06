@@ -1,7 +1,7 @@
 <template>
   <div>
     <Button type="primary" icon="plus" @click="createData" :style="{'margin-bottom':'10px'}">新增</Button>
-    <Table :columns="columns" :data="data" :loading="loading"></Table>
+    <Table :columns="columns" :data="data" :loading="loading" class="ivu-table-noborder"></Table>
     <Page show-sizer show-elevator show-total :current="page" :total="total" :page-size="rows" @on-page-size-change="pageSizeChange" @on-change="pageChange" v-if="showPage" :style="{'margin':'10px','text-align':'right'}"></Page>
 
     <Modal v-model="modal" :title="modalTitle">

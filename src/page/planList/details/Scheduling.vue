@@ -1,15 +1,15 @@
 <template>
   <div>
     <Button type="primary" icon="plus" @click="createData" :style="{'margin-bottom':'10px'}">新增</Button>
-    <Table :columns="columns" :data="data" :loading="loading"></Table>
-    <Page :total="total" @on-change="pageChange" :style="{'margin-top':'10px','text-align':'right'}"></Page>
+    <Table :columns="columns" :data="data" :loading="loading" class="ivu-table-noborder"></Table>
+    <Page show-sizer show-elevator show-total :current="page" :total="total" :page-size="rows" @on-page-size-change="pageSizeChange" @on-change="pageChange" v-if="showPage" :style="{'margin':'10px','text-align':'right'}"></Page>
 
     <Modal v-model="modal" :title="modalTitle">
       <Form :model="formItem" ref="form" :rules="formRules" :label-width="80">
         <FormItem label="日期类型" prop="datetype">
           <Select v-model="formItem.datetype" @on-change="datetypeChange" placeholder="请选择新的日期类型...">
             <Option v-for="item in 10" :key="item" :value="''+(item-1)">类型{{item-1}}</Option>
-            <Option :value="15">自定义</Option>
+            <Option value="15">自定义</Option>
           </Select>
         </FormItem>
         <FormItem label="功能" prop="func_num">
@@ -33,7 +33,7 @@
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" @click="modal = false">取消</Button>
+        <Button type="text" @click="modal = false,modal_loading=false">取消</Button>
         <Button type="primary" :loading="modal_loading" @click="formOk">确定</Button>
       </div>
     </Modal>
@@ -47,7 +47,16 @@ import { dataList as dataList_pattern } from "@/api/d_pattern";
 import { control_func, func_num, week } from "@/untils/params";
 export default {
   data() {
+    const validateDate = (rule, value, callback) => {
+      if (value[0] === "" || value[1] === "") {
+        return callback(new Error("请选择日期范围"));
+      } else {
+        callback();
+      }
+    };
     return {
+      id: this.$route.params.id,
+      // table
       columns: [
         {
           type: "index",
@@ -152,17 +161,23 @@ export default {
         }
       ],
       data: [],
+      loading: false,
+      // page
       page: 1,
       rows: 10,
-      total: 1,
-      id: this.$route.params.id,
-      loading: false,
+      total: 0,
+      showPage: false,
+      // 日期类型
       weekData: {},
+      // 方案
       planData: [],
+      // 功能
       func_num: func_num,
+      // modal
       modal: false,
       modalTitle: "",
       modal_loading: false,
+      // form
       formItem: {},
       seen: true,
       formRules: {
@@ -178,12 +193,7 @@ export default {
             message: "请选择功能"
           }
         ],
-        custom_date: [
-          {
-            required: true,
-            message: "请选择日期范围"
-          }
-        ],
+        custom_date: [{ validator: validateDate, trigger: "blur" }],
         custom_time: [
           {
             required: true,
@@ -200,27 +210,68 @@ export default {
     };
   },
   methods: {
+    loadData() {
+      this.loading = true;
+      dataList({
+        plan_id: this.id,
+        page: this.page,
+        rows: this.rows
+      }).then(res => {
+        if (res.status === "1") {
+          this.data = res.data.list;
+          this.total = ~~res.data.total;
+        }
+        this.loading = false;
+      });
+    },
+    // 加载日期类型数据
+    loadWeekData() {
+      dataList_week({ plan_id: this.id, page: 1, rows: 10 }).then(res => {
+        if (res.status) {
+          this.weekData = {};
+          res.data.list.forEach(item => {
+            let array = (this.weekData[item.num] = []);
+            for (let i in week) {
+              if (item[i] === "1") {
+                array.push(week[i]);
+              }
+            }
+          });
+        }
+      });
+    },
+    // 加载方案数据
+    loadPlanData() {
+      dataList_pattern({ plan_id: this.id, page: 1, rows: 32 }).then(res => {
+        if (res.status === "1") {
+          this.planData = res.data.list;
+        }
+      });
+    },
     createData() {
       this.modal = true;
       this.modalTitle = "时间调度新增";
-      this.formItem = {};
-      this.formItem.datetype = "0";
-      this.formItem.type = "create";
+      this.formItem = {
+        datetype: "0",
+        func_num: func_num[0].value || "",
+        type_: "create"
+      };
     },
     modifyData(row) {
       this.modal = true;
       this.modalTitle = "时间调度编辑";
-      this.formItem.datetype = row.datetype;
-      this.formItem.func_num = row.func_num;
-      this.formItem.custom_date = [
-        `${row.start_mon}/${row.start_day}`,
-        `${row.stop_mon}/${row.stop_day}`
-      ];
-      this.formItem.custom_time = `${row.start_hour}:${row.start_min}`;
-      this.formItem.patternid = row.patternid;
-      this.formItem.id = row.id;
-      this.formItem.type = "modify";
-      console.log(this.formItem);
+      this.formItem = {
+        datetype: "" + row.datetype,
+        func_num: "" + row.func_num,
+        custom_date: [
+          `${row.start_mon}/${row.start_day}`,
+          `${row.stop_mon}/${row.stop_day}`
+        ],
+        custom_time: `${row.start_hour}:${row.start_min}`,
+        patternid: "" + row.patternid,
+        id: row.id,
+        type_: "modify"
+      };
     },
     removeData(id) {
       this.$Modal.confirm({
@@ -230,11 +281,11 @@ export default {
           dataDelete({ id }).then(res => {
             if (res.status) {
               this.$Message.success("删除成功");
+              this.loadData();
             } else {
               this.$Message.error(res.message);
             }
             this.$Modal.remove();
-            this.loadData();
           });
         }
       });
@@ -251,7 +302,7 @@ export default {
         obj.datetype = this.formItem.datetype;
         obj.func_num = this.formItem.func_num;
         obj.patternid = this.formItem.patternid;
-        if (obj.datetype === 15) {
+        if (obj.datetype === "15") {
           let date = this.formItem.custom_date;
           obj.start_mon = date[0].split("/")[0] || 0;
           obj.start_day = date[0].split("/")[1] || 0;
@@ -267,7 +318,7 @@ export default {
         obj.start_hour = time.split(":")[0];
         obj.start_min = time.split(":")[1];
 
-        if (this.formItem.type === "modify") {
+        if (this.formItem.type_ === "modify") {
           dataUpdate({
             id: this.formItem.id,
             ...obj
@@ -304,44 +355,12 @@ export default {
     pageChange(page) {
       this.page = page;
     },
-    loadData() {
-      this.loading = true;
-      dataList({
-        plan_id: this.id,
-        page: this.page,
-        rows: this.rows
-      }).then(res => {
-        if (res.status) {
-          this.data = res.data.list;
-          this.total = ~~res.data.total;
-          this.loading = false;
-        }
-      });
-    },
-    loadData_week() {
-      dataList_week({ plan_id: this.id, page: 1, rows: 10 }).then(res => {
-        if (res.status) {
-          this.weekData = {};
-          res.data.list.forEach(item => {
-            let array = (this.weekData[item.num] = []);
-            for (let i in week) {
-              if (item[i] === "1") {
-                array.push(week[i]);
-              }
-            }
-          });
-        }
-      });
-    },
-    loadData_pattern() {
-      dataList_pattern({ plan_id: this.id, page: 1, rows: 32 }).then(res => {
-        if (res.status) {
-          this.planData = res.data.list;
-        }
-      });
+    pageSizeChange(rows) {
+      this.rows = rows;
+      this.loadData();
     },
     datetypeChange(value) {
-      if (value === 15) {
+      if (value === "15") {
         this.seen = true;
       } else {
         this.seen = false;
@@ -354,9 +373,14 @@ export default {
     }
   },
   created() {
+    this.loadWeekData();
+    this.loadPlanData();
     this.loadData();
-    this.loadData_week();
-    this.loadData_pattern();
+  },
+  watch: {
+    total() {
+      this.showPage = this.total > 0 ? true : false;
+    }
   }
 };
 </script>

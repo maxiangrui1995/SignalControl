@@ -4,3 +4,6 @@ import "./d_pattern";
 import "./d_phasestatus";
 import "./d_week";
 import "./d_timemanage";
+import "./d_car_sensor";
+import "./d_pattern_adaptive";
+import "./d_pattern_adaptive_sub"
