@@ -1,9 +1,15 @@
 <template>
-  <!-- <div style="height:100%"> -->
-  <!-- <g-map /> -->
-  <!-- <div style="position:absolute;top:20px;left:20px;width:400px;max-height:500px;overflow:auto" ref="tree"> -->
-  <!-- <Card :bordered="false"> -->
-  <div class="wrapper" style="position:absolute;top:0;right:0;bottom:0;left:0;overflow-y:auto;overflow-x:hidden;">
+  <div style="position:absolute;top:0;left:0;width:100%;height:100%;">
+    <g-map />
+    <div style="position:absolute;top:20px;left:20px;width:400px;max-height:500px;overflow:auto" ref="tree">
+      <Card :bordered="false">
+        <div slot="title">区域管理</div>
+        <vue-scrollbar style="width:100%;max-height:400px;">
+          <Spin v-if="loading" fix></Spin>
+          <Tree :data="data" :render="renderTree" :style="{'padding-bottom':'6px'}"></Tree>
+        </vue-scrollbar>
+
+        <!--   <div class="wrapper" style="position:absolute;top:0;right:0;bottom:0;left:0;overflow-y:auto;overflow-x:hidden;">
     <Button type="primary" @click="createData" :style="{'margin-bottom':'10px'}">
       <Icon type="plus"></Icon>
       新增</Button>
@@ -31,15 +37,15 @@
         <Button type="primary" :loading="modal_loading" @click="formOk">确定</Button>
       </div>
     </Modal>
+  </div> -->
+
+      </Card>
+    </div>
+
   </div>
-
-  <!-- </Card> -->
-  <!-- </div> -->
-
-  <!-- </div> -->
 </template>
 <script>
-// import GMap from "@/components/gmap";
+import GMap from "@/components/gmap";
 import { dataList, dataAdd, dataDelete, dataUpdate } from "@/api/d_area";
 import {
   dataAdd as dataAdd_crossing,
@@ -47,12 +53,15 @@ import {
   dataUpdate as dataUpdate_crossing
 } from "@/api/d_crossing";
 import { d_crossing } from "@/untils/params";
+import VueScrollbar from "vue2-scrollbar";
 export default {
   name: "region",
-  // components: { GMap },
+  components: { GMap, VueScrollbar },
   data() {
     return {
+      // tree
       data: [],
+      loading: false,
       buttonProps: {
         type: "ghost",
         size: "small"
@@ -84,6 +93,52 @@ export default {
     };
   },
   methods: {
+    // 加载区域数据
+    loadTree() {
+      this.loading = true;
+      dataList().then(res => {
+        this.data = res.data;
+        this.loading = false;
+      });
+    },
+    // Tree节点点击
+    treeNodeSelect(root, node, data) {
+      this.data.forEach(item => {
+        this.$set(item, "selected", false);
+        if (item.children) {
+          item.children.forEach(item => {
+            this.$set(item, "selected", false);
+            if (item.children) {
+              item.children.forEach(item => {
+                this.$set(item, "selected", false);
+              });
+            }
+          });
+        }
+      });
+
+      this.$set(data, "selected", !data.selected);
+    },
+    // 渲染Tree
+    renderTree(h, { root, node, data }) {
+      console.log(1);
+
+      return h(
+        "span",
+        {
+          class: {
+            "ivu-tree-title-hover": true,
+            "ivu-tree-title-selected": data.selected
+          },
+          on: {
+            click: () => {
+              this.treeNodeSelect(root, node, data);
+            }
+          }
+        },
+        [h("span", data.name)]
+      );
+    },
     renderContent(h, { root, node, data }) {
       return h(
         "span",
@@ -492,10 +547,7 @@ export default {
     }
   },
   created() {
-    this.loadData();
-    this.$nextTick(() => {
-      // Scrollbar.init(this.$refs.tree);
-    });
+    this.loadTree();
   }
 };
 </script>
