@@ -2,34 +2,44 @@ import Mock from "mockjs";
 const Random = Mock.Random;
 
 // 模拟区域管理
-const produceData = function(opt) {
-  let rows = [];
-  for (let i = 0; i < 7; i++) {
-    rows.push({
-      id: "100" + i,
-      name: "区域-" + Random.cword(2, 3),
+const produceData = function (opt) {
+  let rows = [
+    {
+      id: "11",
+      name: "区域-01",
+      latlngs: [
+        { lat: "119.75998878479004", lng: "36.379210064373034" },
+        { lat: "119.75913047790527", lng: "36.35605709240176" },
+        { lat: "119.80522155761719", lng: "36.35529672873754" },
+        { lat: "119.80565071105957", lng: "36.37893365161938" },
+        { lat: "119.75998878479004", lng: "36.379210064373034" }
+      ],
+      type: "area",
+      expand: "true",
       children: [
         {
-          id: "101" + i,
-          name: "道路-" + Random.cword(2, 3),
+          id: "101",
+          name: "道路-01",
+          type: "lane",
+          expand: "true",
+          latlngs: [
+            { lat: "119.76702690124512", lng: "36.37561662195014" },
+            { lat: "119.7960376739502", lng: "36.36013527984108" }
+          ],
           children: [
             {
-              id: "1001" + i,
-              name: "路口-" + Random.cword(2, 3)
-            },
-            {
-              id: "1002" + i,
-              name: "路口-" + Random.cword(2, 3)
+              id: "1001",
+              name: "路口-01",
+              lat: "119.78127479553223",
+              lng: "36.36822190085111",
+              type: "crossing",
+              expand: "true",
             }
           ]
-        },
-        {
-          id: "102" + i,
-          name: "道路-" + Random.cword(2, 3)
         }
       ]
-    });
-  }
+    }
+  ];
 
   return rows;
 };
