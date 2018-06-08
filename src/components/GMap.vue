@@ -52,16 +52,19 @@ export default {
       });
       gMap.mapTypes.set("locaMap", localMapType);
       gMap.setMapTypeId("locaMap");
+      if (!gMap) {
+        this.$Message.error("地图资源加载出错，请重新尝试！");
+      }
 
       // 地图点击事件
-      google.maps.event.addListener(gMap, "click", function(event) {
+      /* google.maps.event.addListener(gMap, "click", function(event) {
         console.log("触发点击事件", event.latLng);
         new google.maps.Marker({
           position: new google.maps.LatLng(event.latLng.d, event.latLng.e),
           icon: "/static/images/gcrossing.png",
           map: gMap
         });
-      });
+      }); */
 
       this.$store.dispatch("GMAP", gMap);
     }
