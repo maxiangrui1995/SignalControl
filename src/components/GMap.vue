@@ -23,8 +23,8 @@ export default {
         let img = ownerDocument.createElement("img");
         img.style.width = this.tileSize.width + "px";
         img.style.height = this.tileSize.height + "px";
-        let strURL = `${window.googleMapsFilesUrl}tilemap/${zoom}/${coord.x}/${
-          coord.y
+        let strURL = `${window.googleMapsFilesUrl}tilemap/${zoom}/${coord.y}/${
+          coord.x
         }.png`;
         let errorURL = `${window.googleMapsFilesUrl}404.png`;
 
