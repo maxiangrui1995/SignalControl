@@ -18,6 +18,7 @@ const produceData = function (opt) {
           children: [
             {
               id: "1001",
+              pid: "11",
               name: "路口-Aa",
               lat: "119.78127479553223",
               lng: "36.36822190085111",
@@ -27,6 +28,7 @@ const produceData = function (opt) {
             },
             {
               id: "1002",
+              pid: "11",
               name: "路口-Ab",
               lat: "119.78985786437988",
               lng: "36.3635220866413",
@@ -52,6 +54,7 @@ const produceData = function (opt) {
           children: [
             {
               id: "1003",
+              pid: "11",
               name: "路口-Ba",
               lat: "119.66754913330078",
               lng: "36.348245730105724",

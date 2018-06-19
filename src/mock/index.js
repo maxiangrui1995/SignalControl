@@ -8,3 +8,4 @@ import "./d_car_sensor";
 import "./d_pattern_adaptive";
 import "./d_pattern_adaptive_sub";
 import "./d_area";
+import "./d_crossing";

@@ -3,7 +3,7 @@
     <g-map />
     <!-- <Spin fix></Spin> -->
     <div v-show="!crossing.editing" style="position:absolute;top:20px;left:20px;width:400px;max-height:500px;overflow:auto">
-      <Card :bordered="false" :padding="10">
+      <Card :padding="10">
         <div slot="title">区域管理</div>
         <div slot="extra">
           <Tooltip :content="(switchSelected?'关闭':'开启')+'快速删除模式'" transfer>
@@ -43,29 +43,26 @@
       </Form>
       <Button :style="{'margin-left':'80px'}" @click="getPointFromMap">地图取点</Button>
       <div slot="footer">
-        <Button type="text" @click="crossing.modal = false">取消</Button>
-        <Button type="primary" :loading="crossing.loading">确定</Button>
+        <Button type="text" @click="crossingModalCancel">取消</Button>
+        <Button type="primary" :loading="crossing.loading" @click="crossingModalOK">确定</Button>
       </div>
     </Modal>
 
-    <div style="position:absolute;top:20px;right:20px;">
-      <Button type="info" icon="ios-trash-outline">清空</Button>
-    </div>
-
-    <div v-show="crossing.editing" style="position:absolute;top:80px;right:20px;width:300px;">
-      <Card :bordered="false" dis-hover>
+    <div v-show="crossing.editing" style="position:absolute;top:80px;right:20px;width:340px;">
+      <Card dis-hover>
         <div slot="title">地图取点</div>
+        <Alert closable>点击地图或拖动标记完成路口取点</Alert>
         <Form :label-width="40">
           <FormItem label="纬度">
-            <Input :value="crossing.form.lng" placeholder="请选择新的纬度坐标..." readonly/>
+            <Input :value="crossing.form_copy.lng" placeholder="请选择新的纬度坐标..." readonly/>
           </FormItem>
           <FormItem label="经度">
-            <Input :value="crossing.form.lat" placeholder="请选择新的经度坐标..." readonly/>
+            <Input :value="crossing.form_copy.lat" placeholder="请选择新的经度坐标..." readonly/>
           </FormItem>
         </Form>
         <div style="text-align:right;">
-          <Button type="text">取消</Button>
-          <Button type="primary">确定</Button>
+          <Button type="text" @click="getPointFromMapCancel">取消</Button>
+          <Button type="primary" @click="getPointFromMapOK">确定</Button>
         </div>
       </Card>
     </div>
@@ -105,9 +102,12 @@ export default {
         title: "",
         formRules: {},
         form: {},
+        form_copy: {},
         loading: false,
         editing: false
-      }
+      },
+      // mapEvents
+      mapClickEvent: null
     };
   },
   methods: {
@@ -117,6 +117,7 @@ export default {
       dataList().then(res => {
         this.treeData = res.data;
         this.loading = false;
+        this.loadMapCrossingMarkers();
       });
     },
     // Tree节点点击
@@ -246,6 +247,10 @@ export default {
     // 数据加载完成显示所有路口地图标记
     loadMapCrossingMarkers() {
       let data = this.treeData;
+      for (let i in this.mapShape.crossing) {
+        this.mapShape.crossing[i].setMap(null);
+      }
+      this.mapShape.crossing = {};
       data.forEach(item => {
         if (item.children) {
           item.children.forEach(item => {
@@ -346,18 +351,21 @@ export default {
         });
       }
     },
-    loadData() {
-      dataList().then(res => {
-        this.data = res.data;
-      });
-    },
     // 删除
     removeData(row) {
       this.$Modal.confirm({
-        content: `确定删除 <b>${row.name}</b> ？删除后无法恢复！`,
+        content: `确定删除<b>${row.name}</b>？删除后无法恢复！`,
         loading: true,
         onOk: () => {
-          this.$Message.info("Clicked ok");
+          dataDelete_crossing({ id: row.id }).then(res => {
+            if (res.status) {
+              this.$Message.success("删除成功");
+            } else {
+              this.$Message.error(res.message);
+            }
+            this.$Modal.remove();
+            this.loadTree();
+          });
         }
       });
     },
@@ -374,9 +382,12 @@ export default {
         this.crossing.form = {
           name: row.name,
           direction: "1357", //Todo
+          road_data: d_crossing.road_data, //Todo
           lat: row.lat,
           lng: row.lng,
-          id: row.id
+          id: row.id,
+          pid: row.pid,
+          type: "modify"
         };
       } else {
         this.$Modal.confirm({
@@ -399,7 +410,18 @@ export default {
           },
           loading: true,
           onOk() {
-            console.log(1);
+            dataUpdate({
+              id: row.id,
+              name: newValue
+            }).then(res => {
+              if (res.status) {
+                this.$Message.success("添加成功");
+              } else {
+                this.$Message.error(res.message);
+              }
+              this.$Modal.remove();
+              self.loadData();
+            });
           }
         });
       }
@@ -408,13 +430,15 @@ export default {
     devs(row) {},
     // 地图取点
     getPointFromMap() {
-      this.mapShape.crossing["1001"].setMap(null);
-      this.mapShape.crossing["1001"].visible = false;
-      this.mapShape.crossing["1001"].setVisible(false);
       let gmap = this.gmap;
       let self = this;
       let markers = this.mapShape.crossing;
       let info = this.mapShape.infoWindow;
+      let form = this.crossing.form;
+      let form_copy = this.crossing.form_copy;
+      form_copy.lng = form.lng;
+      form_copy.lat = form.lat;
+
       this.crossing.modal = false;
       this.crossing.editing = true;
       this.$Message.info("进入地图取点模式");
@@ -425,19 +449,91 @@ export default {
       for (let i in info) {
         info[i].close();
       }
-      for (let i in this.mapShape.crossing) {
-        this.mapShape.crossing[i].setMap(null);
+
+      for (let i in markers) {
+        if (markers[i].id == form.id) {
+          markers[i].setDraggable(true);
+          // 标记的拖动事件
+          google.maps.event.addListener(markers[i], "drag", function(event) {
+            self.crossing.form_copy = {
+              lat: event.latLng.e,
+              lng: event.latLng.d
+            };
+          });
+        } else {
+          markers[i].setMap(null);
+        }
       }
       // 地图点击事件
-      google.maps.event.addListener(gmap, "click", function(event) {
-        let form = self.crossing.form;
-        form.lat = event.latLng.e;
-        form.lng = event.latLng.d;
-        console.log(self.mapShape.crossing[form.id]);
-        self.mapShape.crossing[form.id].setPosition(
-          new google.maps.LatLng(form.lng, form.lat)
-        );
-      });
+      this.mapClickEvent = google.maps.event.addListener(
+        gmap,
+        "click",
+        function(event) {
+          self.crossing.form_copy = {
+            lat: event.latLng.e,
+            lng: event.latLng.d
+          };
+          self.mapShape.crossing[form.id].setPosition(
+            new google.maps.LatLng(event.latLng.d, event.latLng.e)
+          );
+        }
+      );
+    },
+    // 重置地图
+    resetMap() {
+      let gmap = this.gmap;
+      // 恢复弹窗
+      this.crossing.modal = true;
+      this.crossing.editing = false;
+      // 地图标记恢复
+      let markers = this.mapShape.crossing;
+      let form = this.crossing.form;
+      for (let i in markers) {
+        if (markers[i].id == form.id) {
+          markers[i].setPosition(new google.maps.LatLng(form.lng, form.lat));
+        }
+        markers[i].setMap(gmap);
+        markers[i].setDraggable(false);
+      }
+      // 恢复地图鼠标样式
+      delete gmap.draggableCursor;
+      // 删除地图事件
+      google.maps.event.removeListener(this.mapClickEvent);
+    },
+    // 地图取点确定
+    getPointFromMapOK() {
+      this.crossing.form = Object.assign(
+        this.crossing.form,
+        this.crossing.form_copy
+      );
+      this.resetMap();
+    },
+    getPointFromMapCancel() {
+      this.resetMap();
+    },
+    // 路口取点弹窗取消
+    crossingModalCancel() {
+      this.crossing.modal = false;
+      this.crossing.loading = false;
+      this.loadMapCrossingMarkers();
+    },
+    crossingModalOK() {
+      this.crossing.loading = true;
+      if (this.crossing.form.type === "modify") {
+        delete this.crossing.form.type;
+        dataUpdate_crossing({
+          ...this.crossing.form.type
+        }).then(res => {
+          if (res.status) {
+            this.$Message.success("修改成功");
+            this.crossing.modal = false;
+            this.loadTree();
+          } else {
+            this.$Message.error(res.message);
+          }
+          this.crossing.loading = false;
+        });
+      }
     }
   },
   created() {
@@ -449,9 +545,7 @@ export default {
     }
   },
   watch: {
-    treeData() {
-      this.loadMapCrossingMarkers();
-    }
+    treeData() {}
   }
 };
 </script>
