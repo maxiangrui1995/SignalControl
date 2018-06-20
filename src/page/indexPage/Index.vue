@@ -4,12 +4,12 @@
       <div class="logo">{{logo}}</div>
       <div class="tools">
         <!-- <y-message></y-message> -->
-        <y-users></y-users>
+        <!-- <y-users></y-users> -->
       </div>
     </Header>
     <Layout>
       <Sider hide-trigger>
-        <Menu width="auto" :active-name="menuActiveName" @on-select="menuSelect" :style="{background:'transparent', height:'100%'}">
+        <Menu width="auto" theme="dark" :active-name="menuActiveName" @on-select="menuSelect" :style="{background:'transparent', height:'100%'}">
           <i-menu-item v-for="(item,index) in menu" :key="index" :name="'/'+item.name">
             <Icon :type="item.icon" />
             <span>{{item.title}}</span>
@@ -17,30 +17,30 @@
         </Menu>
       </Sider>
       <Content :style="{position:'relative'}" ref="app">
-        <vue-scrollbar style="width:100%;height:100%;">
-          <router-view/>
-        </vue-scrollbar>
+        <!-- <vue-scrollbar style="width:100%;height:100%;"> -->
+        <router-view/>
+        <!-- </vue-scrollbar> -->
       </Content>
     </Layout>
   </Layout>
 </template>
 
 <script>
-import YMessage from "./components/Message";
+/* import YMessage from "./components/Message";
 import YUsers from "./components/Users";
-import VueScrollbar from "vue2-scrollbar";
+import VueScrollbar from "vue2-scrollbar"; */
 export default {
   name: "IndexPage",
-  components: { /* YMessage, */ YUsers, VueScrollbar },
+  //   components: { /* YMessage, */ YUsers, VueScrollbar },
   data() {
     return {
       logo: "道路交通信号机控制平台",
       menu: [
-        /* {
+        {
           name: "workplace",
           title: "工作台",
           icon: "speedometer"
-        }, */
+        },
         {
           name: "comprehensiveQuery",
           title: "综合查询",
@@ -83,6 +83,7 @@ export default {
 .logo {
   font-size: 18px;
   font-weight: 600;
+  color: #fff;
   float: left;
   cursor: pointer;
 }

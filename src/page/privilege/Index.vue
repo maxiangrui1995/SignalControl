@@ -1,16 +1,9 @@
 <template>
-  <div style="height:100%;">
-    <g-map />
-    <router-view></router-view>
-  </div>
+    <div>特勤联动</div>
 </template>
 
 <script>
-import GMap from "@/components/gmap";
-export default {
-  name: "privilege",
-  components: { GMap }
-};
+export default {};
 </script>
 
 <style>

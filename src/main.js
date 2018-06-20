@@ -1,18 +1,23 @@
 import Vue from "vue";
 import iView from "iview";
 import App from "./App";
-import router from "./router";
-import store from "./store";
+/* 路由 */
+import router from './router';
+/* 状态管理 */
+import store from './vuex';
+/* 请求 */
+import axios from 'axios';
+/* 自定义请求 */
+import './mock';
 
-import VueVideoPlayer from "vue-video-player";
-import echarts from "echarts";
-
-import "./styles/index.less";
+import 'iview/dist/styles/iview.css';
+import './styles/common.css';
 
 Vue.config.productionTip = false;
 
+Vue.prototype.$http = axios;
+
 Vue.use(iView);
-Vue.use(VueVideoPlayer);
 
 new Vue({
   el: "#app",
