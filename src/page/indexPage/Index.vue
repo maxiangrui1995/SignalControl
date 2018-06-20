@@ -1,6 +1,6 @@
 <template>
   <Layout :style="{height:'100%'}">
-    <Header :style="{padding: '0 10px'}">
+    <Header :style="{padding: '0 10px','box-shadow':'0 1px 4px rgba(0,21,41,.08)','z-index':'1'}">
       <div class="logo">{{logo}}</div>
       <div class="tools">
         <!-- <y-message></y-message> -->
@@ -9,6 +9,10 @@
     </Header>
     <Layout>
       <Sider hide-trigger>
+        <div class="avatar-wrapper">
+          <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" size="large"/>
+          <div class="avatar-wrapper-content">欢迎您: <span class="title">{{user}}</span></div>
+        </div>
         <Menu width="auto" theme="dark" :active-name="menuActiveName" @on-select="menuSelect" :style="{background:'transparent', height:'100%'}">
           <i-menu-item v-for="(item,index) in menu" :key="index" :name="'/'+item.name">
             <Icon :type="item.icon" />
@@ -75,7 +79,11 @@ export default {
       this.$router.push({ path: name });
     }
   },
-  mounted() {}
+  computed: {
+    user() {
+      return this.$store.state.user;
+    }
+  }
 };
 </script>
 
@@ -89,5 +97,17 @@ export default {
 }
 .tools {
   float: right;
+}
+.avatar-wrapper {
+  text-align: center;
+  color: #fff;
+  padding: 20px 0 6px;
+  &-content {
+    height: 40px;
+    line-height: 40px;
+    .title {
+      color: #49bdbd;
+    }
+  }
 }
 </style>
