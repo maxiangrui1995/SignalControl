@@ -1,7 +1,7 @@
 <template>
-    <div style="width:100%;height:100%;">
-        <div id="gmap" style="height:100%;"></div>
-    </div>
+  <div style="width:100%;height:100%;">
+    <div id="gmap" style="height:100%;"></div>
+  </div>
 </template>
 
 <script>
@@ -23,8 +23,8 @@ export default {
         let img = ownerDocument.createElement("img");
         img.style.width = this.tileSize.width + "px";
         img.style.height = this.tileSize.height + "px";
-        let strURL = `${window.googleMapsFilesUrl}tilemap/${zoom}/${coord.x}/${
-          coord.y
+        let strURL = `${window.googleMapsFilesUrl}tilemap/${zoom}/${coord.y}/${
+          coord.x
         }.png`;
         let errorURL = `${window.googleMapsFilesUrl}404.png`;
 
@@ -52,6 +52,19 @@ export default {
       });
       gMap.mapTypes.set("locaMap", localMapType);
       gMap.setMapTypeId("locaMap");
+      if (!gMap) {
+        this.$Message.error("地图资源加载出错，请重新尝试！");
+      }
+
+      // 地图点击事件
+      /* google.maps.event.addListener(gMap, "click", function(event) {
+        console.log("触发点击事件", event.latLng);
+        new google.maps.Marker({
+          position: new google.maps.LatLng(event.latLng.d, event.latLng.e),
+          icon: "/static/images/gcrossing.png",
+          map: gMap
+        });
+      }); */
 
       this.$store.dispatch("GMAP", gMap);
     }

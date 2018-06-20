@@ -5,7 +5,7 @@
         <Icon type="plus"></Icon>
         新增</Button>
       <Table :columns="columns" :data="data" :loading="loading" class="ivu-table-noborder"></Table>
-      <Page show-sizer show-elevator :current="page" :total="total" :page-size="rows" @on-page-size-change="pageSizeChange" @on-change="pageChange" :style="{'margin':'10px','text-align':'right'}"></Page>
+      <Page show-sizer show-elevator show-total :current="page" :total="total" :page-size="rows" @on-page-size-change="pageSizeChange" @on-change="pageChange" v-if="showPage" :style="{'margin':'10px','text-align':'right'}"></Page>
     </Card>
   </div>
 </template>
@@ -19,7 +19,8 @@ export default {
       // page
       page: 1,
       rows: 10,
-      total: 100,
+      total: 0,
+      showPage: false,
       // tabs
       columns: [
         {
@@ -83,7 +84,7 @@ export default {
           render: (h, params) => {
             return h(
               "div",
-              `${params.row.phase_count}阶段${params.row.light_count}相位`
+              `${params.row.light_count}阶段${params.row.phase_count}相位`
             );
           }
         },
@@ -222,6 +223,11 @@ export default {
   },
   created() {
     this.loadData();
+  },
+  watch: {
+    total() {
+      this.showPage = this.total > 0 ? true : false;
+    }
   }
 };
 </script>

@@ -1,69 +1,69 @@
 <template>
-    <div>
-        <Table :columns="columns" :data="data" :loading="loading"></Table>
-        <Button type="primary" icon="plus" @click="createData_sub" :style="{'margin':'10px 0'}">新增</Button>
-        <Table :columns="columns_sub" :data="data_sub" :loading="loading_sub"></Table>
-        <Page :total="total" @on-change="pageChange" :style="{'margin-top':'10px','text-align':'right'}"></Page>
+  <div>
+    <Table :columns="columns" :data="data" :loading="loading" class="ivu-table-noborder"></Table>
+    <Button type="primary" icon="plus" @click="createData_sub" :style="{'margin':'10px 0'}">新增</Button>
+    <Table :columns="columns_sub" :data="data_sub" :loading="loading_sub" class="ivu-table-noborder"></Table>
+    <Page show-sizer show-elevator show-total :current="page" :total="total" :page-size="rows" @on-page-size-change="pageSizeChange" @on-change="pageChange" v-if="showPage" :style="{'margin':'10px','text-align':'right'}"></Page>
 
-        <Modal v-model="modal" title="自适应方案编辑">
-            <Form :model="formItem" :label-width="90">
-                <FormItem label="统计时间间隔">
-                    <InputNumber v-model="formItem['statistic_minutes']" :min="0" :style="{width:'100%'}"></InputNumber>
-                </FormItem>
-                <FormItem label="触发时间间隔">
-                    <InputNumber v-model="formItem['do_minutes']" :min="0" :style="{width:'100%'}"></InputNumber>
-                </FormItem>
-                <FormItem label="触发流量总数">
-                    <InputNumber v-model="formItem['flow_total']" :min="0" :style="{width:'100%'}"></InputNumber>
-                </FormItem>
-                <FormItem label="东西向车道号">
-                    <Select v-model="formItem['lane_east_west']" multiple>
-                        <Option v-for="item in 16" :value="''+item" :key="item">{{ item }}</Option>
-                    </Select>
-                </FormItem>
-                <FormItem label="南北向车道号">
-                    <Select v-model="formItem['lane_south_north']" multiple>
-                        <Option v-for="item in 16" :value="''+item" :key="item">{{ item }}</Option>
-                    </Select>
-                </FormItem>
-            </Form>
-            <div slot="footer">
-                <Button type="text" @click="modal = false">取消</Button>
-                <Button type="primary" :loading="modal_loading" @click="formOk">确定</Button>
-            </div>
-        </Modal>
+    <Modal v-model="modal" title="自适应方案编辑">
+      <Form :model="formItem" :label-width="90">
+        <FormItem label="统计时间间隔">
+          <InputNumber v-model="formItem['statistic_minutes']" :min="0" :style="{width:'100%'}"></InputNumber>
+        </FormItem>
+        <FormItem label="触发时间间隔">
+          <InputNumber v-model="formItem['do_minutes']" :min="0" :style="{width:'100%'}"></InputNumber>
+        </FormItem>
+        <FormItem label="触发流量总数">
+          <InputNumber v-model="formItem['flow_total']" :min="0" :style="{width:'100%'}"></InputNumber>
+        </FormItem>
+        <FormItem label="东西向车道号">
+          <Select v-model="formItem['lane_east_west']" multiple>
+            <Option v-for="item in 16" :value="''+item" :key="item">{{ item }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="南北向车道号">
+          <Select v-model="formItem['lane_south_north']" multiple>
+            <Option v-for="item in 16" :value="''+item" :key="item">{{ item }}</Option>
+          </Select>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" @click="modal = false">取消</Button>
+        <Button type="primary" :loading="modal_loading" @click="formOk">确定</Button>
+      </div>
+    </Modal>
 
-        <Modal v-model="modal_sub" :title="modalTitle">
-            <Form :model="formItem_sub" :label-width="90">
-                <Row :gutter="20">
-                    <i-col span="11">
-                        <FormItem label="东西车流量">
-                            <InputNumber v-model="formItem_sub.proportion_east_west" :min="0" :style="{width:'100%'}"></InputNumber>
-                        </FormItem>
-                    </i-col>
-                    <i-col span="2" :style="{'text-align':'center','height':'32px','line-height':'32px'}">:</i-col>
-                    <i-col span="11">
-                        <FormItem label="南北车流量">
-                            <InputNumber v-model="formItem_sub.proportion_south_north" :min="0" :style="{width:'100%'}"></InputNumber>
-                        </FormItem>
-                    </i-col>
-                </Row>
-                <Row :gutter="20">
-                    <i-col span="24">
-                        <FormItem label="方案编号">
-                            <Select v-model="formItem_sub.pattern_id" placeholder="请选择新的方案... ">
-                                <Option v-for="item in planData" :key="item.patternid " :value="''+item.patternid">方案{{~~item.patternid+1}}</Option>
-                            </Select>
-                        </FormItem>
-                    </i-col>
-                </Row>
-            </Form>
-            <div slot="footer">
-                <Button type="text" @click="modal = false">取消</Button>
-                <Button type="primary" :loading="modal_loading" @click="formOk_sub">确定</Button>
-            </div>
-        </Modal>
-    </div>
+    <Modal v-model="modal_sub" :title="modalTitle">
+      <Form :model="formItem_sub" :label-width="90">
+        <Row :gutter="20">
+          <i-col span="11">
+            <FormItem label="东西车流量">
+              <InputNumber v-model="formItem_sub.proportion_east_west" :min="0" :style="{width:'100%'}"></InputNumber>
+            </FormItem>
+          </i-col>
+          <i-col span="2" :style="{'text-align':'center','height':'32px','line-height':'32px'}">:</i-col>
+          <i-col span="11">
+            <FormItem label="南北车流量">
+              <InputNumber v-model="formItem_sub.proportion_south_north" :min="0" :style="{width:'100%'}"></InputNumber>
+            </FormItem>
+          </i-col>
+        </Row>
+        <Row :gutter="20">
+          <i-col span="24">
+            <FormItem label="方案编号">
+              <Select v-model="formItem_sub.pattern_id" placeholder="请选择新的方案... ">
+                <Option v-for="item in planData" :key="item.patternid " :value="''+item.patternid">方案{{~~item.patternid+1}}</Option>
+              </Select>
+            </FormItem>
+          </i-col>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <Button type="text" @click="modal_sub = false,modal_loading=false">取消</Button>
+        <Button type="primary" :loading="modal_loading" @click="formOk_sub">确定</Button>
+      </div>
+    </Modal>
+  </div>
 </template>
 
 <script>
@@ -81,6 +81,7 @@ export default {
     return {
       id: this.$route.params.id,
       pid: "",
+      // table
       loading: false,
       columns: [
         {
@@ -144,9 +145,12 @@ export default {
         }
       ],
       data: [],
+      // page_sub
       page: 1,
       rows: 10,
       total: 0,
+      showPage: false,
+      // data_sub
       columns_sub: [
         {
           type: "index",
@@ -166,7 +170,10 @@ export default {
         },
         {
           title: "需要触发的方案编号",
-          key: "pattern_id"
+          key: "pattern_id",
+          render: (h, params) => {
+            return h("div", "方案" + (~~params.row.pattern_id + 1));
+          }
         },
         {
           title: "操作",
@@ -212,13 +219,16 @@ export default {
         }
       ],
       data_sub: [],
-      modal_sub: false,
       loading_sub: true,
+      // modal_sub
+      modal_sub: false,
       modal_loading: false,
       modalTitle: "",
+      formItem_sub: {},
+      // modal
       modal: false,
       formItem: {},
-      formItem_sub: {},
+      // 方案数据
       planData: []
     };
   },
@@ -228,19 +238,23 @@ export default {
       dataView({
         plan_id: this.id
       }).then(res => {
-        if (res.status) {
+        if (res.status === "1") {
           this.data = [res.data];
-          this.loading = false;
           this.pid = res.data.id;
           this.loadData_sub();
         }
+        this.loading = false;
       });
     },
     pageChange(page) {
       this.page = page;
       this.loadData_sub();
     },
-    loadData_pattern() {
+    pageSizeChange(rows) {
+      this.rows = rows;
+      this.loadData();
+    },
+    loadPlanData() {
       dataList_pattern({
         plan_id: this.id,
         page: 1,
@@ -259,10 +273,10 @@ export default {
         rows: this.rows
       }).then(res => {
         if (res.status) {
-          this.loading_sub = false;
           this.data_sub = res.data.list;
           this.total = ~~res.data.total;
         }
+        this.loading_sub = false;
       });
     },
     modifyData(row) {
@@ -379,8 +393,13 @@ export default {
     }
   },
   created() {
+    this.loadPlanData();
     this.loadData();
-    this.loadData_pattern();
+  },
+  watch: {
+    total() {
+      this.showPage = this.total > 0 ? true : false;
+    }
   }
 };
 </script>
