@@ -84,5 +84,23 @@ const app = {
   }
 };
 
+const dataUpdate = () => {
+  return {
+    data: [],
+    status: "1",
+    message: "操作成功"
+  }
+}
+const dataAdd = () => {
+  return {
+    data: [],
+    status: "1",
+    message: "操作成功"
+  }
+}
+
 //当post或get请求到/news路由时Mock会拦截请求并返回上面的数据
 Mock.mock("/api/index/d_area/treeList", /post|get/i, app.treeList);
+
+Mock.mock("/api/index/d_area/dataUpdate", /post|get/i, dataUpdate);
+Mock.mock("/api/index/d_area/dataAdd", /post|get/i, dataAdd);

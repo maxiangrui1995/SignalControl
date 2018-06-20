@@ -15,7 +15,7 @@
         </div>
         <vue-scrollbar style="width:100%;max-height:400px;">
           <Spin v-if="loading" fix></Spin>
-          <Button type="ghost">
+          <Button type="ghost" @click="createdData">
             <Icon type="plus"></Icon>
             新增
           </Button>
@@ -370,12 +370,54 @@ export default {
       });
     },
     // 新增
-    createdData(row) {},
+    createdData(row) {
+      let self = this;
+      let type = row.type;
+      let newValue = "";
+      if (type === "lane") {
+        alert("新增信号机");
+      } else {
+        this.$Modal.confirm({
+          render: h => {
+            return h("Input", {
+              props: {
+                value: newValue,
+                autofocus: true,
+                placeholder:
+                  type === "area"
+                    ? "请输入新的道路名称..."
+                    : "请输入新的区域名称"
+              },
+              on: {
+                input: val => {
+                  newValue = val;
+                }
+              }
+            });
+          },
+          loading: true,
+          onOk() { 
+            dataAdd({
+              id: row.id,
+              name: newValue
+            }).then(res => {
+              if (res.status) {
+                this.$Message.success("添加成功");
+              } else {
+                this.$Message.error(res.message);
+              }
+              this.$Modal.remove();
+              self.loadTree();
+            });
+          }
+        });
+      }
+    },
     // 编辑
     modifyData(row) {
       let self = this;
       let type = row.type;
-      let newValue = "";
+      let newValue = row.name;
       if (type === "crossing") {
         this.crossing.modal = true;
         this.crossing.title = "路口编辑";
@@ -420,7 +462,7 @@ export default {
                 this.$Message.error(res.message);
               }
               this.$Modal.remove();
-              self.loadData();
+              self.loadTree();
             });
           }
         });
