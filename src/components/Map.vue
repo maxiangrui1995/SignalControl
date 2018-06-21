@@ -56,14 +56,14 @@ export default {
       }
       // 地图点击事件
       /* google.maps.event.addListener(gMap, "click", function(event) {
-        console.log("触发点击事件", event.latLng);
+        console.log("触发点击事件", event);
         new google.maps.Marker({
           position: new google.maps.LatLng(event.latLng.d, event.latLng.e),
           icon: "/static/images/gcrossing.png",
           map: gMap
         });
       }); */
-    //   this.$store.dispatch("GMAP", gMap);
+      this.$store.dispatch("setGMap", gMap);
     }
   },
   created() {

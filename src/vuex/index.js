@@ -3,9 +3,6 @@ import Vuex from "vuex";
 import iView from "iview";
 import axios from 'axios';
 
-axios.defaults.baseURL = "/api/index";
-axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -14,8 +11,8 @@ export default new Vuex.Store({
         isLogin: false,
         // 登录用户
         user: "",
-        // 所有的区域、路口
-        crossing: []
+        // 地图
+        gmap: null,
     },
     mutations: {
         setLogin(state, data) {
@@ -24,13 +21,13 @@ export default new Vuex.Store({
         setUser(state, data) {
             state.user = data;
         },
-        setCrossing(state, data) {
-            state.crossing = data;
-        }
+        setGMap(state, data) {
+            state.gmap = data;
+        },
     },
     actions: {
         setLogin(context, router) {
-            axios.post('d_user/isLogin').then(res => {
+            axios.post('index/d_user/isLogin').then(res => {
                 let data = res.data;
                 if (data.status) {
                     context.commit("setLogin", true);
@@ -44,8 +41,8 @@ export default new Vuex.Store({
                 }
             })
         },
-        setCrossing(context, router) {
-
+        setGMap(context, data) {
+            context.commit("setGMap", data);
         }
     }
 });

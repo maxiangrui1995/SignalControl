@@ -17,6 +17,9 @@ Vue.config.productionTip = false;
 
 Vue.prototype.$http = axios;
 
+axios.defaults.baseURL = "/api";
+axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+
 Vue.use(iView);
 
 new Vue({

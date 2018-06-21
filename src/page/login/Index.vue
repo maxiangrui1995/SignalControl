@@ -59,7 +59,7 @@ export default {
         if (valid) {
           this.submitLoading = true;
           this.$http
-            .post("d_member/login", {
+            .post("index/d_member/login", {
               username: this.form.username,
               password: this.form.password,
               is_remember: this.form.is_remember ? "1" : "0"
