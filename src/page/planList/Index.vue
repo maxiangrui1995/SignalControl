@@ -1,24 +1,29 @@
 <template>
-    <div>
-        <div class="container-header">
-            <b>特征参数</b>
-
-            <Button type="primary" @click="createData" :style="{'margin-bottom':'10px'}">
+    <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>特征参数</h3>
+            <Tooltip content="信号机方案" :style="{height:'16px',lineHeight:'16px',marginRight:'10px',cursor:'pointer'}">
+              <Icon type="information-circled"></Icon>
+            </Tooltip>
+            <span>共<i style="color:#ff9900">108</i>条</span>
+          </div>
+          <div class="card-extra">
+              <Button type="primary" @click="createData">
                 <Icon type="plus" :style="{marginRight:'10px'}"></Icon>新增
-            </Button>
+              </Button>
+              <i-input  icon="ios-search" placeholder="请输入方案名称进行检索" style="width: 200px"></i-input>
+          </div>
         </div>
         <div style="padding:20px">
-            <Card dis-hover :bordered="false">
-                <Table border :columns="columns" :data="data" :loading="loading" class="ivu-table-noborder"></Table>
-                <Page show-sizer show-elevator show-total :current="page" :total="total" :page-size="rows" @on-page-size-change="pageSizeChange" @on-change="pageChange" v-if="showPage" :style="{'margin':'10px','text-align':'right'}"></Page>
-            </Card>
+           <Table border :columns="columns" :data="data" :loading="loading"></Table>
+            <Page show-sizer show-elevator show-total :current="page" :total="total" :page-size="rows" @on-page-size-change="pageSizeChange" @on-change="pageChange" v-if="showPage" :style="{'margin':'10px','text-align':'right'}"></Page>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-  name: "planList",
   data() {
     return {
       // page
@@ -155,8 +160,16 @@ export default {
     pageSizeChange(rows) {},
     pathToDetails(id) {},
     loadData() {
-      /* this.loading = true;
-      dataList({ page: this.page, rows: this.rows }).then(res => {
+      this.loading = true;
+      this.$http.post("index/d_plan/dataList").then(res => {
+        let data = res.data;
+        if (data.status === "1") {
+          this.data = data.data.list;
+          this.total = ~~data.data.total;
+        }
+        this.loading = false;
+      });
+      /*dataList({ page: this.page, rows: this.rows }).then(res => {
         if (res.status === "1") {
           this.data = res.data.list;
           this.total = ~~res.data.total;
@@ -179,11 +192,23 @@ export default {
 </script>
 
 <style scoped lang="less">
-.container-header {
-  padding: 0 20px;
-  background: #fff;
-  border-bottom: 1px solid #e8e8e8;
-  height: 64px;
-  line-height: 64px;
+.card {
+  &-header {
+    padding: 0 20px;
+    background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+    height: 64px;
+    line-height: 64px;
+  }
+  &-title {
+    float: left;
+    h3 {
+      display: inline-block;
+      margin-right: 10px;
+    }
+  }
+  &-extra {
+    float: right;
+  }
 }
 </style>

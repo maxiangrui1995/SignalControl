@@ -11,6 +11,7 @@ import axios from 'axios';
 import './mock';
 
 import 'iview/dist/styles/iview.css';
+import 'vue2-scrollbar/dist/style/vue2-scrollbar.css';
 import './styles/common.less';
 
 Vue.config.productionTip = false;

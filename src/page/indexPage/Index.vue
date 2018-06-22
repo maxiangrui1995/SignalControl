@@ -21,15 +21,19 @@
         </Menu>
       </Sider>
       <Content :style="{position:'relative'}" ref="app">
-        <router-view/>
+         <vue-scrollbar style="width:100%;height:100%;">
+          <router-view/>
+        </vue-scrollbar>
       </Content>
     </Layout>
   </Layout>
 </template>
 
 <script>
+/* 滚动条 */
+import VueScrollbar from "vue2-scrollbar";
 export default {
-  name: "IndexPage",
+  components: { VueScrollbar },
   data() {
     return {
       logo: "道路交通信号机控制平台",
