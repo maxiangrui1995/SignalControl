@@ -33,7 +33,7 @@ const router = new vueRouter({
                     path: "region",
                     name: "region",
                     meta: { title: "区域管理" },
-                    component: resolve => require(["@/page/comprehensiveQuery/Index"], resolve)
+                    component: resolve => require(["@/page/region/Index"], resolve)
                 },
                 {
                     path: "planList",

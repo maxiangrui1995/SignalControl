@@ -63,7 +63,48 @@ export default {
           map: gMap
         });
       }); */
+
+      this.OverlayView(gMap);
       this.$store.dispatch("setGMap", gMap);
+    },
+    OverlayView(gmap) {
+      // 标题叠加层
+      function title(marker, htmlStr) {
+        this.marker = marker;
+        this.htmlStr = htmlStr;
+        this.setMap(marker.map);
+      }
+      title.prototype = new google.maps.OverlayView();
+      title.prototype.onAdd = function() {
+        var div = document.createElement("div");
+        div.innerHTML = this.htmlStr;
+        div.style.position = "absolute";
+        this.div_ = div;
+        /* 
+          MapPanes.mapPane（级别0）
+          MapPanes.overlayLayer（1级）
+          MapPanes.markerLayer（2级）
+          MapPanes.overlayMouseTarget（3级）
+          MapPanes.floatPane（4级）
+        */
+        // this.getPanes().overlayLayer.appendChild(div);
+        this.getPanes().floatPane.appendChild(div);
+      };
+      title.prototype.draw = function() {
+        var overlayProjection = this.getProjection();
+        var sw = overlayProjection.fromLatLngToDivPixel(this.marker.position);
+        var div = this.div_;
+        div.style.left = sw.x + 10 + "px";
+        div.style.top = sw.y - 30 + "px";
+      };
+      title.prototype.onRemove = function() {
+        this.div_.className = "fade-leave";
+        setTimeout(() => {
+          this.div_.parentNode.removeChild(this.div_);
+          this.div_ = null;
+        }, 500);
+      };
+      gmap.defineTitle = title;
     }
   },
   created() {

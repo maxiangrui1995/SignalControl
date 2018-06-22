@@ -4,30 +4,90 @@
     <g-map id="map" />
     <!-- 地图 E -->
 
+    <!-- 导航 S -->
+    <div style="position:absolute;top:20px;right:20px;">
+      <Button size="large">
+        <Icon type="eye" :style="{marginRight:'8px'}"></Icon>实时监控
+        <Switch v-model="show.signal" size="small"></Switch>
+      </Button>
+      <Dropdown style="margin-left: 20px">
+        <Button size="large">
+          <Icon type="videocamera" :style="{marginRight:'8px'}"></Icon>实时视频
+          <Icon type="chevron-down" :style="{margin:'0 8px',fontSize:'12px'}"></Icon>
+          <Switch v-model="show.camera" size="small"></Switch>
+        </Button>
+        <DropdownMenu slot="list">
+          <DropdownItem>电子警察视频</DropdownItem>
+          <DropdownItem>车流量视频</DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
+      <Button size="large">
+        <Icon type="ios-pulse-strong" :style="{marginRight:'8px'}"></Icon>车流量分布
+        <Switch v-model="show.flow" size="small"></Switch>
+      </Button>
+    </div>
+    <!-- 导航 E -->
+
+    <!-- 车流量 S -->
     <div style="position:absolute;right:20px;bottom:20px;">
-      <Card :style="{width:'300px'}">
+      <transition name="fadeInRight">
+        <Card v-if="show.flow" :style="{width:'400px'}">
+          <div slot="title">
+            <b style="margin-right:30px;">车流量</b>
+            <div style="float:right;margin-right:30px;">
+              <span style="margin-right:5px;">min</span>
+              <span v-for="(item,index) in colorLevel" :key="index" class="color-leavel" :style="{color:item,background:item}"></span>
+              <span style="margin-left:5px;">max</span>
+            </div>
+          </div>
+          <div style="padding-left:10px;position:relative;">
+            <DatePicker type="daterange" split-panels confirm placeholder="请选择时间范围" :transfer="true" :clearable="false" style="width: 300px"></DatePicker>
+            <Slider v-model="flowTime" range :step="1" :min="0" :max="24" :tip-format="timeTipFormat" :style="{width:'300px'}"></Slider>
+            <div class="slider-step">
+              <div class="slider-step-inner">
+                <div v-for="index in 4" :key="index" class="slider-step-title-inner"></div>
+                <div class="slider-step-title">00:00</div>
+              </div>
+              <div class="slider-step-inner">
+                <div v-for="index in 4" :key="index" class="slider-step-title-inner"></div>
+                <div class="slider-step-title">04:00</div>
+              </div>
+              <div class="slider-step-inner">
+                <div v-for="index in 4" :key="index" class="slider-step-title-inner"></div>
+                <div class="slider-step-title">08:00</div>
+              </div>
+              <div class="slider-step-inner">
+                <div v-for="index in 4" :key="index" class="slider-step-title-inner"></div>
+                <div class="slider-step-title">12:00</div>
+              </div>
+              <div class="slider-step-inner">
+                <div v-for="index in 4" :key="index" class="slider-step-title-inner"></div>
+                <div class="slider-step-title">16:00</div>
+              </div>
+              <div class="slider-step-inner">
+                <div v-for="index in 4" :key="index" class="slider-step-title-inner"></div>
+                <div class="slider-step-title">20:00</div>
+                <div class="slider-step-title">24:00</div>
+              </div>
+            </div>
+            <Button type="primary" shape="circle" icon="arrow-right-b" :style="{position:'absolute',top:'0',right:'0'}"></Button>
+          </div>
+        </Card>
+      </transition>
+      <!-- <Card :style="{width:'300px'}">
         <div slot="title" :style="{padding:'0'}">
           <ButtonGroup>
             <Button>Cancel</Button>
             <Button type="primary">Confirm</Button>
           </ButtonGroup>
         </div>
-        <p v-for="(item,index) in colorLeavel" :key="index" :style="{color:item}"><b>B</b></p>
-      </Card>
+        <p v-for="(item,index) in colorLeavel" :key="index" :style="{color:item}">
+          <b>B</b>
+        </p>
+      </Card> -->
     </div>
+    <!-- 车流量 E -->
 
-    <!-- 右侧弹窗 S -->
-    <transition name="fadeInRight">
-      <div v-if="show" class="sider-wrapper">
-        <div class="sider-wrapper-content">
-
-        </div>
-        <div class="sider-wrapper-trigger">
-          <Icon type="chevron-right" :size="12"></Icon>
-        </div>
-      </div>
-    </transition>
-    <!-- 右侧弹窗 E -->
   </div>
 </template>
 
@@ -40,26 +100,32 @@ export default {
       // 路口标记
       crossingMarkers: {},
       // 侧边栏
-      show: false,
+      show: {
+        flow: true,
+        signal: false,
+        camera: false,
+        ipc: false
+      },
       // 位置
       pos: {
         top: 0,
         left: 0
       },
       // 颜色等级
-      colorLeavel: [
-        "#4d0022",
-        "#710122",
-        "#b3001c",
-        "#d60f14",
-        "#f5452a",
-        "#fb7a1e",
-        "#ffa32c",
-        "#fcc954",
-        "#fae37c",
+      colorLevel: [
         "#feeda7",
-        "#fcef96"
-      ]
+        "#fae37c",
+        "#fcc954",
+        "#ffa32c",
+        "#fb7a1e",
+        "#f5452a",
+        "#d60f14",
+        "#b3001c",
+        "#710122",
+        "#4d0022"
+      ],
+      // 车流量时间范围
+      flowTime: [10, 16]
     };
   },
   methods: {
@@ -80,9 +146,10 @@ export default {
                   this.crossingMarkers[item.id] = new google.maps.Marker({
                     position: p,
                     icon: "/static/images/crossing-marker.svg",
-                    map: this.gmap
+                    map: this.gmap,
+                    name: item.name
                   });
-                  // this.crossingMouseEvent(this.crossingMarkers[item.id]);
+                  this.crossingMouseEvent(this.crossingMarkers[item.id]);
                 });
               }
             });
@@ -90,6 +157,7 @@ export default {
         });
         // fitBounds 地图自动调整
         this.gmap.fitBounds(bounds);
+        this.fetchFlow();
       });
     },
     // 请求车流量
@@ -98,18 +166,70 @@ export default {
         let data = res.data;
         if (!data.status) return;
         console.log(data.data);
+        this.show.flow = true;
+        let maxFlow = 0;
+        data.data.forEach(item => {
+          if (item.flow > maxFlow) {
+            maxFlow = item.flow;
+          }
+        });
+        data.data.forEach(item => {
+          let marker = this.crossingMarkers[item.id];
+          if (item.flow <= maxFlow * 0.1) {
+            marker.setIcon("/static/images/crossing-marker-1.png");
+          } else if (item.flow <= maxFlow * 0.2) {
+            marker.setIcon("/static/images/crossing-marker-2.png");
+          } else if (item.flow <= maxFlow * 0.3) {
+            marker.setIcon("/static/images/crossing-marker-3.png");
+          } else if (item.flow <= maxFlow * 0.4) {
+            marker.setIcon("/static/images/crossing-marker-4.png");
+          } else if (item.flow <= maxFlow * 0.5) {
+            marker.setIcon("/static/images/crossing-marker-5.png");
+          } else if (item.flow <= maxFlow * 0.6) {
+            marker.setIcon("/static/images/crossing-marker-6.png");
+          } else if (item.flow <= maxFlow * 0.7) {
+            marker.setIcon("/static/images/crossing-marker-7.png");
+          } else if (item.flow <= maxFlow * 0.8) {
+            marker.setIcon("/static/images/crossing-marker-8.png");
+          } else if (item.flow <= maxFlow * 0.9) {
+            marker.setIcon("/static/images/crossing-marker-9.png");
+          } else if (item.flow <= maxFlow * 1) {
+            marker.setIcon("/static/images/crossing-marker-10.png");
+          }
+        });
+
+        /* data.data.forEach(item => {
+          
+          // this.crossingMarkers[item.id].setIcon("/static/images/gcrossing.png");
+        }); */
       });
     },
     // 路口标记的鼠标事件
     crossingMouseEvent(marker) {
       let self = this;
-      google.maps.event.addListener(marker, "click", function(event) {
-        self.showOverlayView(this);
-      });
+      let gmap = this.gmap;
+      let view = null;
+      google.maps.event.addListener(marker, "click", function(event) {});
       google.maps.event.addListener(marker, "mouseover", function(event) {
-        self.getMarkersPos(this);
+        let str =
+          `<div class="overlay-poptip">` +
+          `<div class="overlay-poptip-content">` +
+          `<div class="overlay-poptip-arrow"></div>` +
+          `<div class="overlay-poptip-inner">` +
+          `<div class="overlay-poptip-title">` +
+          "路口信息" +
+          `</div>` +
+          `<div class="overlay-poptip-body">` +
+          this.name +
+          `</div>` +
+          `</div>` +
+          `</div>` +
+          `</div>`;
+        view = new gmap.defineTitle(this, str);
       });
-      google.maps.event.addListener(marker, "mouseout", function(event) {});
+      google.maps.event.addListener(marker, "mouseout", function(event) {
+        view.setMap(null);
+      });
     },
     // 获得标记位置
     getMarkersPos(marker) {
@@ -137,6 +257,10 @@ export default {
     // 展示自定义叠加层
     showOverlayView(marker) {
       let gmap = this.gmap;
+    },
+    // 时间选择提示过滤
+    timeTipFormat(value) {
+      return (value <= 12 ? "上午" : "下午") + value + ":00";
     }
   },
   computed: {
@@ -147,44 +271,89 @@ export default {
   created() {
     this.$nextTick(() => {
       this.loadCrossing();
-      this.fetchFlow();
     });
+  },
+  watch: {
+    "show.flow"(bool) {
+      if (!bool) {
+        for (let i in this.crossingMarkers) {
+          this.crossingMarkers[i].setIcon("/static/images/crossing-marker.svg");
+        }
+      } else {
+        this.fetchFlow();
+      }
+    }
   }
 };
 </script>
 
 <style scoped lang='less'>
-.sider-wrapper {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  z-index: 0;
-  &-content {
-    width: 400px;
-    height: 100%;
-    background: #f8f8f8;
-    box-shadow: -1px 0px 4px rgba(0, 0, 0, 0.28);
+@keyframes fadeInRight {
+  0% {
+    opacity: 0;
+    transform: translate3d(100px, 0, 0);
   }
-  &-trigger {
-    background: #fbf8f8;
-    width: 14px;
-    height: 96px;
-    line-height: 96px;
-    text-align: center;
-    color: #ccc;
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+.fadeInRight-enter-active {
+  animation: fadeInRight 0.5s;
+}
+.fadeInRight-leave-active {
+  animation: fadeInRight 0.5s reverse;
+}
+
+.color-leavel {
+  display: inline-block;
+  margin-right: 1px;
+  width: 8px;
+  height: 16px;
+  vertical-align: middle;
+}
+.slider-step {
+  width: 300px;
+  display: table;
+  margin-top: -8px;
+  &-inner {
+    display: table-cell;
+    width: 60px;
+    position: relative;
+  }
+  &-inner > &-title-inner:first-child:before {
+    height: 8px;
+  }
+  &-inner:last-child > &-title-inner:nth-child(4):after {
+    content: "";
+    display: block;
+    width: 1px;
+    height: 8px;
+    background: #ccc;
     position: absolute;
-    top: 50%;
-    margin-top: -48px;
-    margin-left: -12px;
-    border: 1px solid rgba(205, 208, 214, 0.9);
-    border-radius: 10px;
-    z-index: -1;
-    cursor: pointer;
-    &:hover {
-      background: #eaeaec;
-      color: #333;
+    top: 0;
+    right: 0;
+  }
+  &-inner:last-child > &-title:last-child {
+    position: absolute;
+    top: 16px;
+    right: -33px;
+  }
+  &-title-inner {
+    float: left;
+    width: 25%;
+    height: 16px;
+    position: relative;
+    &:before {
+      content: "";
+      display: block;
+      width: 1px;
+      height: 3px;
+      background: #ccc;
     }
+  }
+  &-title {
+    transform: translateX(-16px);
   }
 }
 </style>

@@ -75,8 +75,10 @@ const flow_check = {
         dataStatistic() {
             return Mock.mock({
                 'data|16': [{
-                    "id|+1": 1000,
-                    "flow|16": ["@natural(0,200)"]
+                    "id|+1": 10000,
+                    /* "flow|16": ["@natural(0,200)"] */
+                    "flow": "@natural(0,10000)",
+                    "name": "@name"
                 }],
                 message: "操作成功",
                 status: "1"

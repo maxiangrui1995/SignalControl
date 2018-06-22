@@ -11,7 +11,7 @@ import axios from 'axios';
 import './mock';
 
 import 'iview/dist/styles/iview.css';
-import './styles/common.css';
+import './styles/common.less';
 
 Vue.config.productionTip = false;
 
