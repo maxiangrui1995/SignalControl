@@ -60,6 +60,16 @@ const router = new vueRouter({
             name: "login",
             meta: { title: "登录页" },
             component: () => import("@/page/login/Index")
+        },
+        {
+            path: "/404",
+            name: "404",
+            meta: { title: "404" },
+            component: () => import("@/page/error/404"),
+        },
+        {
+            path: "*",
+            redirect: "/404"
         }
     ]
 });

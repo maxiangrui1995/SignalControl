@@ -9,8 +9,8 @@ export default {
   name: "gmap",
   data() {
     return {
-      lat: "119.77495282888412",
-      lng: "36.37174657521467"
+      lng: "119.75522518157959",
+      lat: "36.382803340771694"
     };
   },
   methods: {
@@ -38,7 +38,7 @@ export default {
         return img;
       };
       let localMapType = new LocalMapType();
-      let center = new google.maps.LatLng(this.lng, this.lat);
+      let center = new google.maps.LatLng(this.lat, this.lng);
       let gMap = new google.maps.Map(document.getElementById("gmap"), {
         zoom: 14,
         center: center,
@@ -56,7 +56,7 @@ export default {
       }
       // 地图点击事件
       /* google.maps.event.addListener(gMap, "click", function(event) {
-        console.log("触发点击事件", event);
+        console.log("触发点击事件", event.latLng);
         new google.maps.Marker({
           position: new google.maps.LatLng(event.latLng.d, event.latLng.e),
           icon: "/static/images/gcrossing.png",
@@ -65,7 +65,7 @@ export default {
       }); */
 
       this.OverlayView(gMap);
-      this.$store.dispatch("setGMap", gMap);
+      this.$store.commit("setGMap", gMap);
     },
     OverlayView(gmap) {
       // 标题叠加层

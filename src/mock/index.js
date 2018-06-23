@@ -1,10 +1,9 @@
 import Mock from "mockjs";
 import {
-  planList
+  planList,
+  crossing
 } from "./public";
 const Random = Mock.Random;
-
-console.log(planList);
 
 const d_user = {
   // 是否登录
@@ -42,35 +41,7 @@ const d_member = {
 }
 
 const d_area = {
-  // 路口数据
-  treeList() {
-    return Mock.mock({
-      'data|5': [{
-        "id|+1": 100,
-        "pid": 0,
-        "name|4": '@cword',
-        "type": "area",
-        "children|2": [{
-          "id|+1": 1000,
-          "pid|+1": 100,
-          "name|4": '@cword',
-          "type": "lane",
-          "children|2": [{
-            "id|+1": 10000,
-            "pid+1": 1000,
-            "name|4": '@cword',
-            "type": "crossing",
-            "lng": '119.' + '@integer(52413330078125, 78899230957031)',
-            "lat": '36.' + '@integer( 17391121745295, 41575699390088)',
-            "direction": "1357",
-            "road_data": []
-          }]
-        }]
-      }],
-      message: "操作成功",
-      status: "1"
-    })
-  }
+
 }
 
 const flow_check = {
@@ -103,7 +74,7 @@ Mock.mock("/api/index/d_user/isLogin", /post|get/i, d_user.isLogin);
 // 登录
 Mock.mock("/api/index/d_member/login", /post|get/i, d_member.login);
 // 路口
-Mock.mock("/api/index/d_area/treeList", /post|get/i, d_area.treeList);
+Mock.mock("/api/index/d_area/treeList", /post|get/i, crossing);
 // 车流量
 Mock.mock("/api/flow_check/f_flow/dataStatistic", /post|get/i, flow_check.f_flow.dataStatistic);
 // 方案

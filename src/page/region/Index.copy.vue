@@ -1,22 +1,22 @@
 <template>
-  <div style="position:absolute;top:0;left:0;width:100%;height:100%;">
-    <!-- 地图 S -->
-    <g-map id="map" />
-    <!-- 地图 E -->
+    <div style="position:absolute;top:0;left:0;width:100%;height:100%;">
+        <!-- 地图 S -->
+        <g-map id="map" />
+        <!-- 地图 E -->
 
-    <!-- 右侧弹窗 S -->
-    <transition name="fadeInRight">
-      <div v-if="show" class="sider-wrapper">
-        <div class="sider-wrapper-content">
-          <Tree :data="treeData" :render="renderTree"></Tree>
-        </div>
-        <div class="sider-wrapper-trigger">
-          <Icon type="chevron-right" :size="12"></Icon>
-        </div>
-      </div>
-    </transition>
-    <!-- 右侧弹窗 E -->
-  </div>
+        <!-- 右侧弹窗 S -->
+        <transition name="fadeInRight">
+            <div v-if="show" class="sider-wrapper">
+                <div class="sider-wrapper-content">
+                    <Tree :data="treeData" :render="renderTree"></Tree>
+                </div>
+                <div class="sider-wrapper-trigger">
+                    <Icon type="chevron-right" :size="12"></Icon>
+                </div>
+            </div>
+        </transition>
+        <!-- 右侧弹窗 E -->
+    </div>
 </template>
 
 <script>

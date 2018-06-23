@@ -1,4 +1,4 @@
-input:-webkit-autofill {
+input:autofill {
     box-shadow: 0 0 0px 1000px white inset;
 }
 
@@ -28,8 +28,9 @@ input:-webkit-autofill {
     min-width: 150px;
     display: block;
     visibility: visible;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.5;
+    cursor: default;
     animation-duration: 0.5s;
     animation-fill-mode: both;
     animation-name: fadeIn;
@@ -85,6 +86,31 @@ input:-webkit-autofill {
     }
 }
 
+.overlay-poptip-blue {
+    .overlay-poptip-title {
+        background: linear-gradient(to bottom right, #384ac6, #2076f1);
+        color: #eee;
+    }
+    .overlay-poptip-title:after {
+        display: none;
+    }
+    .overlay-poptip-arrow:after {
+        left: -10px;
+        bottom: -13px;
+        border-width: 8px;
+        border-right-width: 8px;
+        border-right-color: #384ac6;
+    }
+    .overlay-poptip-title-header {
+        font-size: 1.12em;
+    }
+    .overlay-poptip-title-content-item {
+        height: 30px;
+        line-height: 30px;
+    }
+    .overlay-poptip-body-item {}
+}
+
 .fade-leave {
     animation-duration: 0.5s;
     animation-fill-mode: both;
@@ -92,6 +118,7 @@ input:-webkit-autofill {
 }
 
 /* 右侧折叠面板 */
+
 .sider-wrapper {
     width: 400px;
     position: absolute;
@@ -131,9 +158,17 @@ input:-webkit-autofill {
 }
 
 /* 滚动条样式 */
-.vue-scrollbar__wrapper{
+
+.vue-scrollbar__wrapper {
     background: transparent;
 }
-.vue-scrollbar__scrollbar-vertical{
+
+.vue-scrollbar__scrollbar-vertical {
     width: 5px;
+}
+
+/* 提示字体 */
+
+.warning {
+    color: #ff9900;
 }

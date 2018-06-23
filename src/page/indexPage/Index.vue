@@ -20,8 +20,8 @@
           </i-menu-item>
         </Menu>
       </Sider>
-      <Content :style="{position:'relative'}" ref="app">
-         <vue-scrollbar style="width:100%;height:100%;">
+      <Content :style="{position:'relative'}">
+        <vue-scrollbar style="width:100%;height:100%;" id="home-scrollbar">
           <router-view/>
         </vue-scrollbar>
       </Content>
