@@ -1,140 +1,252 @@
 <template>
-  <div style="position:absolute;top:0;left:0;width:100%;height:100%;">
-    <!-- 地图 S -->
-    <g-map id="map" />
-    <!-- 地图 E -->
-
-    <!-- 右侧弹窗 S -->
-    <transition name="fadeInRight">
-      <div v-if="show" class="sider-wrapper">
-        <div class="sider-wrapper-content">
-          <Tree :data="treeData" :render="renderTree"></Tree>
-        </div>
-        <div class="sider-wrapper-trigger">
-          <Icon type="chevron-right" :size="12"></Icon>
-        </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <h3>区域管理</h3>
+        <Tooltip content="区域管理" transfer :style="{height:'16px',lineHeight:'16px',marginRight:'10px',cursor:'pointer'}">
+          <Icon type="information-circled"></Icon>
+        </Tooltip>
+        <span v-if="show">共
+          <i class="warning">{{total}}</i> 条</span>
       </div>
-    </transition>
-    <!-- 右侧弹窗 E -->
+      <div class="card-extra">
+        <Button type="primary" @click="createData">
+          <Icon type="plus" :style="{marginRight:'10px'}"></Icon>新增
+        </Button>
+        <i-input icon="ios-search" placeholder="请输入方案名称进行检索" style="width: 200px"></i-input>
+      </div>
+    </div>
+    <div style="padding:20px">
+      <Table highlight-row :show-header="false" :columns="columns" :data="data" :loading="loading"></Table>
+    </div>
+
+    <Modal v-model="modal.show" :loading="modal.loading" :title="modal.title" @on-ok="submit">
+      <Form ref="form" :model="form.data" :rules="form.rules" :label-width="80">
+        <FormItem label="区域名称" prop="name">
+          <i-input v-model="form.data.name" placeholder="请输入新的名称"></i-input>
+        </FormItem>
+      </Form>
+    </Modal>
   </div>
 </template>
 
 <script>
-import GMap from "@/components/map";
 export default {
-  components: { GMap },
   data() {
     return {
-      // 路口标记
-      crossingMarkers: {},
-      // 路口标记叠加层
-      crossingOverlay: null,
+      // page
+      page: 1,
+      rows: 20,
+      total: 0,
       show: false,
-      // 路口数据
-      treeData: []
+      // tabs
+      columns: [
+        {
+          type: "index",
+          width: 60,
+          align: "center"
+        },
+        {
+          title: "name",
+          key: "name"
+        },
+        {
+          title: "操作",
+          key: "action",
+          align: "center",
+          width: 200,
+          render: (h, params) => {
+            return h("div", [
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "text",
+                    size: "small"
+                  },
+                  on: {
+                    click: () => {
+                      this.viewMore(params.row);
+                    }
+                  }
+                },
+                [h("a", "详情")]
+              ),
+              h("em", { class: ["item-split"] }),
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "text",
+                    size: "small"
+                  },
+                  on: {
+                    click: () => {
+                      this.modifyData(params.row);
+                    }
+                  }
+                },
+                [h("a", "编辑")]
+              ),
+              h("em", { class: ["item-split"] }),
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "text",
+                    size: "small"
+                  },
+                  on: {
+                    click: () => {
+                      this.removeData(params.row);
+                    }
+                  }
+                },
+                [h("a", "删除")]
+              )
+            ]);
+          }
+        }
+      ],
+      data: [],
+      loading: false,
+      // modal
+      modal: {
+        show: false,
+        loading: true,
+        title: "",
+        type: null
+      },
+      // form
+      form: {
+        data: {},
+        rules: {
+          name: [
+            {
+              required: true,
+              message: "请输入区域名称",
+              trigger: "blur"
+            }
+          ]
+        }
+      }
     };
   },
   methods: {
-    // 加载路口,并绘制标记
-    loadCrossing() {
+    // 切换分页
+    pageChange(page) {
+      this.page = page;
+      this.fetchPlanList();
+      this.scrollbarPosition();
+    },
+    // 切换页码
+    pageSizeChange(rows) {
+      this.rows = rows;
+      this.fetchPlanList();
+      this.scrollbarPosition();
+    },
+    // 滚动条位置复原
+    scrollbarPosition() {
+      document.getElementById(
+        "home-scrollbar"
+      ).childNodes[0].style.marginTop = 0;
+    },
+    // 请求方案数据
+    fetchPlanList() {
+      this.loading = true;
       this.$http.post("index/d_area/treeList").then(res => {
         let data = res.data;
-        if (!data.status) return;
-        this.treeData = data.data;
-        let bounds = new google.maps.LatLngBounds();
-        data.data.forEach(item => {
-          if (item.children) {
-            item.children.forEach(item => {
-              if (item.children) {
-                item.children.forEach(item => {
-                  let p = new google.maps.LatLng(item.lat, item.lng);
-                  bounds.extend(p);
-                  this.crossingMarkers[item.id] = new google.maps.Marker({
-                    position: p,
-                    icon: "/static/images/map-crossing.svg",
-                    map: this.gmap,
-                    title: item.name,
-                    name: item.name,
-                    id: item.id
-                  });
-                  this.crossingMouseEvent(this.crossingMarkers[item.id]);
-                });
-              }
-            });
-          }
-        });
-        // fitBounds 地图自动调整
-        this.gmap.fitBounds(bounds);
+        if (data.status === "1") {
+          this.data = data.data;
+          this.total = ~~data.data.length;
+        }
+        this.loading = false;
       });
     },
-    // 渲染Tree
-    renderTree(h, { root, node, data }) {
-      return h("span", {}, [h("span", data.name)]);
+    // 详情
+    viewMore(row) {},
+    // 编辑
+    modifyData(row) {
+      this.modal.show = true;
+      this.modal.title = "区域编辑";
+      this.modal.type = "modify";
+      this.form.data = {
+        name: row.name,
+        id: row.id
+      };
     },
-    // 路口标记的鼠标事件
-    crossingMouseEvent(marker) {
-      let self = this;
-      let gmap = this.gmap;
-      google.maps.event.addListener(marker, "click", function(event) {
-        if (self.crossingOverlay) {
-          self.crossingOverlay.setMap(null);
-          self.crossingOverlay = null;
+    // 删除
+    removeData(row) {
+      this.$Modal.confirm({
+        content: "<h3>确定删除？删除后无法恢复！</h3>",
+        loading: true,
+        onOk: () => {
+          /* dataDelete({ id: id }).then(res => {
+            if (res.status) {
+              this.$Message.success("删除成功");
+            } else {
+              this.$Message.error("删除失败");
+            }
+            this.$Modal.remove();
+            this.loadData();
+          }); */
         }
-        let str = `<div class="overlay-poptip overlay-poptip-blue" style="min-width:300px;">
-            <div class="overlay-poptip-content">
-              <div class="overlay-poptip-arrow"></div>
-              <div class="overlay-poptip-inner">
-                <div class="overlay-poptip-title">
-                  <span class="overlay-poptip-title-header">${this.name}</span>
-                  <div class="overlay-poptip-title-content">
-                    <div class="overlay-poptip-title-content-item">普通十字路口</div>
-                    信号机 备用电源 相机 车检服务器
-                  </div>
-                </div>
-                <div class="overlay-poptip-body">
-                  <div class="ivu-btn-group ivu-btn-group-small" style="margin-bottom:12px;">
-                    <button type="button" class="ivu-btn ivu-btn-primary">资产</button><button type="button" class="ivu-btn">类型</button>
-                  </div>
-                  <div class="overlay-poptip-body-item">信号机<span>1</span></div>
-                  <div class="overlay-poptip-body-item">备用电源<span>1</span></div>
-                  <div class="overlay-poptip-body-item">相机<span>4</span></div>
-                  <div class="overlay-poptip-body-item">车检服务器<span>4</span></div>
-                </div>
-              </div>
-            </div>
-          </div>`;
-        self.crossingOverlay = new gmap.defineTitle(this, str);
+      });
+    },
+    // 新增
+    createData() {},
+    // 提交
+    submit() {
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          if (this.modal.type === "modify") {
+            let data = this.form.data;
+            this.$http
+              .post("index/d_area/dataUpdate1", this.form.data)
+              .then(res => {
+                let data = res.data;
+                if (data.status) {
+                  this.fetchPlanList();
+                  this.$Message.success("编辑成功");
+                } else {
+                  this.$Message.error(data.message);
+                }
+                this.modal.show = false;
+              });
+          }
+        }
       });
     }
   },
-  computed: {
-    gmap() {
-      return this.$store.state.gmap;
-    }
+  created() {
+    this.fetchPlanList();
   },
   watch: {
-    gmap() {
-      this.loadCrossing();
+    total() {
+      this.show = this.total > 0 ? true : false;
     }
   }
 };
 </script>
 
 <style scoped lang="less">
-@keyframes fadeInRight {
-  0% {
-    opacity: 0;
-    transform: translateX(400px);
+.card {
+  &-header {
+    padding: 0 20px;
+    background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+    height: 64px;
+    line-height: 64px;
   }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
+  &-title {
+    float: left;
+    h3 {
+      display: inline-block;
+      margin-right: 10px;
+    }
   }
-}
-.fadeInRight-enter-active {
-  animation: fadeInRight 1s;
-}
-.fadeInRight-leave-active {
-  animation: fadeInRight 1s reverse;
+  &-extra {
+    float: right;
+  }
 }
 </style>

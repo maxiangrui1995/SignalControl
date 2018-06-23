@@ -69,7 +69,7 @@ const d_plan = {
 }
 
 //当post或get请求到/news路由时Mock会拦截请求并返回上面的数据
-// 判断登录
+/* // 判断登录
 Mock.mock("/api/index/d_user/isLogin", /post|get/i, d_user.isLogin);
 // 登录
 Mock.mock("/api/index/d_member/login", /post|get/i, d_member.login);
@@ -78,4 +78,4 @@ Mock.mock("/api/index/d_area/treeList", /post|get/i, crossing);
 // 车流量
 Mock.mock("/api/flow_check/f_flow/dataStatistic", /post|get/i, flow_check.f_flow.dataStatistic);
 // 方案
-Mock.mock("/api/index/d_plan/dataList", /post|get/i, d_plan.dataList);
+Mock.mock("/api/index/d_plan/dataList", /post|get/i, d_plan.dataList); */

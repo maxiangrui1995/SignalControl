@@ -131,7 +131,7 @@ export default {
   methods: {
     // 加载路口,并绘制标记
     loadCrossing() {
-      this.$http.post("index/d_area/treeList").then(res => {
+      this.ajax("index/d_area/treeList").then(res => {
         let data = res.data;
 
         if (!data.status) return;
@@ -162,7 +162,7 @@ export default {
     },
     // 请求车流量
     fetchFlow() {
-      this.$http.post("flow_check/f_flow/dataStatistic").then(res => {
+      this.ajax("flow_check/f_flow/dataStatistic").then(res => {
         let data = res.data;
         if (!data.status) return;
         console.log(data.data);

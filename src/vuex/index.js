@@ -1,7 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import iView from "iview";
-import axios from 'axios';
+/* 后台请求 */
+import ajax from '@/api';
 
 Vue.use(Vuex);
 
@@ -27,14 +28,13 @@ export default new Vuex.Store({
     },
     actions: {
         setLogin(context, router) {
-            axios.post('index/d_user/isLogin').then(res => {
-                let data = res.data;
-                if (data.status) {
+            ajax('index/d_user/isLogin').then(res => {
+                if (res.status) {
                     context.commit("setLogin", true);
-                    context.commit("setUser", data.data.username);
+                    context.commit("setUser", res.data.username);
                     router();
                 } else {
-                    iView.Message.info('未检测到登录状态，请重新登录！');
+                    // iView.Message.info('未检测到登录状态，请重新登录！');
                     router({
                         name: 'login'
                     });

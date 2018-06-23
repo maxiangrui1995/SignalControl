@@ -58,32 +58,28 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.submitLoading = true;
-          this.$http
-            .post("index/d_member/login", {
-              username: this.form.username,
-              password: this.form.password,
-              is_remember: this.form.is_remember ? "1" : "0"
-            })
-            .then(res => {
-              let data = res.data;
-
-              if (data.status) {
-                this.$Message.success(data.message);
-                this.$store.commit("setLogin", true);
-
-                setTimeout(() => {
-                  this.$router.push({
-                    name: "indexPage"
-                  });
-                }, 800);
-              } else {
-                this.$Message.error(data.message);
-              }
+          this.ajax("index/d_member/login", {
+            username: this.form.username,
+            password: this.form.password,
+            is_remember: this.form.is_remember ? "1" : "0"
+          }).then(res => {
+            if (res.status) {
+              this.$Message.success(res.message);
+              this.$store.commit("setLogin", true);
 
               setTimeout(() => {
-                this.submitLoading = false;
+                this.$router.push({
+                  name: "indexPage"
+                });
               }, 800);
-            });
+            } else {
+              this.$Message.error(res.message);
+            }
+
+            setTimeout(() => {
+              this.submitLoading = false;
+            }, 800);
+          });
         }
       });
     }
