@@ -1,6 +1,6 @@
 <template>
   <div style="width:100%;height:100%;">
-    <div id="gmap" style="height:100%;"></div>
+    <div id="googlemap" style="height:100%;"></div>
   </div>
 </template>
 
@@ -39,7 +39,7 @@ export default {
       };
       let localMapType = new LocalMapType();
       let center = new google.maps.LatLng(this.lat, this.lng);
-      let gMap = new google.maps.Map(document.getElementById("gmap"), {
+      let gMap = new google.maps.Map(document.getElementById("googlemap"), {
         zoom: 14,
         center: center,
         panControl: false,
@@ -65,7 +65,7 @@ export default {
       }); */
 
       this.OverlayView(gMap);
-      this.$store.commit("setGMap", gMap);
+      this.$store.dispatch("setGMap", gMap);
     },
     OverlayView(gmap) {
       // 标题叠加层

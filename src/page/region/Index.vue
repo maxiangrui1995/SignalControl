@@ -1,33 +1,20 @@
 <template>
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title">
-        <h3>区域管理</h3>
-        <Tooltip content="区域管理" transfer :style="{height:'16px',lineHeight:'16px',marginRight:'10px',cursor:'pointer'}">
-          <Icon type="information-circled"></Icon>
-        </Tooltip>
-        <span v-if="show">共
-          <i class="warning">{{total}}</i> 条</span>
-      </div>
-      <div class="card-extra">
+  <Layout>
+    <Header :style="{background: '#fff', padding: '0 20px', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
+      <Breadcrumb :style="{display: 'inline-block'}">
+        <BreadcrumbItem>区域管理</BreadcrumbItem>
+      </Breadcrumb>
+      <div style="float:right;">
         <Button type="primary" @click="createData">
           <Icon type="plus" :style="{marginRight:'10px'}"></Icon>新增
         </Button>
-        <i-input icon="ios-search" placeholder="请输入方案名称进行检索" style="width: 200px"></i-input>
+        <i-input icon="ios-search" placeholder="请输入名称进行检索" style="width: 200px"></i-input>
       </div>
-    </div>
-    <div style="padding:20px">
-      <Table highlight-row :show-header="false" :columns="columns" :data="data" :loading="loading"></Table>
-    </div>
-
-    <Modal v-model="modal.show" :loading="modal.loading" :title="modal.title" @on-ok="submit">
-      <Form ref="form" :model="form.data" :rules="form.rules" :label-width="80">
-        <FormItem label="区域名称" prop="name">
-          <i-input v-model="form.data.name" placeholder="请输入新的名称"></i-input>
-        </FormItem>
-      </Form>
-    </Modal>
-  </div>
+    </Header>
+    <Content :style="{padding: '20px'}">
+      <Table highlight-row :show-header="false" :columns="columns" :data="crossing" :loading="loading"></Table>
+    </Content>
+  </Layout>
 </template>
 
 <script>
@@ -37,15 +24,8 @@ export default {
       // page
       page: 1,
       rows: 20,
-      total: 0,
-      show: false,
       // tabs
       columns: [
-        {
-          type: "index",
-          width: 60,
-          align: "center"
-        },
         {
           title: "name",
           key: "name"
@@ -108,7 +88,6 @@ export default {
           }
         }
       ],
-      data: [],
       loading: false,
       // modal
       modal: {
@@ -133,17 +112,10 @@ export default {
     };
   },
   methods: {
-    // 切换分页
-    pageChange(page) {
-      this.page = page;
-      this.fetchPlanList();
-      this.scrollbarPosition();
-    },
-    // 切换页码
-    pageSizeChange(rows) {
-      this.rows = rows;
-      this.fetchPlanList();
-      this.scrollbarPosition();
+    // 请求数据
+    fetchCrossing() {
+      this.loading = true;
+      this.$store.dispatch("setCrossing");
     },
     // 滚动条位置复原
     scrollbarPosition() {
@@ -151,20 +123,13 @@ export default {
         "home-scrollbar"
       ).childNodes[0].style.marginTop = 0;
     },
-    // 请求方案数据
-    fetchPlanList() {
-      this.loading = true;
-      this.$http.post("index/d_area/treeList").then(res => {
-        let data = res.data;
-        if (data.status === "1") {
-          this.data = data.data;
-          this.total = ~~data.data.length;
-        }
-        this.loading = false;
+    // 详情
+    viewMore(row) {
+      this.scrollbarPosition();
+      this.$router.push({
+        path: "/region/" + row.id
       });
     },
-    // 详情
-    viewMore(row) {},
     // 编辑
     modifyData(row) {
       this.modal.show = true;
@@ -219,34 +184,20 @@ export default {
     }
   },
   created() {
-    this.fetchPlanList();
+    this.fetchCrossing();
+  },
+  computed: {
+    crossing() {
+      return this.$store.state.crossing;
+    }
   },
   watch: {
-    total() {
-      this.show = this.total > 0 ? true : false;
+    crossing() {
+      this.loading = false;
     }
   }
 };
 </script>
 
-<style scoped lang="less">
-.card {
-  &-header {
-    padding: 0 20px;
-    background: #fff;
-    border-bottom: 1px solid #e8e8e8;
-    height: 64px;
-    line-height: 64px;
-  }
-  &-title {
-    float: left;
-    h3 {
-      display: inline-block;
-      margin-right: 10px;
-    }
-  }
-  &-extra {
-    float: right;
-  }
-}
+<style lang="less">
 </style>

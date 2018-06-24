@@ -2,7 +2,7 @@ import Vue from "vue";
 import axios from 'axios';
 import iView from "iview";
 /* 自定义拦截请求 */
-// import '@/mock';
+import '@/mock';
 
 axios.defaults.baseURL = "/api";
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
