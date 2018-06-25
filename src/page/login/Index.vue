@@ -58,7 +58,7 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.submitLoading = true;
-          this.ajax("index/d_member/login", {
+          this.$http("index/d_member/login", {
             username: this.form.username,
             password: this.form.password,
             is_remember: this.form.is_remember ? "1" : "0"

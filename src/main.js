@@ -16,10 +16,17 @@ import './styles/common.less';
 Vue.config.productionTip = false;
 
 Vue.prototype.$echarts = echarts;
-Vue.prototype.resetScrollbarPosition = ()=>{
-  document.getElementById(
+// 重置滚动条位置
+Vue.prototype.resetScrollbarPosition = () => {
+  let scrollbar = document.getElementById(
     "home-scrollbar"
-  ).childNodes[0].style.marginTop = 0;
+  );
+  if (scrollbar.childNodes[0]) {
+    scrollbar.childNodes[0].style.marginTop = 0;
+  }
+  if (scrollbar.childNodes[0].childNodes[2].childNodes[0].childNodes[0]) {
+    scrollbar.childNodes[0].childNodes[2].childNodes[0].childNodes[0].style.top = 0
+  }
 }
 
 

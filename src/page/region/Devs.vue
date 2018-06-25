@@ -1,72 +1,72 @@
 <template>
-    <Layout>
-        <Header :style="{background: '#fff', padding: '0 20px', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
-            <Breadcrumb :style="{display: 'inline-block'}">
-                <BreadcrumbItem to="/region">区域管理</BreadcrumbItem>
-                <BreadcrumbItem :to="'/region/'+id1">{{name1}}</BreadcrumbItem>
-                <BreadcrumbItem :to="'/region/'+id1+'/'+id2">{{name2}}</BreadcrumbItem>
-                <BreadcrumbItem>{{name3}}</BreadcrumbItem>
-            </Breadcrumb>
-        </Header>
-        <Content :style="{padding: '20px'}">
-            <Row :gutter="16">
-                <i-col span="12" :style="{'margin-bottom':'10px'}">
-                    <Card>
-                        <div slot="title">信号机</div>
-                        <div slot="extra">
-                            <Tooltip content="新增信号机" transfer :style="{ position: 'relative', top: '-2px', marginRight: '5px', cursor: 'pointer'}">
-                                <a href="javascript:;">
-                                    <Icon type="plus-round"></Icon>
-                                </a>
-                            </Tooltip>
-                        </div>
-                        <Table highlight-row :show-header="false" :columns="machine.columns" :data="machine.data" :loading="machine.loading" class="table-noborder"></Table>
-                    </Card>
-                </i-col>
-                <i-col span="12" :style="{'margin-bottom':'10px'}">
-                    <Card>
-                        <div slot="title">备用电源</div>
-                        <div slot="extra">
-                            <Tooltip content="新增备用电源" transfer :style="{ position: 'relative', top: '-2px', marginRight: '5px', cursor: 'pointer'}">
-                                <a href="javascript:;">
-                                    <Icon type="plus-round"></Icon>
-                                </a>
-                            </Tooltip>
-                        </div>
-                        <Table highlight-row :show-header="false" :columns="ups.columns" :data="ups.data" :loading="ups.loading" class="table-noborder"></Table>
-                    </Card>
-                </i-col>
-            </Row>
-            <Row :gutter="16">
-                <i-col span="12" :style="{'margin-bottom':'10px'}">
-                    <Card>
-                        <div slot="title">车检服务器</div>
-                        <div slot="extra">
-                            <Tooltip content="新增车检服务器" transfer :style="{ position: 'relative', top: '-2px', marginRight: '5px', cursor: 'pointer'}">
-                                <a href="javascript:;">
-                                    <Icon type="plus-round"></Icon>
-                                </a>
-                            </Tooltip>
-                        </div>
-                        <Table highlight-row :show-header="false" :columns="ipc.columns" :data="ipc.data" :loading="ipc.loading" class="table-noborder"></Table>
-                    </Card>
-                </i-col>
-                <i-col span="12" :style="{'margin-bottom':'10px'}">
-                    <Card>
-                        <div slot="title">相机</div>
-                        <div slot="extra">
-                            <Tooltip content="新增相机" transfer :style="{ position: 'relative', top: '-2px', marginRight: '5px', cursor: 'pointer'}">
-                                <a href="javascript:;">
-                                    <Icon type="plus-round"></Icon>
-                                </a>
-                            </Tooltip>
-                        </div>
-                        <Table highlight-row :show-header="false" :columns="camera.columns" :data="camera.data" :loading="camera.loading" class="table-noborder"></Table>
-                    </Card>
-                </i-col>
-            </Row>
-        </Content>
-    </Layout>
+  <Layout>
+    <Header :style="{background: '#fff', padding: '0 20px', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
+      <Breadcrumb :style="{display: 'inline-block'}">
+        <BreadcrumbItem to="/region">区域管理</BreadcrumbItem>
+        <BreadcrumbItem :to="'/region/'+id1">{{name1}}</BreadcrumbItem>
+        <BreadcrumbItem :to="'/region/'+id1+'/'+id2">{{name2}}</BreadcrumbItem>
+        <BreadcrumbItem>{{name3}}</BreadcrumbItem>
+      </Breadcrumb>
+    </Header>
+    <Content :style="{padding: '20px'}">
+      <Row :gutter="16">
+        <i-col span="12" :style="{'margin-bottom':'10px'}">
+          <Card>
+            <div slot="title">信号机</div>
+            <div slot="extra">
+              <Tooltip content="新增信号机" transfer :style="{ position: 'relative', top: '-2px', marginRight: '5px', cursor: 'pointer'}">
+                <a href="javascript:;">
+                  <Icon type="plus-round"></Icon>
+                </a>
+              </Tooltip>
+            </div>
+            <Table highlight-row :show-header="false" :columns="machine.columns" :data="machine.data" :loading="machine.loading" class="table-noborder"></Table>
+          </Card>
+        </i-col>
+        <i-col span="12" :style="{'margin-bottom':'10px'}">
+          <Card>
+            <div slot="title">备用电源</div>
+            <div slot="extra">
+              <Tooltip content="新增备用电源" transfer :style="{ position: 'relative', top: '-2px', marginRight: '5px', cursor: 'pointer'}">
+                <a href="javascript:;">
+                  <Icon type="plus-round"></Icon>
+                </a>
+              </Tooltip>
+            </div>
+            <Table highlight-row :show-header="false" :columns="ups.columns" :data="ups.data" :loading="ups.loading" class="table-noborder"></Table>
+          </Card>
+        </i-col>
+      </Row>
+      <Row :gutter="16">
+        <i-col span="12" :style="{'margin-bottom':'10px'}">
+          <Card>
+            <div slot="title">车检服务器</div>
+            <div slot="extra">
+              <Tooltip content="新增车检服务器" transfer :style="{ position: 'relative', top: '-2px', marginRight: '5px', cursor: 'pointer'}">
+                <a href="javascript:;">
+                  <Icon type="plus-round"></Icon>
+                </a>
+              </Tooltip>
+            </div>
+            <Table highlight-row :show-header="false" :columns="ipc.columns" :data="ipc.data" :loading="ipc.loading" class="table-noborder"></Table>
+          </Card>
+        </i-col>
+        <i-col span="12" :style="{'margin-bottom':'10px'}">
+          <Card>
+            <div slot="title">相机</div>
+            <div slot="extra">
+              <Tooltip content="新增相机" transfer :style="{ position: 'relative', top: '-2px', marginRight: '5px', cursor: 'pointer'}">
+                <a href="javascript:;">
+                  <Icon type="plus-round"></Icon>
+                </a>
+              </Tooltip>
+            </div>
+            <Table highlight-row :show-header="false" :columns="camera.columns" :data="camera.data" :loading="camera.loading" class="table-noborder"></Table>
+          </Card>
+        </i-col>
+      </Row>
+    </Content>
+  </Layout>
 </template>
 
 <script>
@@ -352,10 +352,9 @@ export default {
       this.ups.loading = true;
       this.ipc.loading = true;
       this.camera.loading = true;
-      this.ajax("index/d_crossing/dataView", { id: this.id3 }).then(res => {
+      this.$http("index/d_crossing/dataView", { id: this.id3 }).then(res => {
         if (res.status) {
           let data = res.data;
-          console.log(data);
           this.machine.data = [data.machine];
           this.machine.loading = false;
           this.ups.data = [data.ups];

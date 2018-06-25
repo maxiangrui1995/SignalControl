@@ -3,6 +3,8 @@ import Vuex from "vuex";
 import iView from "iview";
 /* 后台请求 */
 import ajax from '@/api';
+/* 模块 */
+import planModule from './modules/plan';
 
 Vue.use(Vuex);
 
@@ -39,7 +41,7 @@ export default new Vuex.Store({
           context.commit("setUser", res.data.username);
           router();
         } else {
-          // iView.Message.info('未检测到登录状态，请重新登录！');
+          iView.Message.info('未检测到登录状态，请重新登录！');
           router({
             name: 'login'
           });
@@ -56,5 +58,8 @@ export default new Vuex.Store({
         }
       });
     },
+  },
+  modules: {
+    planModule
   }
 });

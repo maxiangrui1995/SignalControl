@@ -1,8 +1,7 @@
 import Mock from "mockjs";
-import {
-  planList
-} from "./public";
+
 import './crossing';
+import './planList';
 const Random = Mock.Random;
 
 const d_user = {
@@ -40,10 +39,6 @@ const d_member = {
   }
 }
 
-const d_area = {
-
-}
-
 const flow_check = {
   f_flow: {
     // 车流量
@@ -62,12 +57,6 @@ const flow_check = {
   }
 }
 
-const d_plan = {
-  dataList() {
-    return planList
-  }
-}
-
 //当post或get请求到/news路由时Mock会拦截请求并返回上面的数据
 // 判断登录
 Mock.mock("/api/index/d_user/isLogin", /post|get/i, d_user.isLogin);
@@ -75,5 +64,3 @@ Mock.mock("/api/index/d_user/isLogin", /post|get/i, d_user.isLogin);
 Mock.mock("/api/index/d_member/login", /post|get/i, d_member.login);
 // 车流量
 Mock.mock("/api/flow_check/f_flow/dataStatistic", /post|get/i, flow_check.f_flow.dataStatistic);
-// 方案
-Mock.mock("/api/index/d_plan/dataList", /post|get/i, d_plan.dataList);
