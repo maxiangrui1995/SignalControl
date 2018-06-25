@@ -33,7 +33,7 @@ export default {
         {
           title: "操作",
           key: "action",
-          align: "center",
+          align: "right",
           width: 200,
           render: (h, params) => {
             return h("div", [
@@ -117,15 +117,9 @@ export default {
       this.loading = true;
       this.$store.dispatch("setCrossing");
     },
-    // 滚动条位置复原
-    scrollbarPosition() {
-      document.getElementById(
-        "home-scrollbar"
-      ).childNodes[0].style.marginTop = 0;
-    },
     // 详情
     viewMore(row) {
-      this.scrollbarPosition();
+      this.resetScrollbarPosition();
       this.$router.push({
         path: "/region/" + row.id
       });

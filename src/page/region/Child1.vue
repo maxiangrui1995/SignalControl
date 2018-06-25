@@ -32,7 +32,7 @@ export default {
         {
           title: "操作",
           key: "action",
-          align: "center",
+          align: "right",
           width: 200,
           render: (h, params) => {
             return h("div", [
@@ -92,16 +92,10 @@ export default {
     };
   },
   methods: {
-    // 请求方案数据
+    // 请求数据
     fetchCrossing() {
       this.loading = true;
       this.$store.dispatch("setCrossing");
-    },
-    // 滚动条位置复原
-    scrollbarPosition() {
-      document.getElementById(
-        "home-scrollbar"
-      ).childNodes[0].style.marginTop = 0;
     },
     // 过滤数据
     formatterCrossing(data) {
@@ -115,7 +109,7 @@ export default {
     },
     // 详情
     viewMore(row) {
-      this.scrollbarPosition();
+      this.resetScrollbarPosition();
       this.$router.push({
         path: "/region/" + this.id1 + "/" + row.id
       });

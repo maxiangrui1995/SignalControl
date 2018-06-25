@@ -87,6 +87,9 @@ input:-webkit-autofill {
 }
 
 .overlay-poptip-blue {
+    .overlay-poptip-arrow {
+        top: 13px;
+    }
     .overlay-poptip-title {
         background: linear-gradient(to bottom right, #384ac6, #2076f1);
         color: #eee;
@@ -102,11 +105,14 @@ input:-webkit-autofill {
         border-right-color: #384ac6;
     }
     .overlay-poptip-title-header {
+        display: inline-block;
         font-size: 1.12em;
-    }
-    .overlay-poptip-title-content-item {
         height: 30px;
         line-height: 30px;
+    }
+    .overlay-poptip-title-content-item {
+        height: 26px;
+        line-height: 26px;
     }
 }
 
@@ -180,4 +186,16 @@ input:-webkit-autofill {
     width: 1px;
     height: 14px;
     vertical-align: middle;
+}
+
+/* 表格无边框 */
+
+.table-noborder {
+    border-color: transparent;
+    .ivu-table {
+        &:after,
+        &:before {
+            background-color: transparent
+        }
+    }
 }

@@ -1,11 +1,11 @@
 <template>
-    <div style="position:absolute;top:0;left:0;width:100%;height:100%;">
-        <YGMap />
+  <div style="position:absolute;top:0;left:0;width:100%;height:100%;">
+    <YGMap />
 
-        <div style="position: absolute; top: 20px; left: 20px;">
-            <Button type="primary" shape="circle" icon="reply" @click="returnBack"></Button>
-        </div>
+    <div style="position: absolute; top: 20px; left: 20px;">
+      <Button type="primary" shape="circle" icon="reply" @click="returnBack"></Button>
     </div>
+  </div>
 </template>
 
 <script>
@@ -24,7 +24,7 @@ export default {
     };
   },
   methods: {
-    // 请求方案数据
+    // 请求数据
     fetchCrossing() {
       this.$store.dispatch("setCrossing");
     },
@@ -67,8 +67,9 @@ export default {
         id: data.id
       });
       console.log(p);
-
       gmap.panTo(p);
+
+      // 叠加层
       let str = `<div class="overlay-poptip overlay-poptip-blue" style="min-width:300px;">
             <div class="overlay-poptip-content">
               <div class="overlay-poptip-arrow"></div>
@@ -77,22 +78,29 @@ export default {
                   <span class="overlay-poptip-title-header">${data.name}</span>
                   <div class="overlay-poptip-title-content">
                     <div class="overlay-poptip-title-content-item">普通十字路口</div>
-                    信号机 备用电源 相机 车检服务器
+                    <div class="overlay-poptip-title-content-item">
+                    ${this.formatterLatLng(data.lat)}N &nbsp;&nbsp;&nbsp;&nbsp;
+                    ${this.formatterLatLng(data.lng)}S
+                    </div>
                   </div>
-                </div>
-                <div class="overlay-poptip-body">
-                  <div class="ivu-btn-group ivu-btn-group-small" style="margin-bottom:12px;">
-                    <button type="button" class="ivu-btn ivu-btn-primary">资产</button><button type="button" class="ivu-btn">类型</button>
-                  </div>
-                  <div class="overlay-poptip-body-item">信号机<span>1</span></div>
-                  <div class="overlay-poptip-body-item">备用电源<span>1</span></div>
-                  <div class="overlay-poptip-body-item">相机<span>4</span></div>
-                  <div class="overlay-poptip-body-item">车检服务器<span>4</span></div>
                 </div>
               </div>
             </div>
           </div>`;
       self.crossingOverlay = new gmap.defineTitle(marker, str);
+    },
+    // 地图经纬度格式转换为 度°分`秒`
+    formatterLatLng(latlng) {
+      if (!latlng) {
+        return "";
+      } else {
+        let ddd = Math.floor(latlng);
+        let dec = (latlng - ddd) * 60;
+        let mmm = Math.floor(dec);
+        let dec2 = (dec - mmm) * 60;
+        let sss = Math.floor(dec2);
+        return `${ddd}°${mmm}"${sss}"`;
+      }
     }
   },
   computed: {

@@ -20,7 +20,7 @@ export const crossing = Mock.mock({
         "name": "@name",
         "type": "2",
         "lat": "@float(36,36,20,80)",
-        "lng": '@float(119,119,20,80)',
+        "lng": '@float(119,119,50,80)',
         "direction": "1357",
         "road_data": []
       }]
@@ -29,5 +29,36 @@ export const crossing = Mock.mock({
   status: "1"
 });
 
+export const devs = Mock.mock({
+  "data": {
+    "camera|4": [{
+      "id|+1": 10,
+      "ip": "@ip",
+      "port": "2555",
+      "type": "@integer(1,2)",
+      "username": "@first",
+      "password": "@first" + "@integer(1000,999999)"
+    }],
+    "ipc|4": [{
+      "id|+1": 10,
+      "ip": "@ip",
+      "name": "@name"
+    }],
+    "machine": {
+      "id|+1": 10,
+      "ip": "@ip",
+      "port": "4001"
+    },
+    "ups": {
+      "id|+1": 10,
+      "ip": "@ip",
+      "port": "5000"
+    }
+  },
+  status: "1"
+})
+
 // 路口
 Mock.mock("/api/index/d_area/treeList", /post|get/i, crossing);
+// 路口下的设备
+Mock.mock("/api/index/d_crossing/dataView", /post|get/i, devs);

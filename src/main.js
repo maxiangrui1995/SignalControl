@@ -16,6 +16,11 @@ import './styles/common.less';
 Vue.config.productionTip = false;
 
 Vue.prototype.$echarts = echarts;
+Vue.prototype.resetScrollbarPosition = ()=>{
+  document.getElementById(
+    "home-scrollbar"
+  ).childNodes[0].style.marginTop = 0;
+}
 
 
 Vue.use(iView);

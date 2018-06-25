@@ -117,19 +117,13 @@ export default {
     pageChange(page) {
       this.page = page;
       this.fetchPlanList();
-      this.scrollbarPosition();
+      this.resetScrollbarPosition();
     },
     // 切换页码
     pageSizeChange(rows) {
       this.rows = rows;
       this.fetchPlanList();
-      this.scrollbarPosition();
-    },
-    // 滚动条位置复原
-    scrollbarPosition() {
-      document.getElementById(
-        "home-scrollbar"
-      ).childNodes[0].style.marginTop = 0;
+      this.resetScrollbarPosition();
     },
     // 请求方案数据
     fetchPlanList() {
