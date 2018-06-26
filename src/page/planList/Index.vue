@@ -172,25 +172,3 @@ export default {
   }
 };
 </script>
-
-<style scoped lang="less">
-.card {
-  &-header {
-    padding: 0 20px;
-    background: #fff;
-    border-bottom: 1px solid #e8e8e8;
-    height: 64px;
-    line-height: 64px;
-  }
-  &-title {
-    float: left;
-    h3 {
-      display: inline-block;
-      margin-right: 10px;
-    }
-  }
-  &-extra {
-    float: right;
-  }
-}
-</style>

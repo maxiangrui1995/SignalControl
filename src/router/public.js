@@ -166,6 +166,14 @@ export default [{
     component: resolve => require(["@/page/greenBelt/Index"], resolve)
   },
   {
+    path: "greenBelt/:id",
+    name: "greenBelt-child",
+    meta: {
+      title: "绿波带详情"
+    },
+    component: resolve => require(["@/page/greenBelt/Child"], resolve)
+  },
+  {
     path: "privilege",
     name: "privilege",
     meta: {

@@ -66,7 +66,6 @@ export default {
         title: data.name,
         id: data.id
       });
-      console.log(p);
       gmap.panTo(p);
 
       // 叠加层

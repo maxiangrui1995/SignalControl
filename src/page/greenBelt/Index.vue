@@ -1,22 +1,23 @@
 <template>
-    <Layout>
-        <Header :style="{background: '#fff', padding: '0 20px', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
-            <Breadcrumb :style="{display: 'inline-block'}">
-                <BreadcrumbItem>绿波带</BreadcrumbItem>
-            </Breadcrumb>
-            <div style="float:right;">
-                <Button type="primary" @click="createData">
-                    <Icon type="plus" :style="{marginRight:'10px'}"></Icon>新增
-                </Button>
-                <i-input icon="ios-search" placeholder="请输入名称进行检索" style="width: 200px"></i-input>
-            </div>
-        </Header>
-        <Content :style="{padding: '20px'}">
-            <Card dis-hover>
-                <Table highlight-row :columns="columns" :data="data" :loading="loading" class="table-noborder"></Table>
-            </Card>
-        </Content>
-    </Layout>
+  <Layout>
+    <Header :style="{background: '#fff', padding: '0 20px', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
+      <Breadcrumb :style="{display: 'inline-block'}">
+        <BreadcrumbItem>绿波带</BreadcrumbItem>
+      </Breadcrumb>
+      <div style="float:right;">
+        <Button type="primary" @click="createData">
+          <Icon type="plus" :style="{marginRight:'10px'}"></Icon>新增
+        </Button>
+        <i-input icon="ios-search" placeholder="请输入名称进行检索" style="width: 200px"></i-input>
+      </div>
+    </Header>
+    <Content :style="{padding: '20px'}">
+      <Card dis-hover>
+        <Table highlight-row :columns="columns" :data="data" :loading="loading" class="table-noborder"></Table>
+        <Page show-sizer show-elevator show-total :current="page" :total="total" :page-size="rows" @on-page-size-change="pageSizeChange" @on-change="pageChange" v-if="show" :style="{'margin':'10px','text-align':'right'}"></Page>
+      </Card>
+    </Content>
+  </Layout>
 </template>
 
 <script>
@@ -26,6 +27,8 @@ export default {
       // page
       page: 1,
       rows: 20,
+      total: 0,
+      show: false,
       // tabs
       data: [],
       columns: [
@@ -40,19 +43,56 @@ export default {
         },
         {
           title: "周期",
-          key: "period"
+          key: "period",
+          width: 160,
+          sortable: true
         },
         {
           title: "协调方向",
-          key: "coordinate_direction"
+          key: "coordinate_direction",
+          width: 160,
+          render: (h, params) => {
+            return h(
+              "div",
+              { "1": "正向协调相位" }[params.row.coordinate_direction]
+            );
+          }
         },
         {
           title: "绿波类型",
-          key: "type"
+          key: "type",
+          width: 160,
+          filters: [
+            {
+              label: "每天",
+              value: "0"
+            },
+            {
+              label: "时间段",
+              value: "1"
+            }
+          ],
+          filterMultiple: false,
+          filterMethod(value, row) {
+            if (value === "1") {
+              return row.type === "1";
+            } else if (value === "0") {
+              return row.type === "0";
+            }
+          },
+          render: (h, params) => {
+            return h("div", { "0": "每天", "1": "时间段" }[params.row.type]);
+          }
         },
         {
           title: "时间范围",
-          key: "time_range"
+          key: "time_range",
+          render: (h, params) => {
+            return h(
+              "div",
+              params.row.mon_day_start + " - " + params.row.mon_day_end
+            );
+          }
         },
         {
           title: "操作",
@@ -131,64 +171,33 @@ export default {
         this.loading = false;
       });
     },
+    // 新增数据
+    createData() {},
+    // 切换分页
+    pageChange(page) {
+      this.page = page;
+      this.fetchData();
+      this.resetScrollbarPosition();
+    },
+    // 切换页码
+    pageSizeChange(rows) {
+      if (this.rows !== rows) {
+        this.rows = rows;
+        this.fetchData();
+        this.resetScrollbarPosition();
+      }
+    },
     // 详情
     viewMore(row) {
       this.resetScrollbarPosition();
       this.$router.push({
-        path: "/region/" + row.id
+        path: "/greenBelt/" + row.id
       });
-    },
-    // 编辑
-    modifyData(row) {
-      this.modal.show = true;
-      this.modal.title = "区域编辑";
-      this.modal.type = "modify";
-      this.form.data = {
-        name: row.name,
-        id: row.id
-      };
-    },
-    // 删除
-    removeData(row) {
-      this.$Modal.confirm({
-        content: "<h3>确定删除？删除后无法恢复！</h3>",
-        loading: true,
-        onOk: () => {
-          /* dataDelete({ id: id }).then(res => {
-            if (res.status) {
-              this.$Message.success("删除成功");
-            } else {
-              this.$Message.error("删除失败");
-            }
-            this.$Modal.remove();
-            this.loadData();
-          }); */
-        }
-      });
-    },
-    // 新增
-    createData() {},
-    // 提交
-    submit() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          if (this.modal.type === "modify") {
-            let data = this.form.data;
-            this.$http
-              .post("index/d_area/dataUpdate1", this.form.data)
-              .then(res => {
-                let data = res.data;
-                if (data.status) {
-                  this.fetchPlanList();
-                  this.$Message.success("编辑成功");
-                } else {
-                  this.$Message.error(data.message);
-                }
-                this.modal.show = false;
-              });
-          }
-        }
-      });
+    }
+  },
+  watch: {
+    total() {
+      this.show = this.total > 0 ? true : false;
     }
   },
   created() {
