@@ -30,25 +30,19 @@ npm test
 ## 文件结构
 ```bash
 .
-├── build  项目构建配置
+├── build                   项目构建配置
 └── src
-    ├── api  数据请求文件
-    ├── components  公共组件文件
-    ├── images  图片文件
-    ├── libs  工具方法
-    ├── mock  自定义数据接口拦截请求文件
-    ├── page  页面组件
-        ├── comprehensiveQuery  综合查询
-        ├── error  错误页面
-        ├── greenBelt  绿波带
-        ├── indexPage  首页
-        ├── login  登录页面
-        ├── planList  特征参数
-        ├── privilege  特勤联动
-        ├── region  区域管理
-        ├── workplace  工作台
-    ├── router  路由配置
-    ├── styles  样式文件
-    ├── vuex  状态管理
+    ├── images              图片文件
+    ├── libs                工具方法
+    ├── router              路由配置
+    ├── store               状态管理
+    ├── styles              样式文件
+    ├── vendors             公共库文件
+    └── views
+├── static 
+    ├── googleMapsAPI       谷歌地图离线资源包
+        ├── mapfiles        地图api文件
+        ├── tilemap         地图图片(瓦片图)  
+    ├── images              图片文件
 ```
 

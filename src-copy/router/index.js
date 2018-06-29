@@ -1,29 +1,32 @@
 import Vue from 'vue';
-import iView from 'iview';
-import VueRouter from 'vue-router';
-import store from "@/store";
-import routers from './public';
+import iView from "iview";
+import vueRouter from 'vue-router';
+import store from "@/vuex";
 
-Vue.use(VueRouter);
+import routes from './public';
 
-const router = new VueRouter({
+Vue.use(vueRouter);
+
+const router = new vueRouter({
     mode: "hash",
-    routes: routers
+    routes: routes
 });
 
 router.beforeEach((to, from, next) => {
     iView.LoadingBar.start();
     if (to.meta.title) { document.title = to.meta.title }
+
     if (to.name === 'login') {
         next();
     } else {
         // 验证是否登录
         if (!store.state.isLogin) {
-            store.dispatch('checkoutIsLogin', next);
+            store.dispatch('setLogin', next);
         } else {
             next()
         }
     }
+
 });
 router.afterEach((to) => {
     iView.LoadingBar.finish();

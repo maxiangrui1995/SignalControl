@@ -1,13 +1,10 @@
 import Vue from "vue";
 import axios from 'axios';
 import iView from "iview";
+/* 自定义拦截请求 */
+// import '@/mock';
 
-const env = process.env.NODE_ENV || "development";
-if (env === 'production') {
-    axios.defaults.baseURL = "../../PHP/public/index.php/index";
-} else {
-    axios.defaults.baseURL = "/api";
-}
+axios.defaults.baseURL = "/api";
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
 const $http = (url, params) => {
@@ -21,6 +18,9 @@ const $http = (url, params) => {
         }).catch(error => {
             if (error.response) {
                 // 请求已发出，但服务器响应的状态码不在 2xx 范围内
+                /* console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers); */
                 let status = error.response.status;
                 iView.Notice.error({
                     title: '服务器提示',
@@ -29,6 +29,7 @@ const $http = (url, params) => {
                 });
             } else {
                 // Something happened in setting up the request that triggered an Error
+                /* console.log('Error', error.message); */
             }
             /* console.log(error.config); */
             reject(error);
@@ -37,3 +38,5 @@ const $http = (url, params) => {
 };
 
 Vue.prototype.$http = $http;
+
+export default $http;
