@@ -28,6 +28,10 @@ Vue.prototype.resetScrollbarPosition = () => {
     scrollbar.childNodes[0].childNodes[2].childNodes[0].childNodes[0].style.top = 0
   }
 }
+// 全局iview配置
+iView.Message.config({
+  duration: 3
+});
 
 
 Vue.use(iView);
