@@ -5,9 +5,7 @@
 </template>
 
 <script>
-export default {
-  name: "App"
-};
+export default {};
 </script>
 
 <style>
@@ -15,6 +13,7 @@ html,
 body {
   width: 100%;
   height: 100%;
+  font-size: 14px;
   background: #f0f0f0;
   overflow: hidden;
 }

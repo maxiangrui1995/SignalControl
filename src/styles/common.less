@@ -1,10 +1,231 @@
+input:-webkit-autofill {
+    box-shadow: 0 0 0px 1000px white inset;
+}
+
+/* 地图叠加层 */
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.overlay-poptip {
+    position: absolute;
+    padding: 0 5px 0 8px;
+    min-width: 150px;
+    display: block;
+    visibility: visible;
+    font-size: 14px;
+    line-height: 1.5;
+    cursor: default;
+    animation-duration: 0.5s;
+    animation-fill-mode: both;
+    animation-name: fadeIn;
+    &-arrow,
+    &-arrow:after {
+        display: block;
+        width: 0;
+        height: 0;
+        position: absolute;
+        border-color: transparent;
+        border-style: solid;
+    }
+    &-arrow {
+        top: 8px;
+        left: 3px;
+        border-width: 5px 5px 5px 0;
+        border-right-color: hsla(0, 0%, 85%, .5);
+    }
+    &-arrow:after {
+        content: " ";
+        left: 1px;
+        bottom: -5px;
+        border-width: 5px;
+        border-left-width: 0;
+        border-right-width: 5px;
+        border-right-color: #fff;
+    }
+    &-inner {
+        width: 100%;
+        background-color: #fff;
+        background-clip: padding-box;
+        border-radius: 4px;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+        white-space: nowrap;
+    }
+    &-title {
+        margin: 0;
+        padding: 8px 16px;
+        position: relative;
+    }
+    &-title:after {
+        content: "";
+        display: block;
+        height: 1px;
+        position: absolute;
+        left: 8px;
+        right: 8px;
+        bottom: 0;
+        background-color: #e9eaec;
+    }
+    &-body {
+        padding: 8px 16px;
+    }
+}
+
+.overlay-poptip-blue {
+    .overlay-poptip-arrow {
+        top: 13px;
+    }
+    .overlay-poptip-title {
+        background: linear-gradient(to bottom right, #384ac6, #2076f1);
+        color: #eee;
+    }
+    .overlay-poptip-title:after {
+        display: none;
+    }
+    .overlay-poptip-arrow:after {
+        left: -10px;
+        bottom: -13px;
+        border-width: 8px;
+        border-right-width: 8px;
+        border-right-color: #384ac6;
+    }
+    .overlay-poptip-title-header {
+        display: inline-block;
+        font-size: 1.12em;
+        height: 30px;
+        line-height: 30px;
+    }
+    .overlay-poptip-title-content-item {
+        height: 26px;
+        line-height: 26px;
+    }
+}
+
+.fade-leave {
+    animation-duration: 0.5s;
+    animation-fill-mode: both;
+    animation-name: fadeOut;
+}
+
+/* 右侧折叠面板 */
+
+.sider-wrapper {
+    width: 400px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    &-content {
+        width: 400px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        background: #f8f8f8;
+        box-shadow: -1px 0px 4px rgba(0, 0, 0, 0.28);
+    }
+    &-trigger {
+        background: #fbf8f8;
+        width: 14px;
+        height: 96px;
+        line-height: 96px;
+        text-align: center;
+        color: #ccc;
+        position: absolute;
+        top: 50%;
+        margin-top: -48px;
+        margin-left: -12px;
+        border: 1px solid rgba(205, 208, 214, 0.9);
+        border-radius: 10px;
+        z-index: -1;
+        cursor: pointer;
+        &:hover {
+            background: #eaeaec;
+            color: #333;
+        }
+    }
+}
+
+/* 滚动条样式 */
+
 .vue-scrollbar__wrapper {
     background: transparent;
 }
 
-.ivu-table-noborder {
-    border: none;
-    .ivu-table:after {
-        width: 0;
+.vue-scrollbar__scrollbar-vertical {
+    width: 5px;
+}
+
+/* 提示字体 */
+
+.warning {
+    color: #ff9900;
+}
+
+/* 分割 */
+
+.item-split {
+    background-color: #e8e8e8;
+    display: inline-block;
+    width: 1px;
+    height: 14px;
+    vertical-align: middle;
+}
+
+/* 表格无边框 */
+
+.table-noborder {
+    border-color: transparent;
+    .ivu-table {
+        &:after,
+        &:before {
+            background-color: transparent
+        }
+    }
+}
+
+.table-dishover {
+    .ivu-table-row-hover {
+        td {
+            background: none;
+        }
+    }
+    td {
+        &:hover {
+            background: #ebf7ff;
+            cursor: pointer;
+        }
+    }
+}
+
+.ivu-table th {
+    height: 48px;
+}
+
+/* 标签页 */
+
+.tabs-nocontent {
+    .ivu-tabs-bar {
+        margin-bottom: 0;
+        border-color: transparent;
+    }
+    .ivu-tabs-nav .ivu-tabs-tab {
+        padding: 0px 16px 16px;
     }
 }

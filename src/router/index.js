@@ -1,47 +1,36 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import iView from 'iview'
-import routers from './router'
-import store from "@/store"
+import Vue from 'vue';
+import iView from "iview";
+import vueRouter from 'vue-router';
+import store from "@/vuex";
 
-import { isLogin } from '@/api/d_user'
+import routes from './public';
 
-Vue.use(Router)
+Vue.use(vueRouter);
 
-const router = new Router({
-	mode: "hash",
-	routes: routers
+const router = new vueRouter({
+    mode: "hash",
+    routes: routes
 });
 
 router.beforeEach((to, from, next) => {
-	iView.LoadingBar.start();
-	next();
-	/*if (to.name === 'login') {
-		next();
-	} else {
-		if (!store.state.isLogin) {
-			isLogin().then(res => {
-				if (!res.status) {
-					iView.Message.info('未检测到登录状态，请重新登录！');
-					next({
-						name: 'login'
-					});
-				} else {
-					store.dispatch("login", true);
-					store.dispatch("user", res.data.username);
-					next();
-				}
-			})
-		} else {
-			next()
-		}
-	} */
+    iView.LoadingBar.start();
+    if (to.meta.title) { document.title = to.meta.title }
+
+    if (to.name === 'login') {
+        next();
+    } else {
+        // 验证是否登录
+        if (!store.state.isLogin) {
+            store.dispatch('setLogin', next);
+        } else {
+            next()
+        }
+    }
 
 });
 router.afterEach((to) => {
-	iView.LoadingBar.finish();
-	window.scrollTo(0, 0);
+    iView.LoadingBar.finish();
+    window.scrollTo(0, 0);
 });
 
 export default router;
-

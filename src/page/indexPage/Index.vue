@@ -1,24 +1,28 @@
 <template>
   <Layout :style="{height:'100%'}">
-    <Header :style="{padding: '0 10px'}">
+    <Header :style="{padding: '0 10px','box-shadow':'0 1px 4px rgba(0,21,41,.08)','z-index':'1'}">
       <div class="logo">{{logo}}</div>
       <div class="tools">
-        <y-message></y-message>
-        <y-users></y-users>
       </div>
     </Header>
     <Layout>
       <Sider hide-trigger>
-        <Menu width="auto" :active-name="menuActiveName" @on-select="menuSelect" :style="{background:'transparent', height:'100%'}">
+        <div class="avatar-wrapper">
+          <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" size="large" />
+          <div class="avatar-wrapper-content">欢迎您:
+            <span class="title">{{user}}</span>
+          </div>
+        </div>
+        <Menu width="auto" theme="dark" :active-name="menuActiveName" @on-select="menuSelect" :style="{background:'transparent', height:'100%'}">
           <i-menu-item v-for="(item,index) in menu" :key="index" :name="'/'+item.name">
             <Icon :type="item.icon" />
             <span>{{item.title}}</span>
           </i-menu-item>
         </Menu>
       </Sider>
-      <Content :style="{position:'relative'}" ref="app">
-        <vue-scrollbar style="width:100%;height:100%;">
-            <router-view/>
+      <Content :style="{position:'relative'}">
+        <vue-scrollbar style="width:100%;height:100%;" id="home-scrollbar">
+          <router-view/>
         </vue-scrollbar>
       </Content>
     </Layout>
@@ -26,21 +30,19 @@
 </template>
 
 <script>
-import YMessage from "./components/Message";
-import YUsers from "./components/Users";
+/* 滚动条 */
 import VueScrollbar from "vue2-scrollbar";
 export default {
-  name: "IndexPage",
-  components: { YMessage, YUsers,VueScrollbar },
+  components: { VueScrollbar },
   data() {
     return {
       logo: "道路交通信号机控制平台",
       menu: [
-        /* {
+        {
           name: "workplace",
           title: "工作台",
           icon: "speedometer"
-        }, */
+        },
         {
           name: "comprehensiveQuery",
           title: "综合查询",
@@ -75,7 +77,10 @@ export default {
       this.$router.push({ path: name });
     }
   },
-  mounted() {
+  computed: {
+    user() {
+      return this.$store.state.user;
+    }
   }
 };
 </script>
@@ -84,10 +89,35 @@ export default {
 .logo {
   font-size: 18px;
   font-weight: 600;
+  color: #fff;
   float: left;
   cursor: pointer;
 }
 .tools {
   float: right;
+}
+.avatar-wrapper {
+  text-align: center;
+  color: #fff;
+  padding: 20px 0 6px;
+  &-content {
+    height: 40px;
+    line-height: 40px;
+    &:after {
+      display: block;
+      content: "";
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.1) 16%,
+        fade(#49bdbd, 60%) 56%,
+        rgba(0, 0, 0, 0.1) 90%
+      );
+    }
+    .title {
+      color: #49bdbd;
+    }
+  }
 }
 </style>

@@ -27,16 +27,28 @@ npm run e2e
 npm test
 ```
 
-## v.1.0.0
+## 文件结构
 ```bash
-基础功能
+.
+├── build  项目构建配置
+└── src
+    ├── api  数据请求文件
+    ├── components  公共组件文件
+    ├── images  图片文件
+    ├── libs  工具方法
+    ├── mock  自定义数据接口拦截请求文件
+    ├── page  页面组件
+        ├── comprehensiveQuery  综合查询
+        ├── error  错误页面
+        ├── greenBelt  绿波带
+        ├── indexPage  首页
+        ├── login  登录页面
+        ├── planList  特征参数
+        ├── privilege  特勤联动
+        ├── region  区域管理
+        ├── workplace  工作台
+    ├── router  路由配置
+    ├── styles  样式文件
+    ├── vuex  状态管理
 ```
-## v.1.1.0
-```bash
-项目结构优化
-```
-## v.1.2.0
-```bash
-1.引入vue2-scroller,https://github.com/BosNaufal/vue2-scrollbar;
-2.颜色主题做调整,两套主题(默认,蓝色)
-```
+

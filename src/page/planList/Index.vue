@@ -1,25 +1,32 @@
 <template>
-  <div style="padding:20px;">
-    <Card dis-hover :bordered="false">
-      <Button type="primary" @click="createData" :style="{'margin-bottom':'10px'}">
-        <Icon type="plus"></Icon>
-        新增</Button>
-      <Table :columns="columns" :data="data" :loading="loading" class="ivu-table-noborder"></Table>
-      <Page show-sizer show-elevator :current="page" :total="total" :page-size="rows" @on-page-size-change="pageSizeChange" @on-change="pageChange" :style="{'margin':'10px','text-align':'right'}"></Page>
-    </Card>
-  </div>
+  <Layout>
+    <Header :style="{background: '#fff', padding: '0 20px', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
+      <Breadcrumb :style="{display: 'inline-block'}">
+        <BreadcrumbItem>特征参数</BreadcrumbItem>
+      </Breadcrumb>
+      <div style="float:right;">
+        <Button type="primary" @click="createData">
+          <Icon type="plus" :style="{marginRight:'10px'}"></Icon>新增
+        </Button>
+        <i-input icon="ios-search" placeholder="请输入名称进行检索" style="width: 200px"></i-input>
+      </div>
+    </Header>
+    <Content :style="{padding: '20px'}">
+      <Table highlight-row :columns="columns" :data="data" :loading="loading"></Table>
+      <Page show-sizer show-elevator show-total :current="page" :total="total" :page-size="rows" @on-page-size-change="pageSizeChange" @on-change="pageChange" v-if="show" :style="{'margin':'10px','text-align':'right'}"></Page>
+    </Content>
+  </Layout>
 </template>
 
 <script>
-import { dataList, dataDelete, dataInit } from "@/api/d_plan";
 export default {
-  name: "planList",
   data() {
     return {
       // page
       page: 1,
       rows: 10,
-      total: 100,
+      total: 0,
+      show: false,
       // tabs
       columns: [
         {
@@ -29,63 +36,15 @@ export default {
         },
         {
           title: "方案名称",
-          key: "name",
-          render: (h, params) => {
-            let row = params.row;
-            let style = { "margin-bottom": "6px" };
-            return h(
-              "Poptip",
-              {
-                props: {
-                  trigger: "hover",
-                  title: "详细信息",
-                  placement: "right"
-                }
-              },
-              [
-                h("Tag", row.name),
-                h(
-                  "div",
-                  {
-                    slot: "content"
-                  },
-                  [
-                    h(
-                      "div",
-                      {
-                        style: style
-                      },
-                      "最小绿范围：" +
-                        `${row.min_green_down} - ${row.min_green_up}`
-                    ),
-                    h(
-                      "div",
-                      {
-                        style: style
-                      },
-                      "最大绿范围：" +
-                        `${row.max_green_down} - ${row.max_green_up}`
-                    ),
-                    h(
-                      "div",
-                      "绿延伸范围：" + `${row.extends_down} - ${row.extends_up}`
-                    )
-                  ]
-                )
-              ]
-            );
-          }
+          key: "name"
         },
         {
-          title: "类型",
-          key: "type",
-          align: "center",
-          render: (h, params) => {
-            return h(
-              "div",
-              `${params.row.phase_count}阶段${params.row.light_count}相位`
-            );
-          }
+          title: "阶段数",
+          key: "light_count"
+        },
+        {
+          title: "相位数",
+          key: "phase_count"
         },
         {
           title: "相位差",
@@ -98,6 +57,10 @@ export default {
         {
           title: "脉宽",
           key: "mc_width"
+        },
+        {
+          title: "时间间隔",
+          key: "time_interval"
         },
         {
           title: "操作",
@@ -115,7 +78,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.pathToDetails(params.row.id);
+                      this.viewMore(params.row);
                     }
                   }
                 },
@@ -130,7 +93,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.removeData(params.row.id);
+                      this.removeData(params.row);
                     }
                   }
                 },
@@ -145,35 +108,47 @@ export default {
     };
   },
   methods: {
+    // 切换分页
     pageChange(page) {
       this.page = page;
-      this.loadData();
+      this.fetchPlanList();
+      this.resetScrollbarPosition();
     },
+    // 切换页码
     pageSizeChange(rows) {
-      this.rows = rows;
-      this.loadData();
+      if (this.rows !== rows) {
+        this.rows = rows;
+        this.fetchPlanList();
+        this.resetScrollbarPosition();
+      }
     },
-    pathToDetails(id) {
-      this.$router.push({
-        path: "/planList/" + id
-      });
-    },
-    loadData() {
+    // 请求方案数据
+    fetchPlanList() {
       this.loading = true;
-      dataList({ page: this.page, rows: this.rows }).then(res => {
+      this.$http("index/d_plan/dataList", {
+        page: this.page,
+        rows: this.rows
+      }).then(res => {
+        let data = res.data;
         if (res.status === "1") {
-          this.data = res.data.list;
-          this.total = ~~res.data.total;
+          this.data = data.list;
+          this.total = ~~data.total;
         }
         this.loading = false;
       });
     },
-    removeData(id) {
+    viewMore(row) {
+      this.resetScrollbarPosition();
+      this.$router.push({
+        path: "/planList/" + row.id
+      });
+    },
+    removeData(row) {
       this.$Modal.confirm({
-        content: "<p>确定删除？删除后无法恢复！</p>",
+        content: "<h3>确定删除？删除后无法恢复！</h3>",
         loading: true,
         onOk: () => {
-          dataDelete({ id: id }).then(res => {
+          /* dataDelete({ id: id }).then(res => {
             if (res.status) {
               this.$Message.success("删除成功");
             } else {
@@ -181,50 +156,19 @@ export default {
             }
             this.$Modal.remove();
             this.loadData();
-          });
+          }); */
         }
       });
     },
-    createData() {
-      let newValue = "";
-      let self = this;
-      this.$Modal.confirm({
-        render: h => {
-          return h("Input", {
-            props: {
-              value: newValue,
-              autofocus: true,
-              placeholder: "请输入新的方案名称..."
-            },
-            on: {
-              input: val => {
-                newValue = val;
-              }
-            }
-          });
-        },
-        loading: true,
-        onOk() {
-          dataInit({
-            name: newValue
-          }).then(res => {
-            if (res.status) {
-              this.$Message.success("添加成功");
-            } else {
-              this.$Message.error("添加失败");
-            }
-            self.$Modal.remove();
-            self.loadData();
-          });
-        }
-      });
-    }
+    createData() {}
   },
   created() {
-    this.loadData();
+    this.fetchPlanList();
+  },
+  watch: {
+    total() {
+      this.show = this.total > 0 ? true : false;
+    }
   }
 };
 </script>
-
-<style>
-</style>
